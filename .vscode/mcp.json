@@ -1,11 +1,19 @@
 {
   "servers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"],
+      "type": "stdio"
+    },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
+      "args": ["shadcn@latest", "mcp"],
+      "type": "stdio"
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=bewadmxqpgewphunaylf&features=docs,database,debugging,development,storage"
     }
-  }
+  },
+  "inputs": []
 }
