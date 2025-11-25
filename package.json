@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.43",
     "@supabase/ssr": "^0.7.0",
     "@tailwindcss/cli": "^4.1.17",
+    "ai": "^5.0.102",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.554.0",
