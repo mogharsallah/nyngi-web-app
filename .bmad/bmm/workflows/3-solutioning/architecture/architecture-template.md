@@ -42,7 +42,7 @@ These patterns ensure consistent implementation across all AI agents:
 
 {{implementation_patterns}}
 
-## Consistency Rules
+### Consistency Rules
 
 ### Naming Conventions
 
@@ -59,6 +59,10 @@ These patterns ensure consistent implementation across all AI agents:
 ### Logging Strategy
 
 {{logging_approach}}
+
+### Date Handling
+
+{{date_handling_approach}}
 
 ## Data Architecture
 
