@@ -13,11 +13,12 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=bewadmxqpgewphunaylf&features=docs,database,debugging,development,storage"
-    },
-    "polar-sandbox": {
-      "type": "http",
-      "url": "https://mcp.polar.sh/mcp/polar-sandbox"
     }
+    // "polar-sandbox": {
+
+    //   "type": "http",
+    //   "url": "https://mcp.polar.sh/mcp/polar-sandbox"
+    // }
   },
   "inputs": []
 }

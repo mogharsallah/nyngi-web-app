@@ -177,7 +177,7 @@ This section shapes all functional and non-functional requirements below.
 
 ### Integration
 
-- Integration with Trademarkia/USPTO APIs.
+- Integration with Signa.so Trademark API (unified search across USPTO, EUIPO, WIPO, UKIPO).
 - Integration with Affiliate Networks (Impact, CJ, etc.).
 - Integration with Payment Gateway.
 

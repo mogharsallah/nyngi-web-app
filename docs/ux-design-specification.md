@@ -86,11 +86,7 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 Combines the authoritative grounding of deep midnight blue (Legal Certainty) with the vibrant energy of indigo and electric teal (Creative AI). This palette perfectly supports the "Trojan Horse" model—it looks like a cool creative tool but feels like a safe legal platform.
 
 **Palette:**
-
-- **Primary (Authority):** Deep Midnight Blue (`#0B1120`) - Used for backgrounds, headers, and primary text. Anchors the "Legal" trust.
-- **Accent (Creativity):** Indigo (`#6366F1`) - Used for primary actions (CTAs), active states, and brand moments. Signals "AI Magic."
-- **Highlight (Innovation):** Electric Teal (`#2DD4BF`) - Used for icons, success indicators, and "Green Light" moments. Signals "Freshness/Safety."
-- **Neutral:** Slate (`#F8FAFC` to `#1E293B`) - Clean, professional structure.
+Check app/global.css for the colors
 
 **Semantic Colors (The Traffic Light):**
 
@@ -100,13 +96,9 @@ Combines the authoritative grounding of deep midnight blue (Legal Certainty) wit
 
 **Typography:**
 
-- **Headings:** `Inter` (Tight tracking, bold weights) - Clean, modern, authoritative.
-- **Body:** `Inter` (Regular weights) - Highly legible for reports and lists.
-- **Monospace:** `JetBrains Mono` or `Geist Mono` - For code snippets, IP data, or "AI typing" effects.
-
-**Interactive Visualizations:**
-
-- Color Theme Explorer: [ux-color-themes.html](./ux-color-themes.html)
+- **Headings:** `Geist` (Tight tracking, bold weights) - Clean, modern, authoritative.
+- **Body:** `Geist` (Regular weights) - Highly legible for reports and lists.
+- **Monospace:** `Geist Mono` - For code snippets, IP data, or "AI typing" effects.
 
 ---
 
@@ -200,9 +192,9 @@ _Goal: Secure a defensible IP asset._
     - **Purpose:** Core risk indicator.
     - **Visual:** Pill-shaped badge with glowing dot.
     - **States:**
-      - **Green:** `bg-emerald-50 text-emerald-600 border-emerald-200` + Pulse effect.
-      - **Amber:** `bg-amber-50 text-amber-600 border-amber-200`.
-      - **Red:** `bg-red-50 text-red-600 border-red-200`.
+      - **Green** + Pulse effect.
+      - **Amber**
+      - **Red**.
 
 2.  **The "Name Card" (Hero Component):**
 
@@ -235,9 +227,10 @@ _Goal: Secure a defensible IP asset._
 
 **Button Hierarchy:**
 
-- **Primary:** Indigo (`bg-indigo-600`). Used for "Generate", "Unlock Report", "Buy".
-- **Secondary:** White with Border (`border-slate-200`). Used for "Filter", "Export", "Cancel".
-- **Ghost:** Transparent. Used for "Favorite", "Copy", "More Options".
+- **Primary:** Used for "Generate", "Unlock Report", "Buy".
+
+- **Secondary:** Used for "Filter", "Export", "Cancel".
+- **Ghost:** Used for "Favorite", "Copy", "More Options".
 
 **Feedback Patterns:**
 
@@ -277,7 +270,7 @@ _Goal: Secure a defensible IP asset._
 
 **Accessibility (WCAG 2.1 AA):**
 
-- **Color Contrast:** All text must meet 4.5:1 ratio. (Note: Be careful with "Amber" text on white; use darker shade `#D97706`).
+- **Color Contrast:** All text must meet 4.5:1 ratio. (Note: Be careful with "Amber" text on white; use darker shade).
 - **Focus States:** Visible indigo ring (`ring-2 ring-indigo-500`) on all interactive elements.
 - **Screen Readers:**
   - "Traffic Light" badges must have `aria-label="Risk Level: High/Medium/Low"`.
@@ -298,8 +291,6 @@ _Goal: Secure a defensible IP asset._
 **Deliverables:**
 
 - UX Design Document: `docs/ux-design-specification.md`
-- Interactive Color Themes: `docs/ux-color-themes.html`
-- Design Direction Mockups: `docs/ux-design-directions.html`
 
 **Next Steps:**
 

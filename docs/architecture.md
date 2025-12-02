@@ -15,7 +15,7 @@ This establishes the base architecture with these decisions:
 - **Styling:** Tailwind CSS v4 + shadcn/ui
 - **Backend:** Supabase (Auth/DB)
 - **ORM:** Drizzle ORM
-- **State:** TanStack Query (Server) + Zustand (Client)
+- **State:** Zustand (Client)
 
 ## Decision Summary
 
@@ -23,7 +23,6 @@ This establishes the base architecture with these decisions:
 | -------------------- | ----------------------- | ----------------- | ------------------- | ------------------------------------------------------------------------ |
 | **Data Persistence** | **Drizzle ORM**         | v0.44.7           | All Epics           | Strict type safety prevents "False Negative" risk bugs.                  |
 | **Client State**     | **Zustand**             | v5.0.9            | Narrative Architect | Simple, unopinionated state for "Trojan Horse" session context.          |
-| **Server State**     | **TanStack Query**      | v5.90.11          | Traffic Light       | Robust caching and synchronization for risk check results.               |
 | **Payment Provider** | **Polar.sh**            | v0.41.5           | Monetization        | Merchant of Record handles tax/compliance for "Lean Entrepreneurs".      |
 | **PDF Generation**   | **React-PDF**           | v4.3.1            | Reports             | Component-based PDF creation ensures professional "De-Risking Reports".  |
 | **Testing**          | **Vitest + Playwright** | v4.0.14 / v1.57.0 | All Epics           | High trust requires rigorous unit (Vitest) and E2E (Playwright) testing. |
@@ -115,8 +114,15 @@ This establishes the base architecture with these decisions:
 
 - **Polar.sh:** Payment processing and Merchant of Record.
   - _Integration:_ Webhook at `api/webhooks/polar`.
-- **USPTO/Trademarkia:** External trademark data.
-  - _Integration:_ `server/services/trademark.ts`.
+- **Signa.so:** Trademark search, clearance, and risk scoring API.
+  - _Base URL:_ `https://api.signa.so/v1`
+  - _Key Endpoints:_
+    - `GET /search` - Text search across 147M+ trademarks (USPTO, EUIPO, WIPO, UKIPO)
+    - `POST /analysis/clearance` - AI-powered risk scoring (CLEAR, LOW, MEDIUM, HIGH)
+    - `POST /analysis/check` - Quick conflict detection (300-800ms)
+  - _Integration:_ `server/services/trademark.ts`
+  - _Auth:_ Bearer token via `SIGNA_API_KEY` environment variable
+  - _Credits:_ 1 credit/search, 2 credits/check, 5 credits/clearance
 - **Vercel AI SDK:** LLM integration for Narrative Architect.
   - _Integration:_ `server/actions/naming.ts`.
 
@@ -198,7 +204,6 @@ These patterns ensure consistent implementation across all AI agents:
 
 ## Performance Considerations
 
-- **Caching:** TanStack Query for server state caching.
 - **PDF Generation:** Offload to async job if generation takes >10s.
 - **Edge:** Use Edge Runtime for simple redirects/middleware.
 
@@ -229,6 +234,7 @@ npm run dev
 - **ADR-002: Polar.sh:** Chosen as Merchant of Record to simplify tax compliance.
 - **ADR-003: Server Services:** Business logic placed in `server/services` to separate from shared `lib` code.
 - **ADR-004: AI SDK:** AI SDK shall be used to interact with ai models. Visit [AI SDK LLM documentation](https://ai-sdk.dev/llms.txt)
+- **ADR-005: Signa.so Trademark API:** Chosen for unified trademark search across 200+ offices with AI-powered clearance analysis. Provides normalized data, risk scoring (CLEAR/LOW/MEDIUM/HIGH), and sub-300ms response times. Credit-based pricing aligns with usage patterns.
 
 ---
 
