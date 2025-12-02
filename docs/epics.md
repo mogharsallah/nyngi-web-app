@@ -67,64 +67,6 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 ---
 
-### Story 1.1: Project Initialization & Core Dependencies
-
-**As a** developer,
-**I want** a fully configured Next.js 16 project with all core dependencies installed,
-**So that** subsequent stories can focus on feature implementation without setup friction.
-
-**Acceptance Criteria:**
-
-**Given** an empty project directory
-**When** the project is initialized
-**Then** the following structure exists:
-
-- Next.js 16.0.3+ with App Router enabled
-- TypeScript configured with strict mode
-- Tailwind CSS v4 configured with `globals.css`
-- ESLint + Prettier configured with consistent rules
-- `package.json` includes all core dependencies:
-  - `drizzle-orm` v0.44.7+
-  - `zustand` v5.0.9+
-  - `@supabase/ssr` for auth
-  - `dayjs` for date handling
-  - `pino` for logging
-  - `zod` for validation
-
-**And** the project compiles without errors using `npm run build`
-**And** `npm run dev` starts the development server on port 3000
-**And** the folder structure matches the Architecture document:
-
-```
-app/
-  (auth)/
-  (app)/
-  api/
-components/
-  lib/
-  providers/
-  features/
-  ui/
-  shared/
-server/
-  lib/db/
-  actions/
-  services/
-drizzle/
-tests/
-```
-
-**Prerequisites:** None (first story)
-
-**Technical Notes:**
-
-- Use `create-next-app` with TypeScript template
-- Configure `tsconfig.json` paths: `@/*` → `./`, `@server/*` → `./server/*`
-- Add `.nvmrc` with Node v20+
-- Initialize git with `.gitignore` for Node/Next.js
-
----
-
 ### Story 1.2: Supabase Integration & Environment Configuration
 
 **As a** developer,
@@ -137,27 +79,26 @@ tests/
 **When** the integration is configured
 **Then** the following files exist and function correctly:
 
-- `components/lib/supabase/client.ts` - Browser client singleton
-- `server/lib/supabase/server.ts` - Server client with cookie handling
-- `server/lib/supabase/middleware.ts` - Auth session refresh middleware
-- `.env.local.example` with required variables documented
+- `components/lib/supabase/client.ts` - Browser client singleton (Already done)
+- `server/lib/supabase/server.ts` - Server client with cookie handling (Already done)
+- `server/lib/supabase/middleware.ts` - Auth session refresh middleware (Already done)
 
 **And** environment variables are defined:
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (server-only)
-- `DATABASE_URL` (for Drizzle direct connection)
+- `NEXT_PUBLIC_SUPABASE_URL` (Already done)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Already done)
+- `SUPABASE_SERVICE_ROLE_KEY` (server-only) (Already done)
+- `DATABASE_URL` (for Drizzle direct connection) (Already done)
 
 **And** middleware refreshes auth sessions on every request
 **And** server actions can access authenticated user via `getUser()`
 
-**Prerequisites:** Story 1.1
+**Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
 
-- Use `@supabase/ssr` package for SSR-compatible auth
-- Middleware must be in `middleware.ts` at project root
+- Use `@supabase/ssr` package for SSR-compatible auth (Already done)
+- Middleware must be in `middleware.ts` at project root (Already done)
 - Never expose `SUPABASE_SERVICE_ROLE_KEY` to client
 
 ---
@@ -170,11 +111,11 @@ tests/
 
 **Acceptance Criteria:**
 
-**Given** Drizzle ORM is installed
+**Given** Drizzle ORM is installed (Already done)
 **When** the schema is defined
 **Then** `server/lib/db/schema/` contains:
 
-- `auth.ts` - User profiles extension (linked to `auth.users`)
+- `auth.ts` - User profiles extension (linked to `auth.users`) (Already done)
 - `public.ts` - All application tables:
   - `user_profiles` (id, user_id FK, segment: 'lean'|'high-stakes', created_at, updated_at)
   - `naming_sessions` (id, user_id FK, criteria JSONB, created_at)
@@ -186,9 +127,9 @@ tests/
 
 **And** `drizzle.config.ts` is configured with:
 
-- Schema path: `./server/lib/db/schema/*`
-- Output directory: `./drizzle`
-- Database driver: `pg` with `DATABASE_URL`
+- Schema path: `./server/lib/db/schema/*` (Already done)
+- Output directory: `./drizzle` (Already done)
+- Database driver: `pg` with `DATABASE_URL` (Already done)
 
 **And** `npm run db:generate` creates migration files
 **And** `npm run db:push` applies schema to Supabase database
@@ -202,56 +143,6 @@ tests/
 - Define proper foreign key relationships with `references()`
 - Add indexes on frequently queried columns (user_id, session_id)
 - Use `timestamp` with `defaultNow()` for created_at fields
-
----
-
-### Story 1.4: shadcn/ui Installation & Design System Setup
-
-**As a** developer,
-**I want** shadcn/ui installed with the "Hybrid" theme configured,
-**So that** all UI components follow the design system consistently.
-
-**Acceptance Criteria:**
-
-**Given** the project has Tailwind CSS v4
-**When** shadcn/ui is installed
-**Then** `components.json` is configured with:
-
-- Style: "new-york"
-- Base color: custom (Midnight Blue)
-- CSS variables: enabled
-- Tailwind config integrated
-
-**And** `globals.css` contains the complete color system:
-
-```css
-:root {
-  --primary: 236 72% 79%; /* Indigo #6366F1 */
-  --background: 222 47% 8%; /* Midnight Blue #0B1120 */
-  --accent: 168 76% 50%; /* Electric Teal #2DD4BF */
-  --destructive: 0 72% 51%; /* Red #DC2626 */
-  --warning: 38 92% 50%; /* Amber #D97706 */
-  --success: 160 84% 39%; /* Emerald #059669 */
-}
-```
-
-**And** base shadcn/ui components are installed:
-
-- Button, Input, Label, Card
-- Dialog, Sheet, Dropdown
-- Toast (Sonner), Skeleton
-- Form (react-hook-form + zod integration)
-
-**And** `components/lib/utils.ts` exports `cn()` helper for class merging
-
-**Prerequisites:** Story 1.1
-
-**Technical Notes:**
-
-- Use `npx shadcn@latest init` with custom configuration
-- Install Sonner for toast notifications (better than default)
-- Configure Inter font in `layout.tsx`
-- Add JetBrains Mono for monospace elements
 
 ---
 
@@ -283,7 +174,7 @@ tests/
 **And** the bottom tab bar on mobile includes: [Chat] | [Results] | [Saved] | [Profile]
 **And** loading states use Skeleton components
 
-**Prerequisites:** Story 1.4
+**Prerequisites:** Story 1.2
 
 **Technical Notes:**
 
@@ -320,7 +211,7 @@ tests/
 **And** stores are properly typed with TypeScript
 **And** a `useHydration` hook exists to handle SSR hydration mismatch
 
-**Prerequisites:** Story 1.1
+**Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
 
@@ -404,7 +295,7 @@ type ActionResponse<T> =
 **And** Vercel project is linked with environment variables configured
 **And** Preview deployments work for pull requests
 
-**Prerequisites:** Story 1.1
+**Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
 
@@ -448,7 +339,7 @@ type ActionResponse<T> =
 
 **And** a sample test exists verifying the setup works
 
-**Prerequisites:** Story 1.1
+**Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
 
@@ -463,10 +354,10 @@ type ActionResponse<T> =
 
 This epic establishes all foundational infrastructure. Upon completion:
 
-- ✅ Next.js 16 + TypeScript configured
+- ✅ Next.js 16 + TypeScript configured _(completed in scaffold)_
 - ✅ Supabase auth + database integrated
 - ✅ Drizzle schema with all tables
-- ✅ shadcn/ui with "Hybrid" theme
+- ✅ shadcn/ui with "Hybrid" theme _(completed in scaffold)_
 - ✅ Studio layout pattern implemented
 - ✅ Zustand state management ready
 - ✅ Server actions structure defined
@@ -520,7 +411,7 @@ This epic establishes all foundational infrastructure. Upon completion:
 **And** the form is accessible: proper labels, ARIA attributes, keyboard navigation
 **And** mobile: form is full-width with 44x44px touch targets
 
-**Prerequisites:** Story 1.2, Story 1.4
+**Prerequisites:** Story 1.2
 
 **Technical Notes:**
 
@@ -1963,11 +1854,11 @@ This epic delivers the complete monetization engine. Upon completion:
 
 | Epic                                     | Stories        | FRs Covered            | Status       |
 | ---------------------------------------- | -------------- | ---------------------- | ------------ |
-| Epic 1: Foundation & Infrastructure      | 9              | Infrastructure for all | ✅           |
+| Epic 1: Foundation & Infrastructure      | 7              | Infrastructure for all | ✅           |
 | Epic 2: User Authentication & Onboarding | 9              | FR1, FR2               | ✅           |
 | Epic 3: Core Naming Experience           | 10             | FR4-FR9, FR14, FR15    | ✅           |
 | Epic 4: Monetization & Conversion        | 8              | FR3, FR10-FR13         | ✅           |
-| **TOTAL**                                | **36 stories** | **15 FRs**             | **Complete** |
+| **TOTAL**                                | **34 stories** | **15 FRs**             | **Complete** |
 
 ---
 
