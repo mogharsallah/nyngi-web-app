@@ -1,9 +1,10 @@
 # Name Your Next Great Idea - Epic Breakdown
 
 **Author:** MG
-**Date:** 2 December 2025
+**Date:** 4 December 2025
 **Project Level:** Web Application (LegalTech)
 **Target Scale:** MVP → Growth
+**Last Updated:** Architecture alignment update (2025-12-04)
 
 ---
 
@@ -11,16 +12,16 @@
 
 This document provides the complete epic and story breakdown for "Name Your Next Great Idea," decomposing the requirements from the [PRD](./prd.md) into implementable stories.
 
-**Living Document Notice:** This is the initial version incorporating PRD, UX Design, and Architecture context. Stories include interaction patterns, technical decisions, and detailed acceptance criteria.
+**Living Document Notice:** This version incorporates full context from PRD, UX Design, and the **updated Architecture document (2025-12-04)**. Stories include interaction patterns, technical decisions with verified dependency versions, Signa.so trademark API integration, and detailed acceptance criteria.
 
 ### Epic Summary
 
-| Epic  | Title                            | Goal                                                       | FRs Covered                              |
-| ----- | -------------------------------- | ---------------------------------------------------------- | ---------------------------------------- |
-| **1** | Foundation & Infrastructure      | Project setup, DB schema, auth config, deployment pipeline | Infrastructure for all FRs               |
-| **2** | User Authentication & Onboarding | Users can register, log in, and complete segmentation      | FR1, FR2                                 |
-| **3** | Core Naming Experience           | Users generate names and see real-time Traffic Light risk  | FR4, FR5, FR6, FR7, FR8, FR9, FR14, FR15 |
-| **4** | Monetization & Conversion        | Purchase reports, affiliates, legal leads, order history   | FR3, FR10, FR11, FR12, FR13              |
+| Epic  | Title                            | Goal                                                         | FRs Covered                              |
+| ----- | -------------------------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| **1** | Foundation & Infrastructure      | Project setup, DB schema, auth config, deployment pipeline   | Infrastructure for all FRs               |
+| **2** | User Authentication & Onboarding | Users can register, log in, and complete segmentation        | FR1, FR2                                 |
+| **3** | Core Naming Experience           | Users generate names and see real-time Traffic Light risk    | FR4, FR5, FR6, FR7, FR8, FR9, FR14, FR15 |
+| **4** | Monetization & Conversion        | Purchase reports, affiliates, legal referrals, order history | FR3, FR10, FR11, FR12, FR13              |
 
 ---
 
@@ -40,7 +41,7 @@ This document provides the complete epic and story breakdown for "Name Your Next
 | FR10  | Users can purchase a "De-Risking Report" for "Amber" or "Green" names                       |
 | FR11  | System generates and delivers a PDF De-Risking Report upon purchase                         |
 | FR12  | System presents "Launch Readiness Checklist" with affiliate hosting links for "Green" names |
-| FR13  | System presents a "Legal Consultation" lead form for "Red" names                            |
+| FR13  | System presents a "Legal Referral" CTA link for "Red" names                                 |
 | FR14  | Users can save favorite names to a list                                                     |
 | FR15  | System stores generated names and risk statuses associated with the user account            |
 
@@ -53,7 +54,7 @@ This document provides the complete epic and story breakdown for "Name Your Next
 | Epic 1 | —                                        | Enables all FRs (DB schema, Supabase auth config, API structure, deployment)             |
 | Epic 2 | FR1, FR2                                 | Account creation, email/social login, segmentation prompt                                |
 | Epic 3 | FR4, FR5, FR6, FR7, FR8, FR9, FR14, FR15 | Chat interface, LLM generation, refinement, IP checks, Traffic Light, favorites, storage |
-| Epic 4 | FR3, FR10, FR11, FR12, FR13              | Order history, Polar.sh payment, React-PDF reports, affiliate links, legal lead form     |
+| Epic 4 | FR3, FR10, FR11, FR12, FR13              | Order history, Polar.sh payment, React-PDF reports, affiliate links, legal referral CTA  |
 
 ---
 
@@ -64,42 +65,6 @@ This document provides the complete epic and story breakdown for "Name Your Next
 **User Value:** While this epic doesn't deliver direct user features, it creates the infrastructure that makes all user-facing functionality possible. Without this foundation, no user can register, generate names, or purchase reports.
 
 **FRs Enabled:** Infrastructure for ALL FRs (FR1-FR15)
-
----
-
-### Story 1.2: Supabase Integration & Environment Configuration
-
-**As a** developer,
-**I want** Supabase configured for both client and server-side access,
-**So that** authentication and database operations work across the entire application.
-
-**Acceptance Criteria:**
-
-**Given** a Supabase project exists
-**When** the integration is configured
-**Then** the following files exist and function correctly:
-
-- `components/lib/supabase/client.ts` - Browser client singleton (Already done)
-- `server/lib/supabase/server.ts` - Server client with cookie handling (Already done)
-- `server/lib/supabase/middleware.ts` - Auth session refresh middleware (Already done)
-
-**And** environment variables are defined:
-
-- `NEXT_PUBLIC_SUPABASE_URL` (Already done)
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Already done)
-- `SUPABASE_SERVICE_ROLE_KEY` (server-only) (Already done)
-- `DATABASE_URL` (for Drizzle direct connection) (Already done)
-
-**And** middleware refreshes auth sessions on every request
-**And** server actions can access authenticated user via `getUser()`
-
-**Prerequisites:** None (scaffold complete)
-
-**Technical Notes:**
-
-- Use `@supabase/ssr` package for SSR-compatible auth (Already done)
-- Middleware must be in `middleware.ts` at project root (Already done)
-- Never expose `SUPABASE_SERVICE_ROLE_KEY` to client
 
 ---
 
@@ -139,10 +104,12 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 **Technical Notes:**
 
-- Use `pgTable` from `drizzle-orm/pg-core`
+- Use `pgTable` from `drizzle-orm/pg-core` (Drizzle ORM v0.44.7)
 - Define proper foreign key relationships with `references()`
 - Add indexes on frequently queried columns (user_id, session_id)
 - Use `timestamp` with `defaultNow()` for created_at fields
+- All tables must have RLS policies (see Architecture Security section)
+- Per ADR-001: Drizzle chosen over Prisma for stricter type safety
 
 ---
 
@@ -159,7 +126,6 @@ This document provides the complete epic and story breakdown for "Name Your Next
 **Then** `app/layout.tsx` includes:
 
 - `<html>` with proper lang attribute
-- Inter font loaded via `next/font`
 - Global providers wrapper (Theme, Auth, Toast)
 - Metadata with SEO defaults
 
@@ -169,9 +135,10 @@ This document provides the complete epic and story breakdown for "Name Your Next
 - Tablet (768-1024px): 35% / 65% split
 - Mobile (<768px): Bottom tab navigation with view switching
 
-**And** `app/(auth)/layout.tsx` exists for unauthenticated routes
-**And** `app/(app)/layout.tsx` exists for protected routes
-**And** the bottom tab bar on mobile includes: [Chat] | [Results] | [Saved] | [Profile]
+**And** `app/auth/layout.tsx` exists for unauthenticated routes
+**And** `app/studio/layout.tsx` exists for studio routes
+**And** `app/reports/layout.tsx` exists for reports routes
+**And** `app/orders/layout.tsx` exists for orders routes
 **And** loading states use Skeleton components
 
 **Prerequisites:** Story 1.2
@@ -215,10 +182,12 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 **Technical Notes:**
 
-- Use `create` from `zustand` with TypeScript generics
+- Use `create` from `zustand` (v5.0.9) with TypeScript generics
 - Implement `persist` middleware with partialize to exclude sensitive data
 - Create `useHydration` hook using `useSyncExternalStore`
 - Export typed selectors for common access patterns
+- Stores support the "Trojan Horse" segmentation pattern (see Architecture Pattern 1)
+- Session restoration on auth refresh reads from `user_profiles.segment`
 
 ---
 
@@ -243,17 +212,27 @@ This document provides the complete epic and story breakdown for "Name Your Next
 ```typescript
 type ActionResponse<T> =
   | { success: true; data: T }
-  | { success: false; error: string; code?: string };
+  | { success: false; error: string; code?: ErrorCode };
+
+type ErrorCode =
+  | "AUTH_REQUIRED" // User not authenticated
+  | "FORBIDDEN" // User lacks permission
+  | "VALIDATION_ERROR" // Invalid input (Zod)
+  | "NOT_FOUND" // Resource doesn't exist
+  | "CONFLICT" // Duplicate or state conflict
+  | "EXTERNAL_ERROR" // Third-party API failure
+  | "INTERNAL_ERROR"; // Unexpected server error
 ```
 
 **And** `server/services/` contains business logic:
 
-- `trademark.ts` - External API integration (placeholder)
-- `risk-engine.ts` - Risk calculation logic (placeholder)
-- `report-generator.ts` - PDF generation (placeholder)
+- `trademark.ts` - Signa.so API integration with LRU cache (5-min TTL)
+- `risk-engine.ts` - Risk calculation logic from Signa.so responses
+- `report-generator.ts` - React-PDF v4.3.x generation
 
-**And** all actions validate input using Zod schemas
+**And** all actions validate input using Zod schemas (v4.1.13)
 **And** all actions check authentication before processing
+**And** all actions log via Pino (v10.1.0) with structured logging pattern
 
 **Prerequisites:** Story 1.2, Story 1.3
 
@@ -262,7 +241,8 @@ type ActionResponse<T> =
 - Use `'use server'` directive at file top
 - Import `createClient` from server Supabase client
 - Wrap all DB operations in try/catch with proper error responses
-- Log errors using pino logger
+- Log errors using pino logger with: `{ action, userId, duration }` pattern
+- Per ADR-003: Server Actions are ONLY approved API pattern (no REST/tRPC/GraphQL)
 
 ---
 
@@ -285,13 +265,30 @@ type ActionResponse<T> =
 **And** GitHub Actions workflow `.github/workflows/ci.yml` includes:
 
 - Trigger on push to main and pull requests
-- Node.js setup with caching
+- Node.js 20.x setup with caching
 - Install dependencies: `npm ci`
 - Type check: `npm run type-check`
 - Lint: `npm run lint`
+- Unit tests: `npm run test`
 - Build verification: `npm run build`
+- E2E tests job (after unit tests pass): `npm run test:e2e`
 
-**And** environment variables are documented in `README.md`
+**And** environment variables are documented in `README.md`:
+
+| Variable                        | Required | Description                        |
+| ------------------------------- | -------- | ---------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Yes      | Supabase project URL               |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes      | Supabase anonymous key             |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Yes      | Supabase service key (server only) |
+| `DATABASE_URL`                  | Yes      | Postgres connection string         |
+| `SENTRY_DSN`                    | Yes      | Sentry project DSN                 |
+| `SENTRY_AUTH_TOKEN`             | Yes      | Sentry release upload token        |
+| `GOOGLE_GENERATIVE_AI_API_KEY`  | Yes      | Gemini API key                     |
+| `SIGNA_API_KEY`                 | Yes      | Signa.so API key                   |
+| `POLAR_ACCESS_TOKEN`            | Yes      | Polar.sh API token                 |
+| `POLAR_WEBHOOK_SECRET`          | Yes      | Polar webhook signature secret     |
+| `POLAR_ORGANIZATION_ID`         | Yes      | Polar organization ID              |
+
 **And** Vercel project is linked with environment variables configured
 **And** Preview deployments work for pull requests
 
@@ -303,6 +300,8 @@ type ActionResponse<T> =
 - Add `type-check` script: `tsc --noEmit`
 - Configure branch protection requiring CI pass
 - Set up Vercel environment variable groups (Production, Preview, Development)
+- Vercel region: `iad1` (US East) per Architecture deployment config
+- Background jobs handled by Supabase Cron (see Story 1.10)
 
 ---
 
@@ -337,7 +336,21 @@ type ActionResponse<T> =
 - `npm run test:e2e` - Run Playwright tests
 - `npm run test:coverage` - Coverage report
 
+**And** minimum coverage requirements (per Architecture):
+
+| Layer              | Target         | Rationale                          |
+| ------------------ | -------------- | ---------------------------------- |
+| **Services**       | 80%            | Business logic must be well-tested |
+| **Server Actions** | 70%            | Input validation and auth flows    |
+| **Components**     | 50%            | Interactive components only        |
+| **E2E**            | Critical paths | Auth, naming, checkout flows       |
+
 **And** a sample test exists verifying the setup works
+**And** test organization mirrors source structure:
+
+- `tests/unit/` - Vitest unit tests (services, stores)
+- `tests/integration/` - Server Actions with mocked DB
+- `tests/e2e/` - Playwright critical user flows
 
 **Prerequisites:** None (scaffold complete)
 
@@ -347,6 +360,94 @@ type ActionResponse<T> =
 - Configure `webServer` in Playwright to auto-start dev server
 - Add `tests/` to `.gitignore` for coverage output
 - Create `tests/setup.ts` for global test configuration
+- Vitest v3.2.x with jsdom environment
+- Playwright v1.52.x with Chromium, Firefox, WebKit
+
+---
+
+### Story 1.10: Background Job Infrastructure (Supabase Cron)
+
+**As a** developer,
+**I want** scheduled background jobs using Supabase pg_cron,
+**So that** long-running tasks like PDF generation and session cleanup run reliably.
+
+**Acceptance Criteria:**
+
+**Given** the database is configured
+**When** background job infrastructure is set up
+**Then** the following extensions are enabled:
+
+- `pg_cron` - PostgreSQL job scheduler
+- `pg_net` - Asynchronous HTTP requests from Postgres
+
+**And** Vault secrets are configured for secure API calls:
+
+```sql
+-- Store project URL and service role key in Vault
+SELECT vault.create_secret(
+  'https://[project-ref].supabase.co',
+  'project_url'
+);
+SELECT vault.create_secret(
+  '[service-role-key]',
+  'service_role_key'
+);
+```
+
+**And** the following cron jobs are scheduled:
+
+| Job Name              | Schedule      | Description                              |
+| --------------------- | ------------- | ---------------------------------------- |
+| `session-cleanup`     | `0 0 * * *`   | Daily cleanup of expired naming sessions |
+| `pdf-queue-processor` | `*/5 * * * *` | Every 5 min: process pending PDF reports |
+
+**And** cron jobs invoke Edge Functions via `pg_net`:
+
+```sql
+-- Example: Session cleanup job
+SELECT cron.schedule(
+  'session-cleanup',
+  '0 0 * * *',
+  $$
+  SELECT net.http_post(
+    url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'project_url') || '/functions/v1/cleanup-sessions',
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key'),
+      'Content-Type', 'application/json'
+    ),
+    body := '{}'::jsonb
+  );
+  $$
+);
+```
+
+**And** Edge Functions exist for background processing:
+
+- `supabase/functions/cleanup-sessions/index.ts` - Delete sessions older than 30 days
+- `supabase/functions/process-pdf-queue/index.ts` - Generate pending PDF reports
+
+**And** job monitoring is available:
+
+- Jobs visible in `cron.job` table
+- Run history in `cron.job_run_details`
+- Failed jobs logged to Sentry via Edge Function error handling
+
+**And** documentation includes:
+
+- How to add/modify cron jobs via migrations
+- How to test Edge Functions locally
+- Monitoring and debugging job failures
+
+**Prerequisites:** Story 1.2, Story 1.3
+
+**Technical Notes:**
+
+- Enable extensions via Supabase Dashboard or migration
+- Use `cron.unschedule('job-name')` to remove jobs
+- Edge Functions deployed via `supabase functions deploy`
+- Max 8 concurrent cron jobs recommended
+- Jobs timeout after 10 minutes (Supabase limit)
+- Per ADR: Supabase Cron (pg_cron + pg_net) chosen over Vercel Cron for tighter integration
 
 ---
 
@@ -354,15 +455,17 @@ type ActionResponse<T> =
 
 This epic establishes all foundational infrastructure. Upon completion:
 
-- ✅ Next.js 16 + TypeScript configured _(completed in scaffold)_
-- ✅ Supabase auth + database integrated
-- ✅ Drizzle schema with all tables
+- ✅ Next.js 15.1.0 + TypeScript configured _(completed in scaffold)_
+- ✅ Supabase auth (v2.49.1) + database integrated
+- ✅ Drizzle ORM (v0.44.7) schema with all tables
 - ✅ shadcn/ui with "Hybrid" theme _(completed in scaffold)_
 - ✅ Studio layout pattern implemented
-- ✅ Zustand state management ready
-- ✅ Server actions structure defined
-- ✅ CI/CD pipeline active
-- ✅ Testing infrastructure ready
+- ✅ Zustand (v5.0.9) state management ready
+- ✅ Server actions structure with ActionResponse pattern
+- ✅ CI/CD pipeline active with E2E tests
+- ✅ Testing infrastructure (Vitest + Playwright) ready
+- ✅ Pino (v10.1.0) + Sentry (v10.28.0) observability configured
+- ✅ Supabase Cron (pg_cron + pg_net) background job infrastructure
 
 **Ready for:** Epic 2 - User Authentication & Onboarding
 
@@ -416,11 +519,12 @@ This epic establishes all foundational infrastructure. Upon completion:
 **Technical Notes:**
 
 - Use `server/actions/auth.ts` → `signUp()` action
-- Validate with Zod schema before Supabase call
+- Validate with Zod schema (v4.1.13) before Supabase call
 - Store initial `user_profiles` row with `segment: null`
 - Use Supabase email templates for verification
 - Form built with shadcn/ui Form + react-hook-form
 - **Magic link uses `supabase.auth.signInWithOtp({ email })`** - passwordless flow ideal for "Lean Entrepreneur" users who prioritize speed
+- Supabase Auth via `@supabase/ssr` (v0.7.0) for SSR cookie handling
 
 ---
 
@@ -529,8 +633,6 @@ This epic establishes all foundational infrastructure. Upon completion:
 **And** on failed login:
 
 - Inline error: "Invalid email or password"
-- Rate limited: 5 attempts per hour per IP
-- After 5 failures: "Too many attempts. Try again in 1 hour."
 
 **And** the page includes:
 
@@ -680,10 +782,11 @@ This epic establishes all foundational infrastructure. Upon completion:
 **Technical Notes:**
 
 - Implement in `middleware.ts` at project root
-- Use `@supabase/ssr` to read session from cookies
+- Use `@supabase/ssr` (v0.7.0) to read session from cookies
 - Check `user_profiles.segment` via server action or cached in JWT claims
 - Consider adding segment to JWT custom claims for faster middleware checks
 - Matcher config: exclude static files, images, favicon
+- Middleware uses `createServerClient` pattern from Architecture Security section
 
 ---
 
@@ -855,12 +958,13 @@ This epic delivers complete authentication and user segmentation. Upon completio
 **Technical Notes:**
 
 - Component: `components/features/naming/chat-interface.tsx`
-- Use Vercel AI SDK `useChat()` hook for streaming
+- Use Vercel AI SDK (v5.0.102) `useChat()` hook for streaming
 - Connect to `server/actions/naming.ts` → `generateResponse()`
 - System prompt varies by `sessionStore.userType`
 - Store conversation in `naming_sessions.criteria` as JSONB
-- Use `@ai-sdk/google` for Gemini integration per Architecture
+- Use `@ai-sdk/google` (v2.0.43) with `google('gemini-2.5-flash')` model per Architecture
 - **AI personality guidelines embedded in system prompt**
+- Streaming uses `createStreamableValue` pattern from Architecture Pattern 3
 
 ---
 
@@ -970,13 +1074,14 @@ This epic delivers complete authentication and user segmentation. Upon completio
 
 **Technical Notes:**
 
-- Use Gemini via AI SDK for generation
+- Use Gemini via AI SDK: `google('gemini-2.5-flash')` for fast generation
 - System prompt includes style guidelines for "Elevated Creative"
 - **System prompt includes industry-specific name examples** when industry is known (e.g., Tech names differ from Fashion names)
 - Segment influences style: Lean → catchier/shorter, High-Stakes → more substantial
 - Server action: `server/actions/naming.ts` → `generateNames()`
-- Batch insert to `generated_names` table via Drizzle
+- Batch insert to `generated_names` table via Drizzle (v0.44.7)
 - Return names with IDs for subsequent risk checking
+- Max tokens: 2000 per Architecture AI SDK configuration
 
 ---
 
@@ -1137,11 +1242,38 @@ This epic delivers complete authentication and user segmentation. Upon completio
 **Technical Notes:**
 
 - Service: `server/services/trademark.ts`
-- Integration: Trademarkia API or USPTO TESS (depends on availability)
-- Store results: `risk_checks` table with `factors` JSONB
-- Use background job or server action with streaming updates
-- Risk engine: `server/services/risk-engine.ts` calculates score from API response
-- Consider industry → trademark class mapping (Nice Classification)
+- Integration: **Signa.so API** (per ADR-005)
+  - Base URL: `https://api.signa.so/v1`
+  - Auth: Bearer token via `SIGNA_API_KEY`
+  - Rate Limits: 100 requests/minute
+
+**Signa.so Endpoints:**
+
+| Endpoint              | Method | Purpose                                         | Credits | Latency   |
+| --------------------- | ------ | ----------------------------------------------- | ------- | --------- |
+| `/search`             | GET    | Text search across 147M+ trademarks             | 1       | 200-400ms |
+| `/analysis/check`     | POST   | Quick conflict detection                        | 2       | 300-800ms |
+| `/analysis/clearance` | POST   | AI-powered risk scoring (CLEAR/LOW/MEDIUM/HIGH) | 5       | 1-3s      |
+
+**Risk Mapping:**
+
+- Signa `CLEAR` → Green
+- Signa `LOW`/`MEDIUM` → Amber
+- Signa `HIGH` → Red
+
+**Caching (per Architecture):**
+
+```typescript
+import { LRUCache } from "lru-cache";
+const cache = new LRUCache<string, RiskResult>({
+  max: 500,
+  ttl: 1000 * 60 * 5, // 5 minutes
+});
+```
+
+- Store results: `risk_checks` table with `factors` JSONB containing Signa response
+- Risk engine: `server/services/risk-engine.ts` maps Signa score to Traffic Light
+- Implement exponential backoff for rate limit handling
 
 ---
 
@@ -1381,9 +1513,9 @@ This epic delivers the complete core naming experience. Upon completion:
 
 ## Epic 4: Monetization & Conversion
 
-**Goal:** Implement the complete revenue engine—De-Risking Report purchases via Polar.sh, PDF report generation, affiliate hosting links in the Launch Readiness Checklist, legal consultation lead forms, and order history tracking.
+**Goal:** Implement the complete revenue engine—De-Risking Report purchases via Polar.sh, PDF report generation, affiliate hosting links in the Launch Readiness Checklist, legal referral CTAs, and order history tracking.
 
-**User Value:** After this epic, users can purchase professional De-Risking Reports for Amber names ($7.99), receive PDF downloads, access affiliate hosting links for Green names, and connect with attorneys for Red names. The "Trojan Horse" monetization model is fully operational.
+**User Value:** After this epic, users can purchase professional De-Risking Reports for Amber names ($7.99), receive PDF downloads, access affiliate hosting links for Green names, and find attorney referrals for Red names. The "Trojan Horse" monetization model is fully operational.
 
 **FRs Covered:** FR3, FR10, FR11, FR12, FR13
 
@@ -1427,11 +1559,13 @@ This epic delivers the complete core naming experience. Upon completion:
 
 **Technical Notes:**
 
-- Use `@polar-sh/sdk` npm package
-- Polar.sh is Merchant of Record = handles VAT/sales tax
+- Use `@polar-sh/sdk` (v0.48.x) npm package
+- Polar.sh is Merchant of Record = handles VAT/sales tax (per ADR-002)
 - Webhook runs on Node runtime (not Edge - needs DB access)
 - Store `polar_checkout_id` for reconciliation
 - Test with Polar sandbox before production
+- Webhook signature validation via `@polar-sh/sdk/webhooks`
+- Implement idempotency via `polar_order_id` unique constraint (per Architecture)
 
 ---
 
@@ -1545,12 +1679,22 @@ This epic delivers the complete core naming experience. Upon completion:
 
 **Technical Notes:**
 
-- Use `@react-pdf/renderer` for PDF generation
+- Use `@react-pdf/renderer` (v4.3.x) for PDF generation
 - Component: `server/services/report-generator.ts`
 - PDF template: `components/features/reports/report-template.tsx`
 - Upload to Supabase Storage: `reports/{user_id}/{order_id}.pdf`
-- Consider async job queue if generation takes >10s
-- Cache risk data at purchase time (don't re-fetch)
+- **Background job pattern for PDF generation >10s** (per Architecture):
+  ```typescript
+  // server/jobs/pdf-generation.ts
+  export async function generateReportAsync(orderId: string) {
+    await updateOrderStatus(orderId, "processing");
+    const pdfBuffer = await generatePdfReport(orderId);
+    await supabase.storage.from("reports").upload(`${orderId}.pdf`, pdfBuffer);
+    await updateOrderStatus(orderId, "completed");
+  }
+  ```
+- Cache risk data at purchase time (don't re-fetch from Signa.so)
+- Date formatting via Dayjs (v1.11.13) per Architecture
 
 ---
 
@@ -1595,7 +1739,7 @@ This epic delivers the complete core naming experience. Upon completion:
 
 **Technical Notes:**
 
-- Page: `app/(app)/reports/[orderId]/page.tsx`
+- Page: `app/app/reports/[orderId]/page.tsx`
 - Fetch from `reports` table joined with `orders`
 - PDF preview: use `<iframe>` or react-pdf viewer
 - Signed URL for download (Supabase Storage)
@@ -1655,57 +1799,55 @@ This epic delivers the complete core naming experience. Upon completion:
 
 ---
 
-### Story 4.6: Legal Consultation Lead Form (Red Names)
+### Story 4.6: Legal Referral CTA (Red Names)
 
 **As a** user with a Red name I love,
-**I want** to connect with an attorney,
+**I want** to see a referral link to a trademark attorney,
 **So that** I can get professional advice on whether to proceed.
 
 **Acceptance Criteria:**
 
-**Given** I click on a Red name or see "Consult an Attorney" CTA
-**When** the lead form modal opens
+**Given** I click on a Red name or see the legal consultation CTA
+**When** the referral section displays
 **Then** I see:
 
 - Headline: "Get Expert Legal Advice"
-- Subtext: "This name has significant conflicts. A trademark attorney can help you understand your options."
-- Form fields:
-  - Name (pre-filled from profile)
-  - Email (pre-filled from profile)
-  - Phone (optional)
-  - Brief description: "Tell us about your business" (textarea)
-  - Preferred contact method: Email / Phone
-- "Request Consultation" submit button
-- Privacy note: "Your information will be shared with our legal partners"
+- Subtext: "This name has significant trademark conflicts. We recommend consulting an attorney before proceeding."
+- **Referral CTA button**: "Find a Trademark Attorney"
+- The button links to a location-appropriate legal partner
 
-**And** on submit:
+**And** the referral link is determined by:
 
-- Lead stored in `legal_leads` table:
-  - user_id, name_id, contact_info, message, created_at
-- Email sent to configured legal partner(s)
-- Email sent to user: "Thanks! An attorney will contact you within 24-48 hours"
-- Success message: "Request submitted! Check your email."
+- User's detected location (via IP geolocation or browser locale)
+- Domain/region mapping (e.g., .com → US attorneys, .co.uk → UK attorneys)
+- Fallback to generic international directory if location unknown
 
-**And** lead tracking:
+**And** the referral links:
 
-- Status: 'new' → 'contacted' → 'converted' (updated by admin/partner)
-- Dashboard shows: "Consultation requested on [date]" for that name
+- Open in new tab
+- Include tracking parameters for analytics
+- List of legal partners will be configured in environment variables (provided later)
 
-**And** form validation:
+**And** the section includes:
 
-- Email required and valid
-- Message minimum 20 characters
-- Rate limit: 3 requests per user per day
+- Disclaimer: "This is not legal advice. We receive referral fees from partner attorneys."
+- The name's risk factors summary (from Analysis Card)
+
+**And** design:
+
+- Prominent but not pushy
+- Uses Warning/Red visual styling consistent with risk indicators
+- Mobile: full-width CTA button
 
 **Prerequisites:** Story 3.7
 
 **Technical Notes:**
 
-- Component: `components/features/legal/consultation-form.tsx`
-- Server action: `server/actions/legal.ts` → `submitLeadForm()`
-- Email to partner: use Resend or Supabase email
-- Consider Calendly integration for direct booking (post-MVP)
-- Legal partner email configurable in environment
+- Component: `components/features/legal/legal-referral.tsx`
+- Referral links config: `lib/config/legal-partners.ts` (populated later)
+- Geolocation: use `navigator.language` or IP lookup service
+- Track referral clicks via analytics (PostHog or similar)
+- No database table needed - stateless referral link pattern
 
 ---
 
@@ -1753,7 +1895,7 @@ This epic delivers the complete core naming experience. Upon completion:
 
 **Technical Notes:**
 
-- Page: `app/(app)/orders/page.tsx`
+- Page: `app/app/orders/page.tsx`
 - Server action: `server/actions/orders.ts` → `getOrderHistory()`
 - Query `orders` table with user_id, join `reports` and `generated_names`
 - Link to Polar receipt via `polar_order_id`
@@ -1818,7 +1960,7 @@ This epic delivers the complete monetization engine. Upon completion:
 - ✅ Professional PDF report generation with React-PDF
 - ✅ Report viewing and download
 - ✅ Launch Readiness Checklist with affiliate links (Green path)
-- ✅ Legal consultation lead form (Red path)
+- ✅ Legal referral CTA (Red path)
 - ✅ Order history page
 - ✅ Email notifications for purchase lifecycle
 
@@ -1842,7 +1984,7 @@ This epic delivers the complete monetization engine. Upon completion:
 | FR10 | Users can purchase De-Risking Report for Amber/Green names      | Epic 4 | 4.1, 4.2                |
 | FR11 | System generates and delivers PDF De-Risking Report             | Epic 4 | 4.3, 4.4, 4.8           |
 | FR12 | System presents Launch Readiness Checklist with affiliate links | Epic 4 | 4.5                     |
-| FR13 | System presents Legal Consultation lead form for Red names      | Epic 4 | 4.6                     |
+| FR13 | System presents Legal Referral CTA link for Red names           | Epic 4 | 4.6                     |
 | FR14 | Users can save favorite names to a list                         | Epic 3 | 3.8                     |
 | FR15 | System stores generated names and risk statuses with user       | Epic 3 | 3.9, 3.10               |
 
@@ -1862,6 +2004,36 @@ This epic delivers the complete monetization engine. Upon completion:
 
 ---
 
+## Architecture Alignment
+
+This document incorporates technical decisions from the Architecture document (2025-12-04):
+
+| ADR     | Decision                             | Impact on Epics                            |
+| ------- | ------------------------------------ | ------------------------------------------ |
+| ADR-001 | Drizzle ORM over Prisma              | Epic 1 (Story 1.3): Type-safe schema       |
+| ADR-002 | Polar.sh as Payment Provider         | Epic 4 (Stories 4.1-4.4): MoR checkout     |
+| ADR-003 | Server Actions as Primary API        | All Epics: ActionResponse pattern          |
+| ADR-004 | Vercel AI SDK for LLM                | Epic 3 (Stories 3.1-3.4): Gemini streaming |
+| ADR-005 | Signa.so for Trademark API           | Epic 3 (Stories 3.5-3.7): Risk checks      |
+| ADR-006 | Pino + Sentry for Observability      | Epic 1 (Story 1.7): Logging setup          |
+| ADR-007 | Feature-Based Component Organization | All Epics: Component structure             |
+
+**Key Dependency Versions (verified 2025-12-04):**
+
+- Next.js: 15.1.0
+- Drizzle ORM: 0.44.7
+- Supabase: 2.49.1 (@supabase/ssr 0.7.0)
+- Zustand: 5.0.9
+- Vercel AI SDK: 5.0.102
+- @ai-sdk/google: 2.0.43
+- Pino: 10.1.0
+- Sentry: 10.28.0
+- Zod: 4.1.13
+
+---
+
 _For implementation: Use the `create-story` workflow to generate individual story implementation plans from this epic breakdown._
 
-_This document incorporates context from PRD, UX Design Specification, and Architecture documents. Ready for Phase 4: Sprint Planning._
+_This document incorporates context from PRD, UX Design Specification, and Architecture documents (updated 2025-12-04). Ready for Phase 4: Sprint Planning._
+
+_Architecture alignment update completed: 4 December 2025_

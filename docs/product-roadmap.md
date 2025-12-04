@@ -129,8 +129,8 @@ These features are strictly derived from the methodology outlined by Brad Flower
 
 #### **D3. Integrated Legal Filing Pathway**
 
-- **Description:** A specific user flow for "Red Light" names that routes the user to a "Free Legal Consultation" form.
-- **Rationale:** This monetizes high-risk users by selling the lead to attorneys. Exclusive legal leads can command $150-$300, turning a "failed" name generation into a high-value revenue event.6
+- **Description:** A specific user flow for "Red Light" names that routes the user to a legal referral CTA link.
+- **Rationale:** This monetizes high-risk users by referring them to partner attorneys. Legal referrals can command $150-$300, turning a "failed" name generation into a high-value revenue event.6
 - **Compliance:** Operates on a strict Pay-Per-Lead (PPL) model to avoid unethical fee-splitting.15
 
 #### **D4. Brand Watch Subscription**
@@ -357,7 +357,7 @@ The following backlog organizes all identified features by priority and developm
 | **C1** | **Traffic Light Risk System**  | Visual Red/Amber/Green indicators on name cards.           | "As a user, I want to know instantly if a name is safe."     | **Conversion Trigger**             |
 | **D1** | **$7.99 Report Gateway**       | Payment processing & PDF generation.                       | "As a user, I want proof of safety to show my partners."     | **Liquidation ($8)**               |
 | **B1** | **Narrative Architect (Lite)** | Chat UI for inputting Industry, Tone, and Constraints.     | "As a user, I want an expert to guide my brainstorming."     | Retention/Quality                  |
-| **D3** | **Legal Lead Pathway**         | Form to request attorney consult for "Red" names.          | "As a founder, I need to resolve this trademark conflict."   | **Margin Driver ($150 CPA)**       |
+| **D3** | **Legal Lead Pathway**         | Referral CTA to attorney consult for "Red" names.          | "As a founder, I need to resolve this trademark conflict."   | **Margin Driver ($150 CPA)**       |
 | **A1** | **Tone Matrix**                | Input selection for Brand Personality.                     | "As a user, I want names that sound like 'Me'."              | Quality                            |
 | **A3** | **Meaning Slider**             | Toggle between Descriptive and Abstract.                   | "As a user, I want a name that is legally protectable."      | Quality/Legal                      |
 

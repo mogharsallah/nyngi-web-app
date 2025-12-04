@@ -148,7 +148,7 @@ This section shapes all functional and non-functional requirements below.
 
 **Risk Assessment (Validation):** 7. FR7: System performs preliminary IP checks on generated names against trademark databases. 8. FR8: System displays a "Traffic Light" risk indicator (Green/Amber/Red) for each name. 9. FR9: Users can view a summary of the risk factors for a selected name.
 
-**Monetization (Conversion):** 10. FR10: Users can purchase a "De-Risking Report" for "Amber" or "Green" names. 11. FR11: System generates and delivers a PDF De-Risking Report upon purchase. 12. FR12: System presents "Launch Readiness Checklist" with affiliate hosting links for "Green" names. 13. FR13: System presents a "Legal Consultation" lead form for "Red" names.
+**Monetization (Conversion):** 10. FR10: Users can purchase a "De-Risking Report" for "Amber" or "Green" names. 11. FR11: System generates and delivers a PDF De-Risking Report upon purchase. 12. FR12: System presents "Launch Readiness Checklist" with affiliate hosting links for "Green" names. 13. FR13: System presents a "Legal Referral" CTA link for "Red" names.
 
 **Data & Management:** 14. FR14: Users can save favorite names to a list. 15. FR15: System stores generated names and risk statuses associated with the user account.
 
