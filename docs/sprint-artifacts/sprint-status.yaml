@@ -1,0 +1,101 @@
+# generated: 2025-12-04
+# project: Name Your Next Great Idea
+# tracking_system: file-system
+# story_location: docs/sprint-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+
+generated: 2025-12-04
+project: Name Your Next Great Idea
+tracking_system: file-system
+story_location: docs/sprint-artifacts
+
+development_status:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 1: Foundation & Infrastructure
+  # Goal: Project setup, DB schema, auth config, deployment pipeline
+  # FRs Enabled: Infrastructure for ALL FRs (FR1-FR15)
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-1: contexted
+  1-3-database-schema-design-migration-setup: ready-for-dev
+  1-5-application-shell-layout-structure: backlog
+  1-6-zustand-state-management-setup: backlog
+  1-7-api-structure-server-actions-foundation: backlog
+  1-8-deployment-pipeline-vercel-configuration: backlog
+  1-9-testing-infrastructure-setup: backlog
+  1-10-background-job-infrastructure-supabase-cron: backlog
+  epic-1-retrospective: optional
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 2: User Authentication & Onboarding
+  # Goal: Users can register, log in, and complete segmentation
+  # FRs Covered: FR1, FR2
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-2: backlog
+  2-1-email-password-registration-flow: backlog
+  2-2-email-verification-handling: backlog
+  2-3-social-authentication-google-github: backlog
+  2-4-login-flow-session-management: backlog
+  2-5-password-reset-flow: backlog
+  2-6-segmentation-prompt-trojan-horse: backlog
+  2-7-protected-route-middleware: backlog
+  2-8-user-profile-display-sign-out: backlog
+  2-9-first-run-experience-segment-aware-welcome: backlog
+  epic-2-retrospective: optional
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 3: Core Naming Experience
+  # Goal: Users generate names and see real-time Traffic Light risk
+  # FRs Covered: FR4, FR5, FR6, FR7, FR8, FR9, FR14, FR15
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-3: backlog
+  3-1-narrative-architect-chat-interface: backlog
+  3-2-criteria-collection-via-conversation: backlog
+  3-3-ai-name-generation-elevated-creative: backlog
+  3-4-name-refinement-via-chat: backlog
+  3-5-traffic-light-risk-badge-display: backlog
+  3-6-preliminary-ip-risk-checks: backlog
+  3-7-risk-factor-summary-display: backlog
+  3-8-save-to-favorites: backlog
+  3-9-domain-availability-quick-check: backlog
+  3-10-naming-session-persistence: backlog
+  epic-3-retrospective: optional
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 4: Monetization & Conversion
+  # Goal: Purchase reports, affiliates, legal referrals, order history
+  # FRs Covered: FR3, FR10, FR11, FR12, FR13
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-4: backlog
+  4-1-polar-payment-integration-setup: backlog
+  4-2-de-risking-report-purchase-flow: backlog
+  4-3-pdf-report-generation: backlog
+  4-4-report-viewing-download: backlog
+  4-5-launch-readiness-checklist-green-names: backlog
+  4-6-legal-referral-cta-red-names: backlog
+  4-7-order-history-page: backlog
+  4-8-email-notifications-purchases: backlog
+  epic-4-retrospective: optional
