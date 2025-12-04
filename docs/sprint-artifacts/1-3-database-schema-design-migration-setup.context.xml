@@ -1,0 +1,229 @@
+<story-context id="1-3-database-schema-design-migration-setup" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.3</storyId>
+    <title>Database Schema Design &amp; Migration Setup</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-12-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-database-schema-design-migration-setup.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>the complete Drizzle ORM schema defined with migrations ready</iWant>
+    <soThat>all data models are type-safe and database changes are version-controlled</soThat>
+    <tasks>
+      <task id="1" title="Extend public.ts schema with all application tables">
+        <subtask id="1.1">Define user_profiles table with id, user_id FK, segment enum,
+          first_run_completed, timestamps</subtask>
+        <subtask id="1.2">Define naming_sessions table with id, user_id FK, criteria JSONB,
+          timestamps</subtask>
+        <subtask id="1.3">Define generated_names table with id, session_id FK, name, rationale,
+          domain_status JSONB, timestamp</subtask>
+        <subtask id="1.4">Define risk_checks table with id, name_id FK, status enum
+          (pending/green/amber/red), factors JSONB, checked_at</subtask>
+        <subtask id="1.5">Define favorites table with id, user_id FK, name_id FK, timestamp</subtask>
+        <subtask id="1.6">Define orders table with id, user_id FK, name_id FK, product_type enum,
+          polar_order_id, status enum, amount_cents, timestamp</subtask>
+        <subtask id="1.7">Define reports table with id, order_id FK (unique), pdf_url, generated_at</subtask>
+        <subtask id="1.8">Verify all table and column names follow snake_case convention</subtask>
+        <note>Use pgTable.withRLS() for automatic RLS enablement</note>
+      </task>
+      <task id="2" title="Add performance indexes">
+        <subtask id="2.1">Create index on naming_sessions.user_id</subtask>
+        <subtask id="2.2">Create index on generated_names.session_id</subtask>
+        <subtask id="2.3">Create index on favorites.user_id</subtask>
+        <subtask id="2.4">Create index on orders.user_id</subtask>
+        <subtask id="2.5">Create composite index on favorites(user_id, name_id) for uniqueness check</subtask>
+      </task>
+      <task id="3" title="Verify Drizzle configuration and generate migration">
+        <subtask id="3.1">Verify drizzle.config.ts has correct schema path
+          (./server/lib/db/schema/*)</subtask>
+        <subtask id="3.2">Verify output directory is ./drizzle</subtask>
+        <subtask id="3.3">Create npm scripts: db:generate, db:push, db:check (use npx drizzle-kit
+          [command])</subtask>
+        <subtask id="3.4">Run npm run db:generate and verify migration SQL file is created</subtask>
+        <subtask id="3.5">Review generated SQL for correctness and proper FK relationships</subtask>
+      </task>
+      <task id="4" title="Apply schema to Supabase">
+        <subtask id="4.1">Run npm run db:push to apply schema (ask for user confirmation)</subtask>
+        <subtask id="4.2">Verify all tables exist in Supabase dashboard</subtask>
+        <subtask id="4.3">Verify FK constraints are properly created</subtask>
+      </task>
+      <task id="5" title="Create RLS policies migration">
+        <subtask id="5.1">Create SQL migration file for RLS policies</subtask>
+        <subtask id="5.2">Enable RLS on all 7 tables</subtask>
+        <subtask id="5.3">Create SELECT policy: users can only view their own data</subtask>
+        <subtask id="5.4">Create INSERT policy: users can only insert their own data</subtask>
+        <subtask id="5.5">Create UPDATE policy: users can only update their own data</subtask>
+        <subtask id="5.6">Create DELETE policy for favorites table (users can remove their own
+          favorites)</subtask>
+        <subtask id="5.7">Apply RLS policies via Supabase SQL editor or migration</subtask>
+        <note>Use pgPolicy from drizzle-orm/pg-core for declarative RLS in schema</note>
+      </task>
+      <task id="6" title="Testing and verification">
+        <subtask id="6.1">Write unit test verifying schema exports all 7 tables</subtask>
+        <subtask id="6.2">Write unit test verifying all table names match snake_case regex</subtask>
+        <subtask id="6.3">Manually test RLS by attempting cross-user access (should fail)</subtask>
+        <subtask id="6.4">Verify explain analyze shows index usage on common queries</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC-1.3.1">server/lib/db/schema/public.ts contains all 7 tables: user_profiles,
+      naming_sessions, generated_names, risk_checks, favorites, orders, reports</criterion>
+    <criterion id="AC-1.3.2">All tables use snake_case naming per Architecture ADR</criterion>
+    <criterion id="AC-1.3.3">All foreign keys use references() with proper relationships</criterion>
+    <criterion id="AC-1.3.4">Indexes exist on user_id and session_id columns for performance</criterion>
+    <criterion id="AC-1.3.5">npm run db:generate creates valid migration files in drizzle/ directory</criterion>
+    <criterion id="AC-1.3.6">npm run db:push applies schema to Supabase database successfully</criterion>
+    <criterion id="AC-1.3.7">RLS policies are defined for all tables protecting user data</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Technical Specification"
+        section="Data Models and Contracts">
+        Complete Drizzle schema definitions with pgTable.withRLS(), pgPolicy, authenticatedRole, and
+        authUid patterns. Includes all 7 tables with RLS policies defined declaratively.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Defines schema location at server/lib/db/schema/*.ts, database connection at
+        server/lib/db/index.ts, and Drizzle ORM v0.44.7 usage.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Technology Stack Details">
+        Drizzle ORM 0.44.7 for type-safe queries, PostgreSQL via Supabase, snake_case naming
+        convention per ADR-001.
+      </doc>
+      <doc path="docs/prd.md" title="PRD" section="Domain-Specific Requirements">
+        Data confidentiality requirements - generated names are IP, must not leak between users. RLS
+        enforces this.
+      </doc>
+    </docs>
+    <code>
+      <file path="server/lib/db/schema/public.ts" kind="schema" symbol="idea" lines="1-10"
+        reason="Current public schema - needs to be extended with 7 application tables. Currently only has placeholder 'ideas' table." />
+      <file path="server/lib/db/schema/auth.ts" kind="schema" symbol="usersInAuth" lines="1-50"
+        reason="Supabase auth schema introspection - user_profiles.user_id references auth.users.id" />
+      <file path="server/lib/db/index.ts" kind="database" symbol="db, client" lines="1-19"
+        reason="Database connection setup - exports drizzle client with snake_case casing config" />
+      <file path="drizzle.config.ts" kind="config" symbol="defineConfig" lines="1-18"
+        reason="Drizzle Kit configuration - may need schema path update to include auth.ts" />
+      <file path="drizzle/0000_early_spacker_dave.sql" kind="migration" lines="1-8"
+        reason="Existing migration - new migration will be generated after schema changes" />
+    </code>
+    <dependencies>
+      <node>
+        <package name="drizzle-orm" version="^0.44.7"
+          purpose="Type-safe ORM with RLS support via pgTable.withRLS() and pgPolicy" />
+        <package name="drizzle-kit" version="^0.31.8"
+          purpose="Migration generation and database push commands" />
+        <package name="postgres" version="^3.4.7" purpose="PostgreSQL driver for Drizzle" />
+        <package name="@supabase/ssr" version="^0.7.0"
+          purpose="Supabase SSR client for auth integration" />
+        <package name="zod" version="^4.1.13" purpose="Runtime validation for schema types" />
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint source="Architecture ADR-001">All table and column names must use snake_case (e.g.,
+      user_id, created_at)</constraint>
+    <constraint source="Architecture ADR-001">Use Drizzle ORM over Prisma for type safety - prevents
+      "False Negative" risk bugs</constraint>
+    <constraint source="Tech Spec">Use pgTable.withRLS() for automatic RLS enablement on all tables</constraint>
+    <constraint source="Tech Spec">Use authenticatedRole and authUid from drizzle-orm/supabase for
+      RLS policies</constraint>
+    <constraint source="Tech Spec">Policy naming convention: {table}_{operation}_{scope} (e.g.,
+      orders_select_own)</constraint>
+    <constraint source="Architecture">Service role bypasses RLS - use for background jobs only</constraint>
+    <constraint source="drizzle.config.ts">casing: 'snake_case' is already configured - Drizzle
+      auto-converts camelCase JS to snake_case SQL</constraint>
+    <constraint source="Existing Schema">Remove placeholder 'ideas' table when adding new tables</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="usersInAuth" kind="foreign-key-target" path="server/lib/db/schema/auth.ts">
+      <signature>Supabase auth.users table - user_profiles.user_id references this</signature>
+    </interface>
+    <interface name="pgTable.withRLS" kind="drizzle-api" path="drizzle-orm/pg-core">
+      <signature>pgTable.withRLS(tableName, columns, (table) =&gt; [pgPolicy(...), index(...)])</signature>
+    </interface>
+    <interface name="pgPolicy" kind="drizzle-api" path="drizzle-orm/pg-core">
+      <signature>pgPolicy(name, { for: 'select'|'insert'|'update'|'delete'|'all', to: role, using:
+        sql`...`, withCheck: sql`...` })</signature>
+    </interface>
+    <interface name="authenticatedRole" kind="supabase-role" path="drizzle-orm/supabase">
+      <signature>Pre-defined Supabase role for logged-in users</signature>
+    </interface>
+    <interface name="authUid" kind="supabase-helper" path="drizzle-orm/supabase">
+      <signature>Resolves to (SELECT auth.uid()) - current user's UUID from Supabase auth</signature>
+    </interface>
+    <interface name="db" kind="drizzle-client" path="server/lib/db/index.ts">
+      <signature>drizzle(client, { casing: 'snake_case', schema })</signature>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing infrastructure not yet set up (Story 1.9). For this story, focus on:
+      1. Schema validation via TypeScript compilation (type errors = schema errors)
+      2. Migration generation verification (drizzle-kit generate succeeds)
+      3. Manual RLS testing via Supabase SQL editor or authenticated API calls
+      Future: Vitest for unit tests, Playwright for E2E per Architecture.
+    </standards>
+    <locations>
+      <location>tests/unit/</location>
+      <location>tests/integration/</location>
+    </locations>
+    <ideas>
+      <idea ac="AC-1.3.1">Unit test: Import public schema, assert 7 table exports exist
+        (userProfiles, namingSessions, generatedNames, riskChecks, favorites, orders, reports)</idea>
+      <idea ac="AC-1.3.2">Unit test: Regex test all exported table names match /^[a-z][a-z0-9_]*$/
+        pattern</idea>
+      <idea ac="AC-1.3.5">Integration test: Run drizzle-kit generate in test, verify migration file
+        created in drizzle/</idea>
+      <idea ac="AC-1.3.7">Manual test: Create two test users, verify User A cannot SELECT User B's
+        naming_sessions via RLS</idea>
+    </ideas>
+  </tests>
+
+  <implementationNotes>
+    <note priority="high">
+      The tech-spec-epic-1.md contains the COMPLETE schema definitions with all RLS policies.
+      Use this as the source of truth - copy the TypeScript code blocks directly.
+    </note>
+    <note priority="high">
+      drizzle.config.ts currently only includes public.ts. If you need to generate migrations
+      that reference auth schema, ensure the schema array includes both files.
+    </note>
+    <note priority="medium">
+      The existing 'ideas' table in public.ts is a placeholder. It should be removed and
+      replaced with the 7 application tables.
+    </note>
+    <note priority="medium">
+      package.json needs db:generate, db:push, db:check scripts added:
+      - "db:generate": "npx drizzle-kit generate"
+      - "db:push": "npx drizzle-kit push"
+      - "db:check": "npx drizzle-kit check"
+    </note>
+    <note priority="low">
+      Consider cascade deletes: namingSessions -&gt; generatedNames -&gt; riskChecks chain uses
+      onDelete: 'cascade'.
+      Orders do NOT cascade delete to preserve purchase history.
+    </note>
+  </implementationNotes>
+
+  <enums>
+    <enum name="segment" values="lean, high-stakes" table="user_profiles"
+      purpose="Trojan Horse segmentation" />
+    <enum name="riskStatus" values="pending, green, amber, red" table="risk_checks"
+      purpose="Traffic Light risk indicator" />
+    <enum name="orderStatus" values="pending, processing, completed, failed, cancelled"
+      table="orders" purpose="Order lifecycle" />
+    <enum name="productType" values="de-risking-report, premium-report" table="orders"
+      purpose="Purchasable products" />
+  </enums>
+</story-context>

@@ -2,10 +2,10 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import { Sentry } from "@/server/lib/sentry";
+import { Sentry } from '@/server/lib/sentry'
 
 Sentry.init({
-  dsn: "https://d2fe01507e86728c78e19a7f43364386@o4510472579383296.ingest.de.sentry.io/4510472580890704",
+  dsn: 'https://d2fe01507e86728c78e19a7f43364386@o4510472579383296.ingest.de.sentry.io/4510472580890704',
 
   // Add optional integrations for additional features
   integrations: [Sentry.replayIntegration()],
@@ -26,6 +26,6 @@ Sentry.init({
   // Enable sending user PII (Personally Identifiable Information)
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
   sendDefaultPii: true,
-});
+})
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart

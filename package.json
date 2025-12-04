@@ -9,7 +9,10 @@
     "lint": "eslint",
     "format": "oxfmt",
     "prepare": "husky",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:check": "npx drizzle-kit check"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.43",

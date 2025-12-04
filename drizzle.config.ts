@@ -15,4 +15,9 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
+  entities: {
+    roles: {
+      provider: 'supabase', // Excludes Supabase-managed roles from migrations
+    },
+  },
 })
