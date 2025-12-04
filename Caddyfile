@@ -1,0 +1,9 @@
+https://{$HOST} { # Forwards all traffic to your backend app
+
+    reverse_proxy localhost:{$PORT}
+
+    # Enables automatic internal HTTPS
+
+    tls internal
+
+}
