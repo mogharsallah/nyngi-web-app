@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server'
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations('Common')
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
       {/* Minimal branding header */}
