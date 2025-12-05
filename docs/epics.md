@@ -164,28 +164,42 @@ This document provides the complete epic and story breakdown for "Name Your Next
 **When** the stores are configured
 **Then** `components/lib/stores/` contains:
 
-- `session-store.ts` - User session context:
-  - `userType`: 'lean' | 'high-stakes' | null
-  - `currentSessionId`: string | null
-  - `setUserType()`, `setSessionId()`, `reset()`
-- `naming-store.ts` - Naming session state:
-  - `criteria`: object (industry, description, tone)
-  - `generatedNames`: array
-  - `selectedName`: object | null
-  - `setCriteria()`, `addNames()`, `selectName()`
+- `session-store.ts` - Store factory and types:
+  - `createSessionStore()` factory function
+  - `SessionState`: `userType`, `currentSessionId`
+  - `SessionActions`: `setUserType()`, `setSessionId()`, `reset()`
+- `naming-store.ts` - Store factory and types:
+  - `createNamingStore()` factory function
+  - `NamingState`: `criteria`, `generatedNames`, `selectedName`
+  - `NamingActions`: `setCriteria()`, `addNames()`, `clearNames()`, `selectName()`, `reset()`
+
+**And** `components/providers/` contains Context providers:
+
+- `session-store-provider.tsx` - Provides `useSessionStore` hook
+- `naming-store-provider.tsx` - Provides `useNamingStore` hook
+- `store-provider.tsx` - Combined provider for root layout
+
+**And** stores use SSR-safe patterns:
+
+- Factory pattern with `createStore` from `zustand/vanilla`
+- `skipHydration: true` in persist options
+- Manual `rehydrate()` in provider `useEffect`
+- `devtools` middleware enabled in development
+- `version` field for migration support
 
 **And** stores use the `persist` middleware for localStorage backup
 **And** stores are properly typed with TypeScript
-**And** a `useHydration` hook exists to handle SSR hydration mismatch
 
 **Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
 
-- Use `create` from `zustand` (v5.0.9) with TypeScript generics
-- Implement `persist` middleware with partialize to exclude sensitive data
-- Create `useHydration` hook using `useSyncExternalStore`
-- Export typed selectors for common access patterns
+- Use `createStore` from `zustand/vanilla` for SSR-safe factory pattern
+- Wrap stores in React Context providers per Next.js App Router best practices
+- Use `useState` lazy initializer (not `useRef`) for React 19 compatibility
+- Implement `persist` middleware with `skipHydration: true` and manual rehydration
+- Add `version` field to persist config for future schema migrations
+- Enable `devtools` middleware in development for Redux DevTools integration
 - Stores support the "Trojan Horse" segmentation pattern (see Architecture Pattern 1)
 - Session restoration on auth refresh reads from `user_profiles.segment`
 
@@ -203,7 +217,6 @@ This document provides the complete epic and story breakdown for "Name Your Next
 **When** server actions are implemented
 **Then** `server/actions/` contains domain files:
 
-- `auth.ts` - Authentication actions (signIn, signOut, signUp)
 - `naming.ts` - Name generation actions (placeholder)
 - `orders.ts` - Order management actions (placeholder)
 

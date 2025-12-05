@@ -1,0 +1,61 @@
+<context>
+  <story_id>1-6</story_id>
+  <story_title>Zustand State Management Setup</story_title>
+  <architecture_alignment>
+    <tech_stack>
+      <item>Zustand v5.0.9</item>
+      <item>TypeScript</item>
+      <item>React (Next.js 15 App Router)</item>
+    </tech_stack>
+    <patterns>
+      <pattern>Client-side state management with Zustand</pattern>
+      <pattern>Persist middleware for localStorage synchronization</pattern>
+      <pattern>Hydration mismatch handling for SSR</pattern>
+      <pattern>"Trojan Horse" segmentation pattern support</pattern>
+    </patterns>
+    <constraints>
+      <constraint>Stores must be located in `components/lib/stores/`</constraint>
+      <constraint>File naming convention: `kebab-case-store.ts`</constraint>
+      <constraint>Must use `create` with TypeScript generics</constraint>
+      <constraint>Must implement `useHydration` hook to prevent hydration errors</constraint>
+    </constraints>
+  </architecture_alignment>
+
+  <interfaces>
+    <interface name="SessionState">
+      <property name="userType" type="'lean' | 'high-stakes' | null" />
+      <property name="currentSessionId" type="string | null" />
+      <method name="setUserType" params="type: 'lean' | 'high-stakes' | null" return="void" />
+      <method name="setSessionId" params="id: string | null" return="void" />
+      <method name="reset" params="" return="void" />
+    </interface>
+    <interface name="NamingState">
+      <property name="criteria" type="object (industry, description, tone)" />
+      <property name="generatedNames" type="array" />
+      <property name="selectedName" type="object | null" />
+      <method name="setCriteria" params="criteria: Partial Criteria" return="void" />
+      <method name="addNames" params="names: GeneratedName[]" return="void" />
+      <method name="selectName" params="name: GeneratedName | null" return="void" />
+      <method name="reset" params="" return="void" />
+    </interface>
+  </interfaces>
+
+  <existing_code>
+    <file path="package.json">
+      <description>Verify zustand version</description>
+    </file>
+    <file path="components/lib/stores/readme.md">
+      <description>Existing documentation for stores directory (if any)</description>
+    </file>
+  </existing_code>
+
+  <implementation_plan>
+    <step>Create `components/lib/stores/session-store.ts` implementing `SessionState` with persist
+      middleware.</step>
+    <step>Create `components/lib/stores/naming-store.ts` implementing `NamingState` with persist
+      middleware.</step>
+    <step>Create `components/lib/hooks/use-hydration.ts` (or similar utility) to handle SSR
+      hydration.</step>
+    <step>Export typed hooks/selectors for consuming components.</step>
+  </implementation_plan>
+</context>

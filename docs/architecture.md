@@ -113,15 +113,20 @@ The following decisions are **PROVIDED BY STARTER** and should not be overridden
 │   │       ├── register-form.tsx
 │   │       └── social-auth-buttons.tsx
 │   ├── lib/
-│   │   ├── stores/             # Zustand stores
-│   │   │   ├── session-store.ts
-│   │   │   └── naming-store.ts
+│   │   ├── stores/             # Zustand store factories (SSR-safe)
+│   │   │   ├── index.ts        # Re-exports types and factories
+│   │   │   ├── session-store.ts # createSessionStore factory
+│   │   │   └── naming-store.ts  # createNamingStore factory
 │   │   ├── supabase/
 │   │   │   └── client.ts       # Browser Supabase client
 │   │   └── utils.ts            # Utility functions (cn, etc.)
 │   ├── providers/              # React context providers
+│   │   ├── index.ts            # Re-exports all providers and hooks
 │   │   ├── theme-provider.tsx
-│   │   └── query-provider.tsx
+│   │   ├── toast-provider.tsx
+│   │   ├── store-provider.tsx  # Combined Zustand store provider
+│   │   ├── session-store-provider.tsx  # useSessionStore hook
+│   │   └── naming-store-provider.tsx   # useNamingStore hook
 │   ├── shared/                 # Shared layout components
 │   │   ├── studio-layout.tsx
 │   │   ├── mobile-header.tsx   # Mobile responsive header with view toggle
@@ -529,7 +534,11 @@ export async function checkTrademarkRisk(name: string): Promise<RiskResult> {
 
 ```typescript
 // components/features/naming/chat-interface.tsx
+import { useSessionStore } from "@/components/providers";
+
 export function ChatInterface() {
+  // Note: useSessionStore is provided by SessionStoreProvider in root layout
+  // Stores use factory pattern for SSR safety (see Story 1.6)
   const userType = useSessionStore((s) => s.userType);
 
   // CRITICAL: Block chat until segmentation complete

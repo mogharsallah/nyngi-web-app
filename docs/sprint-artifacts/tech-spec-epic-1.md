@@ -71,8 +71,11 @@ This epic implements the foundational layer of the architecture defined in `docs
 | **i18n Routing**        | `i18n/routing.ts`                        | Supported locales and default locale definition        | `next-intl`               |
 | **i18n Request**        | `i18n/request.ts`                        | Request-scoped locale detection and message loading    | `next-intl/server`        |
 | **Messages**            | `messages/{locale}.json`                 | Namespaced translation strings per locale              | -                         |
-| **Session Store**       | `components/lib/stores/session-store.ts` | User type, current session ID                          | `zustand`                 |
-| **Naming Store**        | `components/lib/stores/naming-store.ts`  | Criteria, generated names, selected name               | `zustand`                 |
+| **Session Store**       | `components/lib/stores/session-store.ts` | Store factory (`createSessionStore`), types, defaults  | `zustand/vanilla`         |
+| **Naming Store**        | `components/lib/stores/naming-store.ts`  | Store factory (`createNamingStore`), types, defaults   | `zustand/vanilla`         |
+| **Session Provider**    | `components/providers/session-store-provider.tsx` | Context provider, `useSessionStore` hook      | `zustand`, React Context  |
+| **Naming Provider**     | `components/providers/naming-store-provider.tsx`  | Context provider, `useNamingStore` hook       | `zustand`, React Context  |
+| **Store Provider**      | `components/providers/store-provider.tsx`         | Combined provider for root layout             | React Context             |
 | **Auth Actions**        | `server/actions/auth.ts`                 | signIn, signOut, signUp, setUserSegment                | Server Actions            |
 | **Naming Actions**      | `server/actions/naming.ts`               | generateNames, refineNames (placeholder)               | Server Actions            |
 | **Orders Actions**      | `server/actions/orders.ts`               | createOrder, getOrders (placeholder)                   | Server Actions            |
@@ -635,11 +638,14 @@ Sentry.init({
 
 ### Story 1.6: Zustand State Management
 
-1. **AC-1.6.1:** `session-store.ts` has `userType`, `currentSessionId`, `setUserType()`, `setSessionId()`, `reset()`
-2. **AC-1.6.2:** `naming-store.ts` has `criteria`, `generatedNames`, `selectedName`, `setCriteria()`, `addNames()`, `selectName()`
-3. **AC-1.6.3:** Stores use `persist` middleware for localStorage backup
-4. **AC-1.6.4:** `useHydration` hook exists for SSR hydration mismatch prevention
+1. **AC-1.6.1:** `session-store.ts` exports `createSessionStore` factory with `userType`, `currentSessionId`, `setUserType()`, `setSessionId()`, `reset()`
+2. **AC-1.6.2:** `naming-store.ts` exports `createNamingStore` factory with `criteria`, `generatedNames`, `selectedName`, `setCriteria()`, `addNames()`, `clearNames()`, `selectName()`, `reset()`
+3. **AC-1.6.3:** Stores use `persist` middleware with `skipHydration: true` and manual `rehydrate()` in providers
+4. **AC-1.6.4:** Context providers exist in `components/providers/` with `useSessionStore` and `useNamingStore` hooks
 5. **AC-1.6.5:** All stores are typed with TypeScript generics
+6. **AC-1.6.6:** Stores include `version` field for migration support
+7. **AC-1.6.7:** `devtools` middleware enabled in development mode
+8. **AC-1.6.8:** `StoreProvider` wraps app in root `layout.tsx`
 
 ### Story 1.7: Server Actions Foundation
 
@@ -696,10 +702,13 @@ Sentry.init({
 | AC-1.5.3  | APIs/Interfaces  | `components/shared/studio-layout.tsx` | E2E: desktop viewport shows split                     |
 | AC-1.5.4  | APIs/Interfaces  | `components/shared/mobile-nav.tsx`    | E2E: mobile viewport shows bottom tabs                |
 | AC-1.5.5  | APIs/Interfaces  | Layout components                     | E2E: loading states show skeletons                    |
-| AC-1.6.1  | Services/Modules | `session-store.ts`                    | Unit: all exports present and callable                |
-| AC-1.6.2  | Services/Modules | `naming-store.ts`                     | Unit: all exports present and callable                |
-| AC-1.6.3  | Services/Modules | Both stores                           | Unit: persist middleware configured                   |
-| AC-1.6.4  | Services/Modules | `useHydration` hook                   | Unit: hook prevents hydration mismatch                |
+| AC-1.6.1  | Services/Modules | `session-store.ts`                    | Unit: factory exports and state/actions present       |
+| AC-1.6.2  | Services/Modules | `naming-store.ts`                     | Unit: factory exports and state/actions present       |
+| AC-1.6.3  | Services/Modules | Both stores                           | Unit: persist with `skipHydration: true` configured   |
+| AC-1.6.4  | Services/Modules | `components/providers/*-provider.tsx` | Unit: providers export hooks and handle rehydration   |
+| AC-1.6.6  | Services/Modules | Both stores                           | Unit: persist config includes `version` field         |
+| AC-1.6.7  | Services/Modules | Both stores                           | Unit: devtools middleware in store factory            |
+| AC-1.6.8  | Services/Modules | `app/layout.tsx`                      | Unit: StoreProvider wraps children                    |
 | AC-1.7.1  | APIs/Interfaces  | `server/actions/auth.ts`              | Integration: actions callable and return correct type |
 | AC-1.7.4  | APIs/Interfaces  | All action files                      | Unit: return type matches ActionResponse              |
 | AC-1.7.5  | APIs/Interfaces  | All action files                      | Unit: Zod validation applied                          |
@@ -720,7 +729,7 @@ Sentry.init({
 | Risk                                          | Impact | Probability | Mitigation                                          |
 | --------------------------------------------- | ------ | ----------- | --------------------------------------------------- |
 | **R1:** Supabase Cron complexity              | Medium | Medium      | Document setup thoroughly, create migration scripts |
-| **R2:** SSR hydration mismatches with Zustand | Medium | Low         | Implement `useHydration` hook, test thoroughly      |
+| **R2:** SSR hydration mismatches with Zustand | Medium | Low         | Use factory pattern with Context providers, `skipHydration: true`, manual rehydration |
 | **R3:** Drizzle version incompatibility       | High   | Low         | Pin versions, test migrations on staging first      |
 | **R4:** CI/CD pipeline slow                   | Low    | Medium      | Use npm cache, parallelize jobs                     |
 
