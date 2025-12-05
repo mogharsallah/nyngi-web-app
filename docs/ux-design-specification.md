@@ -124,7 +124,7 @@ This layout perfectly supports the "Consultative AI" value proposition. By keepi
 **Responsive Strategy:**
 
 - **Desktop:** Split screen (Chat 30% / Canvas 70%).
-- **Mobile:** Tabbed interface. User toggles between "Chat" and "Results" views, or Chat is a drawer that slides over.
+- **Mobile:** Top header with view toggle (segmented control). User toggles between "Chat" and "Results" views via header control.
 
 **Interactive Mockups:**
 
@@ -240,9 +240,9 @@ _Goal: Secure a defensible IP asset._
 
 **Mobile Navigation:**
 
-- **Pattern:** **Bottom Tab Bar**.
-- **Items:** [Chat] | [Results] | [Saved] | [Profile].
-- **Rationale:** Supports the "Studio" layout on mobile by allowing instant toggling between the "Architect" (Chat) and the "Canvas" (Results) without losing context.
+- **Pattern:** **Top Header with View Toggle**.
+- **Items:** [Logo] | [Chat/Results Toggle] | [Profile Menu].
+- **Rationale:** Maintains consistent navigation placement across all breakpoints. The view toggle (segmented control) supports the "Studio" layout on mobile by allowing instant toggling between the "Architect" (Chat) and the "Canvas" (Results) without losing context.
 
 **Modal Patterns:**
 
@@ -257,10 +257,10 @@ _Goal: Secure a defensible IP asset._
 **Breakpoint Strategy:**
 
 - **Mobile (< 768px):**
-  - **Layout:** Single View (Tabbed). User sees _either_ Chat _or_ Results.
-  - **Navigation:** Bottom Tab Bar.
+  - **Layout:** Single View (Toggled via header). User sees _either_ Chat _or_ Results.
+  - **Navigation:** Top Header with View Toggle (segmented control).
   - **Cards:** Full width, stacked vertically.
-- **Tablet (768px - 1024px):**
+- **Tablet (768px - 1024px):****
   - **Layout:** Split Screen (Chat 35% / Results 65%).
   - **Navigation:** Side Rail or Condensed Sidebar.
   - **Cards:** 2-column grid.

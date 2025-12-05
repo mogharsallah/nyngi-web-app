@@ -68,6 +68,9 @@ This epic implements the foundational layer of the architecture defined in `docs
 | **Sentry Integration**  | `server/lib/sentry/index.ts`             | Error tracking, performance monitoring                 | `@sentry/nextjs`          |
 | **Supabase Server**     | `server/lib/supabase/server.ts`          | Server-side Supabase client                            | `@supabase/ssr`           |
 | **Supabase Middleware** | `server/lib/supabase/middleware.ts`      | Session refresh, cookie handling                       | `@supabase/ssr`           |
+| **i18n Routing**        | `i18n/routing.ts`                        | Supported locales and default locale definition        | `next-intl`               |
+| **i18n Request**        | `i18n/request.ts`                        | Request-scoped locale detection and message loading    | `next-intl/server`        |
+| **Messages**            | `messages/{locale}.json`                 | Namespaced translation strings per locale              | -                         |
 | **Session Store**       | `components/lib/stores/session-store.ts` | User type, current session ID                          | `zustand`                 |
 | **Naming Store**        | `components/lib/stores/naming-store.ts`  | Criteria, generated names, selected name               | `zustand`                 |
 | **Auth Actions**        | `server/actions/auth.ts`                 | signIn, signOut, signUp, setUserSegment                | Server Actions            |
@@ -580,6 +583,7 @@ Sentry.init({
 | `ai`                   | ^5.0.102          | Vercel AI SDK           |
 | `@ai-sdk/google`       | ^2.0.43           | Gemini integration      |
 | `postgres`             | ^3.4.7            | PostgreSQL driver       |
+| `next-intl`            | ^4.5.8            | Internationalization    |
 
 ### Dev Dependencies
 
@@ -620,10 +624,14 @@ Sentry.init({
 
 1. **AC-1.5.1:** `app/layout.tsx` includes global providers (Theme, Toast)
 2. **AC-1.5.2:** `app/auth/layout.tsx` exists for unauthenticated routes
-3. **AC-1.5.3:** Desktop layout uses CSS Grid with `30%/70%` split
-4. **AC-1.5.4:** Mobile layout (<768px) uses bottom tab navigation
-5. **AC-1.5.5:** Loading states use Skeleton components
-6. **AC-1.5.6:** Layout components are in `components/shared/`
+3. **AC-1.5.3:** Desktop layout (>1024px) uses CSS Grid with `30%/70%` Chat/Canvas split
+4. **AC-1.5.4:** Tablet layout (768-1024px) uses `35%/65%` split
+5. **AC-1.5.5:** Mobile layout (<768px) uses responsive top header with view toggle (Chat/Canvas segmented control)
+6. **AC-1.5.6:** Loading states use Skeleton components from shadcn/ui
+7. **AC-1.5.7:** Layout components are placed in `components/shared/`
+8. **AC-1.5.8:** Route group layouts exist: `app/studio/layout.tsx`, `app/reports/layout.tsx`, `app/orders/layout.tsx`
+9. **AC-1.5.9:** Root layout has proper `<html>` with lang attribute and SEO metadata defaults
+10. **AC-1.5.10:** All user-facing strings use `next-intl` translations via `useTranslations` (client) or `getTranslations` (server)
 
 ### Story 1.6: Zustand State Management
 

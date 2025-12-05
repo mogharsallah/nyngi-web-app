@@ -1,5 +1,41 @@
 {
+  "Common": {
+    "appName": "Nyngi",
+    "tagline": "Name Your Next Great Idea",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again"
+  },
   "HomePage": {
-    "title": "Name Your Next Great Idea"
+    "title": "Name Your Next Great Idea",
+    "subtitle": "Transform your business naming journey from anxiety to certainty",
+    "cta": "Get Started"
+  },
+  "Auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "logout": "Sign Out",
+    "forgotPassword": "Forgot password?",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password"
+  },
+  "Studio": {
+    "chatPanel": "Chat",
+    "canvasPanel": "Canvas",
+    "placeholder": "Describe your business idea..."
+  },
+  "Reports": {
+    "title": "Reports",
+    "empty": "Your de-risking reports will appear here.",
+    "download": "Download PDF"
+  },
+  "Orders": {
+    "title": "Order History",
+    "empty": "Your order history will appear here."
+  },
+  "Navigation": {
+    "studio": "Studio",
+    "reports": "Reports",
+    "orders": "Orders"
   }
 }

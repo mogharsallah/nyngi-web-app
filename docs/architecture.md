@@ -124,7 +124,7 @@ The following decisions are **PROVIDED BY STARTER** and should not be overridden
 │   │   └── query-provider.tsx
 │   ├── shared/                 # Shared layout components
 │   │   ├── studio-layout.tsx
-│   │   ├── mobile-nav.tsx
+│   │   ├── mobile-header.tsx   # Mobile responsive header with view toggle
 │   │   └── header.tsx
 │   └── ui/                     # shadcn/ui components
 │       ├── button.tsx
@@ -228,6 +228,131 @@ The following decisions are **PROVIDED BY STARTER** and should not be overridden
 | **Supabase**      | 2.49.1  | PostgreSQL database, Auth, Storage      | [supabase.com/docs](https://supabase.com/docs)             |
 | **Drizzle ORM**   | 0.44.7  | Type-safe database queries              | [orm.drizzle.team](https://orm.drizzle.team)               |
 | **Zustand**       | 5.0.9   | Client-side state management            | [zustand-demo.pmnd.rs](https://zustand-demo.pmnd.rs)       |
+| **next-intl**     | 4.5.8   | Internationalization (i18n)             | [next-intl.dev/docs](https://next-intl.dev/docs)           |
+
+### Internationalization (next-intl)
+
+The application uses **next-intl** for internationalization, ensuring all user-facing content is localizable. Messages are organized by namespace and stored in locale-specific JSON files.
+
+**Documentation:** [next-intl.dev/docs](https://next-intl.dev/docs)
+
+#### Configuration Files
+
+| File                 | Purpose                                           |
+| -------------------- | ------------------------------------------------- |
+| `i18n/routing.ts`    | Defines supported locales and default locale      |
+| `i18n/request.ts`    | Request-scoped locale detection and message loading |
+| `messages/{locale}.json` | Translation messages organized by namespace   |
+
+#### Message Namespaces
+
+Messages are structured by feature/component namespace for maintainability:
+
+```json
+// messages/en.json
+{
+  "Common": {
+    "appName": "Nyngi",
+    "tagline": "Name Your Next Great Idea"
+  },
+  "Auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "logout": "Sign Out"
+  },
+  "Studio": {
+    "chatPanel": "Chat",
+    "canvasPanel": "Canvas",
+    "placeholder": "Describe your business idea..."
+  },
+  "Risk": {
+    "green": "Low Risk",
+    "yellow": "Medium Risk", 
+    "red": "High Risk"
+  }
+}
+```
+
+#### Translation Utilities
+
+**Client Components - `useTranslations` hook:**
+
+```typescript
+"use client";
+import { useTranslations } from "next-intl";
+
+function ChatHeader() {
+  const t = useTranslations("Studio");
+  return <h2>{t("chatPanel")}</h2>; // "Chat"
+}
+```
+
+**Server Components - `getTranslations` function:**
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+async function StudioPage() {
+  const t = await getTranslations("Studio");
+  return <h1>{t("chatPanel")}</h1>;
+}
+```
+
+**Interpolation (dynamic values):**
+
+```json
+// messages/en.json
+{
+  "Naming": {
+    "generatedCount": "Generated {count} names for {businessType}"
+  }
+}
+```
+
+```typescript
+t("generatedCount", { count: 5, businessType: "restaurant" });
+// "Generated 5 names for restaurant"
+```
+
+**Pluralization:**
+
+```json
+// messages/en.json
+{
+  "Favorites": {
+    "count": "You have {count, plural, =0 {no favorites} =1 {one favorite} other {# favorites}}"
+  }
+}
+```
+
+```typescript
+t("count", { count: 3 }); // "You have 3 favorites"
+```
+
+**Rich Text (with React components):**
+
+```json
+// messages/en.json
+{
+  "Legal": {
+    "terms": "By continuing, you agree to our <terms>Terms of Service</terms>"
+  }
+}
+```
+
+```typescript
+t.rich("terms", {
+  terms: (chunks) => <Link href="/terms">{chunks}</Link>,
+});
+```
+
+#### Developer Guidelines
+
+1. **All user-facing strings MUST be localized** - Never hardcode text in components
+2. **Use descriptive namespace prefixes** - Match component/feature structure (e.g., `Studio.chatPanel`, `Auth.loginButton`)
+3. **Include interpolation for dynamic content** - Use `{variable}` syntax for runtime values
+4. **Use ICU message format** - Leverage pluralization and select for proper grammar
+5. **Check message existence** - Use `t.has('key')` for optional/conditional messages
 
 ### AI & LLM Integration
 

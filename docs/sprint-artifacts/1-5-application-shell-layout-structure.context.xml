@@ -1,0 +1,260 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>5</storyId>
+    <title>Application Shell &amp; Layout Structure</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-5-application-shell-layout-structure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>a consistent application layout with proper navigation structure</iWant>
+    <soThat>I can navigate the app intuitively across all pages</soThat>
+    <tasks>
+      <task id="1" goal="Configure root layout with providers" acs="1.5.1, 1.5.9">
+        <subtask id="1.1">Update app/layout.tsx with proper html lang="en" attribute</subtask>
+        <subtask id="1.2">Add SEO metadata defaults (title, description, OpenGraph)</subtask>
+        <subtask id="1.3">Create components/providers/theme-provider.tsx using next-themes</subtask>
+        <subtask id="1.4">Create components/providers/toast-provider.tsx using shadcn/ui Toaster</subtask>
+        <subtask id="1.5">Wrap children with ThemeProvider and ToastProvider in root layout</subtask>
+        <subtask id="1.6">Verify providers don't cause hydration mismatches (use
+          suppressHydrationWarning)</subtask>
+      </task>
+      <task id="2" goal="Create auth layout for unauthenticated routes" acs="1.5.2">
+        <subtask id="2.1">Create app/auth/layout.tsx with centered card layout</subtask>
+        <subtask id="2.2">Add minimal branding/logo header</subtask>
+        <subtask id="2.3">Ensure layout is responsive (full-width on mobile, max-w-md centered on
+          desktop)</subtask>
+      </task>
+      <task id="3" goal="Create Studio layout with responsive split view"
+        acs="1.5.3, 1.5.4, 1.5.5, 1.5.7, 1.5.8">
+        <subtask id="3.1">Create components/shared/studio-layout.tsx with CSS Grid</subtask>
+        <subtask id="3.2">Implement desktop split: grid-cols-[30%_70%] for >1024px</subtask>
+        <subtask id="3.3">Implement tablet split: md:grid-cols-[35%_65%] for 768-1024px</subtask>
+        <subtask id="3.4">Add mobile view toggle (segmented control) to header for Chat/Canvas
+          switching</subtask>
+        <subtask id="3.5">Implement view switching state (Chat/Canvas) for mobile using header
+          toggle</subtask>
+        <subtask id="3.6">Ensure header remains fixed at top on mobile with proper safe area padding</subtask>
+        <subtask id="3.7">Create app/studio/layout.tsx that wraps children with StudioLayout</subtask>
+        <subtask id="3.8">Add 44x44px minimum touch targets for mobile header controls</subtask>
+      </task>
+      <task id="4" goal="Create additional route group layouts" acs="1.5.8">
+        <subtask id="4.1">Create app/reports/layout.tsx with appropriate structure</subtask>
+        <subtask id="4.2">Create app/orders/layout.tsx with appropriate structure</subtask>
+        <subtask id="4.3">Ensure consistent header/navigation across authenticated routes</subtask>
+      </task>
+      <task id="5" goal="Implement loading states with Skeletons" acs="1.5.6">
+        <subtask id="5.1">Create app/studio/loading.tsx with split-view skeleton</subtask>
+        <subtask id="5.2">Create app/reports/loading.tsx with list skeleton</subtask>
+        <subtask id="5.3">Create app/orders/loading.tsx with table skeleton</subtask>
+        <subtask id="5.4">Use shadcn/ui Skeleton component for all loading states</subtask>
+      </task>
+      <task id="6" goal="Create shared layout components" acs="1.5.7">
+        <subtask id="6.1">Create components/shared/header.tsx with navigation and user menu
+          placeholder</subtask>
+        <subtask id="6.2">Ensure all shared components follow existing style patterns</subtask>
+        <subtask id="6.3">Export all shared components from an index file</subtask>
+      </task>
+      <task id="7" goal="Testing and verification (Deferred to Story 1.9)" acs="All">
+        <note>E2E tests for layout verification deferred to Story 1.9 Testing Infrastructure</note>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC-1.5.1" source="Tech Spec: Story 1.5 AC">
+      app/layout.tsx includes global providers (Theme, Toast)
+    </criterion>
+    <criterion id="AC-1.5.2" source="Tech Spec: Story 1.5 AC">
+      app/auth/layout.tsx exists for unauthenticated routes
+    </criterion>
+    <criterion id="AC-1.5.3" source="Epics: Story 1.5, Architecture">
+      Desktop layout (>1024px) uses CSS Grid with 30%/70% Chat/Canvas split
+    </criterion>
+    <criterion id="AC-1.5.4" source="Epics: Story 1.5">
+      Tablet layout (768-1024px) uses 35%/65% split
+    </criterion>
+    <criterion id="AC-1.5.5" source="Tech Spec: Story 1.5 AC">
+      Mobile layout (&lt;768px) uses responsive top header with view toggle (Chat/Canvas segmented
+      control)
+    </criterion>
+    <criterion id="AC-1.5.6" source="Tech Spec: Story 1.5 AC">
+      Loading states use Skeleton components from shadcn/ui
+    </criterion>
+    <criterion id="AC-1.5.7" source="Tech Spec: Story 1.5 AC">
+      Layout components are placed in components/shared/
+    </criterion>
+    <criterion id="AC-1.5.8" source="Epics: Story 1.5">
+      Route group layouts exist: app/studio/layout.tsx, app/reports/layout.tsx,
+      app/orders/layout.tsx
+    </criterion>
+    <criterion id="AC-1.5.9" source="Epics: Story 1.5">
+      Root layout has proper html with lang attribute and SEO metadata defaults
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Defines component organization pattern: components/shared/ for layout components,
+        components/ui/ for shadcn/ui, components/providers/ for React context providers. Studio
+        layout pattern with 30%/70% Chat/Canvas split specified.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Epic to Architecture Mapping">
+        Epic 1 Foundation maps to StudioLayout and Providers components. Client state uses Zustand
+        v5.0.9.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Tech Spec"
+        section="Story 1.5 Acceptance Criteria">
+        Detailed AC for Application Shell including provider setup, responsive breakpoints, and
+        Skeleton loading states.
+      </doc>
+      <doc path="docs/epics.md" title="Epics"
+        section="Story 1.5: Application Shell &amp; Layout Structure">
+        Original story definition with CSS Grid pattern grid-cols-[30%_70%], responsive breakpoints,
+        and Skeleton component usage.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Spec"
+        section="Design System Foundation">
+        shadcn/ui as primary design system with Tailwind CSS. Aceternity UI for hero/feature
+        moments.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Spec"
+        section="Core User Experience">
+        The "Trojan Horse" segmentation pattern at Studio entry. Emotional goals: Anxiety to
+        Certainty transformation.
+      </doc>
+    </docs>
+
+    <code>
+      <file path="app/layout.tsx" kind="root-layout" lines="1-32"
+        reason="Current root layout - needs enhancement with providers, SEO metadata, and suppressHydrationWarning">
+        Existing NextIntlClientProvider wrapper, Geist fonts configured, basic metadata. Needs
+        ThemeProvider, ToastProvider.
+      </file>
+      <file path="app/globals.css" kind="global-styles"
+        reason="Global CSS file where CSS variables for theming may be defined" />
+      <file path="components/lib/utils.ts" kind="utility"
+        reason="Contains cn() utility for className merging with clsx and tailwind-merge" />
+      <file path="components/providers/" kind="providers-directory"
+        reason="Empty directory - target location for ThemeProvider and ToastProvider" />
+      <file path="components.json" kind="config"
+        reason="shadcn/ui configuration - components installed to components/ui/" />
+      <file path="app/auth/" kind="route-group"
+        reason="Auth route group exists but is empty - needs layout.tsx" />
+    </code>
+
+    <dependencies>
+      <ecosystem name="node">
+        <package name="next" version="16.0.3" purpose="App framework with App Router" />
+        <package name="react" version="19.2.0" purpose="UI library" />
+        <package name="tailwind-merge" version="^3.4.0" purpose="Tailwind class merging" />
+        <package name="clsx" version="^2.1.1" purpose="Conditional class composition" />
+        <package name="class-variance-authority" version="^0.7.1"
+          purpose="Variant styling for components" />
+        <package name="lucide-react" version="^0.554.0" purpose="Icon library" />
+        <package name="zustand" version="^5.0.9" purpose="Client state management (Story 1.6)" />
+        <package name="next-intl" version="^4.5.8"
+          purpose="Internationalization (already in root layout)" />
+      </ecosystem>
+      <toInstall>
+        <package name="next-themes" purpose="Theme switching (light/dark mode) for ThemeProvider" />
+        <package name="@radix-ui/react-toast"
+          purpose="Toast primitives for shadcn/ui Toaster (via npx shadcn-ui add toast)" />
+        <package name="@radix-ui/react-slot" purpose="Required by shadcn/ui components" />
+      </toInstall>
+      <shadcnComponents>
+        <component name="skeleton" purpose="Loading state skeleton - AC-1.5.6" />
+        <component name="toast" purpose="Toast notifications for ToastProvider - AC-1.5.1" />
+        <component name="card" purpose="Auth layout centered card - AC-1.5.2" />
+        <component name="button" purpose="Mobile header view toggle buttons" />
+      </shadcnComponents>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint source="Architecture ADR" type="pattern">
+      shadcn/ui components go in components/ui/ - do not modify after installation
+    </constraint>
+    <constraint source="Architecture" type="organization">
+      Layout/shared components go in components/shared/, providers in components/providers/
+    </constraint>
+    <constraint source="Tech Spec" type="naming">
+      Use snake_case for database columns, camelCase for TypeScript variables
+    </constraint>
+    <constraint source="Dev Notes" type="hydration">
+      Use suppressHydrationWarning on html element when using next-themes to prevent hydration
+      mismatch
+    </constraint>
+    <constraint source="Dev Notes" type="safe-area">
+      Mobile header needs pt-safe (env(safe-area-inset-top)) for notched devices
+    </constraint>
+    <constraint source="Dev Notes" type="touch-targets">
+      Mobile controls require minimum 44x44px touch targets for accessibility
+    </constraint>
+    <constraint source="Architecture" type="breakpoints">
+      Tailwind CSS 4 breakpoints: default (&lt;768px mobile), md (≥768px tablet), lg (≥1024px
+      desktop)
+    </constraint>
+    <constraint source="Story 1.3" type="learning">
+      Tests deferred to Story 1.9 (Testing Infrastructure) - follow same pattern
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="ThemeProvider" kind="React Context Provider">
+      <signature>function ThemeProvider({ children }: { children: React.ReactNode }): JSX.Element</signature>
+      <path>components/providers/theme-provider.tsx</path>
+      <notes>Wrap with NextThemesProvider using attribute="class", defaultTheme="system",
+        enableSystem, disableTransitionOnChange</notes>
+    </interface>
+    <interface name="ToastProvider" kind="React Component">
+      <signature>function ToastProvider(): JSX.Element</signature>
+      <path>components/providers/toast-provider.tsx</path>
+      <notes>Renders shadcn/ui Toaster component. May simply re-export Toaster from
+        components/ui/toaster.</notes>
+    </interface>
+    <interface name="StudioLayout" kind="React Component">
+      <signature>function StudioLayout({ chatPanel, canvasPanel }: { chatPanel: React.ReactNode,
+        canvasPanel: React.ReactNode }): JSX.Element</signature>
+      <path>components/shared/studio-layout.tsx</path>
+      <notes>CSS Grid based. Props for chat/canvas panels. Internal state for mobile view toggle.</notes>
+    </interface>
+    <interface name="MobileHeader" kind="React Component">
+      <signature>function MobileHeader({ activeView, onViewChange }: { activeView: 'chat' |
+        'canvas', onViewChange: (view: 'chat' | 'canvas') =&gt; void }): JSX.Element</signature>
+      <path>components/shared/mobile-header.tsx</path>
+      <notes>Fixed top position, safe-area aware, contains view toggle segmented control</notes>
+    </interface>
+    <interface name="Header" kind="React Component">
+      <signature>function Header(): JSX.Element</signature>
+      <path>components/shared/header.tsx</path>
+      <notes>Shared header for authenticated routes with navigation and user menu placeholder</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing infrastructure (Vitest for unit, Playwright for E2E) will be set up in Story 1.9. For
+      this story, focus on implementation correctness. Manual verification of responsive breakpoints
+      is acceptable until E2E tests are available.
+    </standards>
+    <locations>
+      <location>tests/unit/components/ (future - Story 1.9)</location>
+      <location>tests/e2e/ (future - Story 1.9)</location>
+    </locations>
+    <ideas>
+      <idea ac="AC-1.5.1">Verify ThemeProvider and ToastProvider are rendered in root layout</idea>
+      <idea ac="AC-1.5.3">E2E: Desktop viewport (1280px) shows 30%/70% grid split</idea>
+      <idea ac="AC-1.5.4">E2E: Tablet viewport (800px) shows 35%/65% grid split</idea>
+      <idea ac="AC-1.5.5">E2E: Mobile viewport (375px) shows header with view toggle, single panel
+        visible</idea>
+      <idea ac="AC-1.5.6">Verify loading.tsx files render Skeleton components</idea>
+      <idea ac="AC-1.5.9">Verify html element has lang="en" attribute</idea>
+    </ideas>
+  </tests>
+</story-context>

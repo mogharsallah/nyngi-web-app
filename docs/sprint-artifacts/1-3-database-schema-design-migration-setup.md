@@ -1,6 +1,6 @@
 # Story 1.3: Database Schema Design & Migration Setup
 
-Status: review
+Status: done
 
 ## Story
 

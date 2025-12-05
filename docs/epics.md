@@ -133,7 +133,7 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 - Desktop (>1024px): 30% Chat / 70% Canvas split
 - Tablet (768-1024px): 35% / 65% split
-- Mobile (<768px): Bottom tab navigation with view switching
+- Mobile (<768px): Responsive top header with view toggle (Chat/Canvas segmented control)
 
 **And** `app/auth/layout.tsx` exists for unauthenticated routes
 **And** `app/studio/layout.tsx` exists for studio routes
@@ -147,7 +147,7 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 - Use CSS Grid for split layout: `grid-cols-[30%_70%]`
 - Implement responsive breakpoints with Tailwind: `md:grid-cols-[35%_65%]`
-- Bottom nav uses `fixed bottom-0` positioning on mobile
+- Header uses `fixed top-0` positioning on mobile with view toggle segmented control
 - Layout components go in `components/shared/`
 
 ---
@@ -816,7 +816,7 @@ This epic establishes all foundational infrastructure. Upon completion:
 - I am redirected to `/login`
 - Toast: "You've been signed out"
 
-**And** on mobile: profile is in bottom tab bar, opens full-screen menu
+**And** on mobile: profile is in header menu, opens full-screen menu
 **And** avatar shows user initial if no profile picture
 
 **Prerequisites:** Story 2.4, Story 2.6
