@@ -79,7 +79,8 @@ Please talk to the PM Agent to run the Create PRD workflow first to define your 
 
 <step n="0.5" goal="Discover and load input documents">
 <invoke-protocol name="discover_inputs" />
-<note>After discovery, these content variables are available: {prd_content}, {epics_content}, {ux_design_content}, {document_project_content}</note>
+<note>After discovery, these content variables are available: {prd_content}, {epics_content}, {ux_design_content}, {document_project_content}, {llms_content}</note>
+<note>TECHNOLOGY REFERENCES: {llms_content} contains llms.txt URLs for project technologies (Next.js, Shadcn, AI SDK, etc.). When making architectural decisions involving these technologies, fetch the relevant llms.txt documentation to ensure decisions align with current framework capabilities, constraints, and recommended patterns.</note>
 </step>
 
 <step n="1" goal="Load and understand project context">

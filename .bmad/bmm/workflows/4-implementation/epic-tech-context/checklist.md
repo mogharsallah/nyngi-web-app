@@ -11,6 +11,7 @@
   <item>Dependencies/integrations enumerated with versions where known</item>
   <item>Acceptance criteria are atomic and testable</item>
   <item>Traceability maps AC → Spec → Components → Tests</item>
+  <item>Define needed logs (key events, levels, structured context) and Sentry metrics (error tracking, performance spans)</item>
   <item>Risks/assumptions/questions listed with mitigation/next steps</item>
   <item>Test strategy covers all ACs and critical paths</item>
 </checklist>

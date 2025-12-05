@@ -56,7 +56,8 @@ No epics with status "backlog" found in sprint-status.yaml.
 
   <step n="1.5" goal="Discover and load project documents">
     <invoke-protocol name="discover_inputs" />
-    <note>After discovery, these content variables are available: {prd_content}, {gdd_content}, {architecture_content}, {ux_design_content}, {epics_content} (will load only epic-{{epic_id}}.md if sharded), {document_project_content}</note>
+    <note>After discovery, these content variables are available: {prd_content}, {gdd_content}, {architecture_content}, {ux_design_content}, {epics_content} (will load only epic-{{epic_id}}.md if sharded), {document_project_content}, {llms_content}</note>
+    <note>TECHNOLOGY REFERENCES: {llms_content} contains llms.txt URLs for project technologies (Next.js, Shadcn, AI SDK, etc.). When generating technical specifications involving these technologies, fetch the relevant llms.txt documentation to ensure accuracy and alignment with current best practices.</note>
     <action>Extract {{epic_title}} from {prd_content} or {epics_content} based on {{epic_id}}.</action>
   </step>
 

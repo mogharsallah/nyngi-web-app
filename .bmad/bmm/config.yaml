@@ -15,3 +15,7 @@ communication_language: English
 document_output_language: English
 output_folder: '{project-root}/docs'
 install_user_docs: true
+
+# External documentation references (llms.txt endpoints for project technologies)
+# AI agents should fetch these when detailed framework/library knowledge is needed
+llms_references: '{project-root}/.bmad/bmm/docs/llms.md'

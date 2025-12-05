@@ -74,7 +74,8 @@ Proceeding with story file only. For better context, consider running `story-con
 
   <step n="0.5" goal="Discover and load project documents">
     <invoke-protocol name="discover_inputs" />
-    <note>After discovery, these content variables are available: {architecture_content}, {tech_spec_content}, {ux_design_content}, {epics_content} (selective load), {document_project_content}</note>
+    <note>After discovery, these content variables are available: {architecture_content}, {tech_spec_content}, {ux_design_content}, {epics_content} (selective load), {document_project_content}, {llms_content}</note>
+    <note>TECHNOLOGY REFERENCES: {llms_content} contains llms.txt URLs for project technologies (Next.js, Shadcn, AI SDK, etc.). When implementing code using these frameworks/libraries, fetch the relevant llms.txt documentation for up-to-date API usage, patterns, and best practices.</note>
   </step>
 
   <step n="1.5" goal="Detect review continuation and extract review context">

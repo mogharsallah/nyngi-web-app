@@ -45,6 +45,10 @@ input_file_patterns:
     description: "Brownfield project documentation (optional)"
     sharded: "{output_folder}/index.md"
     load_strategy: "INDEX_GUIDED"
+  llms:
+    description: "External documentation references (llms.txt) for project technologies"
+    whole: "{config_source}:llms_references"
+    load_strategy: "FULL_LOAD"
 
 # Workflow components
 installed_path: "{project-root}/.bmad/bmm/workflows/4-implementation/epic-tech-context"

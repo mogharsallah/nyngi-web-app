@@ -91,7 +91,8 @@
 
   <step n="1.5" goal="Discover and load project documents">
     <invoke-protocol name="discover_inputs" />
-    <note>After discovery, these content variables are available: {architecture_content}, {ux_design_content}, {epics_content} (loads only epic for this story if sharded), {document_project_content}</note>
+    <note>After discovery, these content variables are available: {architecture_content}, {ux_design_content}, {epics_content} (loads only epic for this story if sharded), {document_project_content}, {llms_content}</note>
+    <note>TECHNOLOGY REFERENCES: {llms_content} contains llms.txt URLs for project technologies (Next.js, Shadcn, AI SDK, etc.). When reviewing code for best practices and current patterns, fetch the relevant llms.txt documentation to validate implementations against current framework recommendations.</note>
   </step>
 
   <step n="2" goal="Resolve story context file and specification inputs">
