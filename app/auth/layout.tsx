@@ -1,11 +1,6 @@
 import { getTranslations } from 'next-intl/server'
-import { Card, CardContent } from '@/components/ui/card'
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations('Common')
 
   return (
@@ -17,9 +12,7 @@ export default async function AuthLayout({
       </div>
 
       {/* Centered card layout - full-width mobile, max-w-md desktop */}
-      <Card className="w-full max-w-md">
-        <CardContent className="pt-6">{children}</CardContent>
-      </Card>
+      <div className="w-full max-w-md">{children}</div>
     </div>
   )
 }

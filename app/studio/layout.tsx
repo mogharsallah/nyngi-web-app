@@ -1,4 +1,6 @@
 import { StudioLayout } from '@/components/shared'
+import { createClient } from '@/server/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 // Placeholder components for chat and canvas panels
 // These will be replaced with actual implementations in Epic 3
@@ -18,11 +20,13 @@ function CanvasPanel() {
   )
 }
 
-export default function StudioRouteLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function StudioRouteLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.auth.getClaims()
+  if (error || !data?.claims) {
+    redirect('/auth/login')
+  }
   return (
     <StudioLayout
       chatPanel={<ChatPanel />}
