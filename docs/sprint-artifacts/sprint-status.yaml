@@ -42,8 +42,8 @@ development_status:
   epic-1: contexted
   1-3-database-schema-design-migration-setup: done
   1-5-application-shell-layout-structure: done
-  1-6-zustand-state-management-setup: review
-  1-7-api-structure-server-actions-foundation: backlog
+  1-6-zustand-state-management-setup: done
+  1-7-api-structure-server-actions-foundation: done
   1-8-deployment-pipeline-vercel-configuration: backlog
   1-9-testing-infrastructure-setup: backlog
   1-10-background-job-infrastructure-supabase-cron: backlog

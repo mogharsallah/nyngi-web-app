@@ -1,0 +1,88 @@
+<story-context id="1-7-api-structure-server-actions-foundation" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.7</storyId>
+    <title>API Structure &amp; Server Actions Foundation</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-7-api-structure-server-actions-foundation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>server actions organized by domain with consistent patterns</iWant>
+    <soThat>business logic is centralized and type-safe</soThat>
+    <tasks>
+      <task id="1" title="Define ActionResponse Types">
+        <subtask id="1.1">Create server/types/actions.ts with ActionResponse&lt;T&gt; and ErrorCode
+          types</subtask>
+        <subtask id="1.2">Export types for use across all server actions</subtask>
+      </task>
+      <task id="2" title="Create Safe Action Utility">
+        <subtask id="2.1">Verify server/lib/logger/index.ts exists</subtask>
+        <subtask id="2.2">Create server/lib/actions/safe-action.ts</subtask>
+        <subtask id="2.3">Implement authenticatedAction wrapper</subtask>
+        <subtask id="2.4">Integrate Zod validation, Supabase getClaims check, and Pino logging</subtask>
+        <subtask id="2.5">Handle errors and return consistent ActionResponse</subtask>
+      </task>
+      <task id="3" title="Create Naming Actions (Placeholder)">
+        <subtask id="3.1">Create server/actions/naming.ts with 'use server' directive</subtask>
+        <subtask id="3.2">Implement createSession placeholder using authenticatedAction</subtask>
+        <subtask id="3.3">Implement generateNames placeholder using authenticatedAction</subtask>
+        <subtask id="3.4">Implement toggleFavorite placeholder using authenticatedAction</subtask>
+        <subtask id="3.5">Add Zod schemas for input validation</subtask>
+      </task>
+      <task id="4" title="Create Orders Actions (Placeholder)">
+        <subtask id="4.1">Create server/actions/orders.ts with 'use server' directive</subtask>
+        <subtask id="4.2">Implement createOrder placeholder using authenticatedAction</subtask>
+        <subtask id="4.3">Implement getOrderHistory placeholder using authenticatedAction</subtask>
+        <subtask id="4.4">Add Zod schemas for input validation</subtask>
+      </task>
+      <task id="5" title="Create Service Placeholders">
+        <subtask id="5.1">Create server/services/trademark.ts with LRU cache interface stub</subtask>
+        <subtask id="5.2">Create server/services/risk-engine.ts with risk calculation interface stub</subtask>
+        <subtask id="5.3">Create server/services/report-generator.ts with PDF generation interface
+          stub</subtask>
+        <subtask id="5.4">Add proper TypeScript interfaces and JSDoc documentation</subtask>
+      </task>
+      <task id="6" title="Integration Verification">
+        <subtask id="6.1">Verify actions can be imported in client components</subtask>
+        <subtask id="6.2">Verify TypeScript compilation passes</subtask>
+        <subtask id="6.3">Test one action end-to-end (simple placeholder)</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <technical-context>
+    <directory-structure>
+      server/
+      ├── actions/
+      │ ├── naming.ts # createSession, generateNames, toggleFavorite
+      │ └── orders.ts # createOrder, getOrderHistory
+      ├── services/
+      │ ├── trademark.ts # Signa.so API integration (placeholder)
+      │ ├── risk-engine.ts # Risk calculation logic (placeholder)
+      │ └── report-generator.ts # React-PDF generation (placeholder)
+      ├── lib/
+      │ ├── actions/
+      │ │ └── safe-action.ts # authenticatedAction wrapper
+      │ └── logger/
+      │ └── index.ts # Pino configuration
+      └── types/
+      └── actions.ts # ActionResponse, ErrorCode types
+    </directory-structure>
+    <action-response-pattern>
+      type ActionResponse&lt;T&gt; =
+      | { success: true; data: T }
+      | { success: false; error: string; code?: ErrorCode };
+
+      type ErrorCode =
+      | "AUTH_REQUIRED" // User not authenticated
+      | "FORBIDDEN" // User lacks permission
+      | "VALIDATION_ERROR" // Invalid input (Zod)
+      | "NOT_FOUND" // Resource doesn't exist
+      | "CONFLICT" // Duplicate or state conflict
+    </action-response-pattern>
+  </technical-context>
+</story-context>
