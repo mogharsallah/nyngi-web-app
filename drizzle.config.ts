@@ -1,10 +1,12 @@
-import dotenv from 'dotenv'
-
-dotenv.config({
-  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local',
-})
-
 import { defineConfig } from 'drizzle-kit'
+
+if (process.env.NODE_ENV === 'development') {
+  const dotenv = await import('dotenv')
+
+  dotenv.config({
+    path: '.env.local',
+  })
+}
 
 export default defineConfig({
   out: './drizzle',
