@@ -1,0 +1,18 @@
+providers = ['node']
+
+[variables]
+    NIXPACKS_NODE_VERSION = '23'
+    NPM_CONFIG_PRODUCTION = 'false' # Ensures devDependencies are installed for the build phase
+
+[phases.setup]
+    nixPkgs = ['nodejs-23_x', 'npm', 'openssl']
+    aptPkgs = ['build-essential']
+
+[phases.install]
+    cmds = ['npm ci']
+
+[phases.build]
+    cmds = ['npm run build']
+
+[start]
+    cmd = 'npm start'
