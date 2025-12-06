@@ -5,7 +5,7 @@ providers = ['node']
     NPM_CONFIG_PRODUCTION = 'false' # Ensures devDependencies are installed for the build phase
 
 [phases.setup]
-    nixPkgs = ['nodejs_24', 'npm', 'openssl']
+    nixPkgs = ['nodejs_22', 'npm', 'openssl']
     aptPkgs = ['build-essential']
 
 [phases.install]
