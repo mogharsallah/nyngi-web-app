@@ -1,19 +1,58 @@
 import 'dotenv/config'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import postgres, { Sql } from 'postgres'
 
 import * as schema from '@/server/lib/db/schema/public'
 
-const host = process.env.HOST!
-let connectionString = process.env.DATABASE_URL!
+type DbSchema = typeof schema
 
-if (host.includes('postgres:postgres@supabase_db_')) {
-  const url = URL.parse(host)!
-  url.hostname = url.hostname.split('_')[1]
-  connectionString = url.href
+function getConnectionString(): string {
+  const host = process.env.HOST ?? ''
+  let connectionString = process.env.DATABASE_URL ?? ''
+
+  if (host.includes('postgres:postgres@supabase_db_')) {
+    const url = URL.parse(host)!
+    url.hostname = url.hostname.split('_')[1]
+    connectionString = url.href
+  }
+
+  return connectionString
 }
 
-// Disable prefetch as it is not supported for "Transaction" pool mode
-export const client = postgres(connectionString, { prepare: false })
+/**
+ * Database client singleton.
+ * Uses globalThis to persist across hot reloads in development.
+ * Lazily initialized to avoid running during Next.js build.
+ */
+const globalForDb = globalThis as unknown as {
+  client: Sql | undefined
+  db: PostgresJsDatabase<DbSchema> | undefined
+}
 
-export const db = drizzle(client, { casing: 'snake_case', schema })
+export function getClient(): Sql {
+  if (!globalForDb.client) {
+    // Disable prefetch as it is not supported for "Transaction" pool mode
+    globalForDb.client = postgres(getConnectionString(), { prepare: false })
+  }
+  return globalForDb.client
+}
+
+export function getDb(): PostgresJsDatabase<DbSchema> {
+  if (!globalForDb.db) {
+    globalForDb.db = drizzle(getClient(), { casing: 'snake_case', schema })
+  }
+  return globalForDb.db
+}
+
+// For backwards compatibility - lazily evaluated getters
+export const client = new Proxy({} as Sql, {
+  get(_, prop) {
+    return Reflect.get(getClient(), prop)
+  },
+})
+
+export const db = new Proxy({} as PostgresJsDatabase<DbSchema>, {
+  get(_, prop) {
+    return Reflect.get(getDb(), prop)
+  },
+})
