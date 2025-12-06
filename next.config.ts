@@ -6,6 +6,8 @@ let nextConfig: NextConfig = {
   /* config options here */
 
   serverExternalPackages: ['thread-stream', 'pino', 'pino-worker', 'pino-file', 'pino-pretty'],
+
+  output: 'standalone',
 }
 
 const withNextIntl = createNextIntlPlugin()
