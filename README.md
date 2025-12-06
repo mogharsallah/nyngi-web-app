@@ -34,3 +34,33 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Environment Variables
+
+The application requires the following environment variables to be set. You can copy `.env.example` to `.env.local` for local development.
+
+| Variable | Required | Description |
+| -------- | -------- | ----------- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service key (server only) |
+| `DATABASE_URL` | Yes | Postgres connection string |
+| `SENTRY_DSN` | Yes | Sentry project DSN |
+| `SENTRY_AUTH_TOKEN` | Yes | Sentry release upload token |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Yes | Gemini API key |
+| `SIGNA_API_KEY` | Yes | Signa.so API key |
+| `POLAR_ACCESS_TOKEN` | Yes | Polar.sh API token |
+| `POLAR_WEBHOOK_SECRET` | Yes | Polar webhook signature secret |
+| `POLAR_ORGANIZATION_ID` | Yes | Polar organization ID |
+
+### Local Development Setup
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Fill in the values in `.env.local`.
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```

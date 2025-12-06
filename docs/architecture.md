@@ -1608,7 +1608,7 @@ Deployment is managed via **Coolify** running on a **Hetzner VPS**.
 
 | Tool             | Version  | Installation                       |
 | ---------------- | -------- | ---------------------------------- |
-| **Node.js**      | 20.x LTS | [nodejs.org](https://nodejs.org)   |
+| **Node.js**      | 24.x LTS | [nodejs.org](https://nodejs.org)   |
 | **npm**          | 10.x     | Included with Node.js              |
 | **Supabase CLI** | Latest   | `npm install -g supabase`          |
 | **Git**          | Latest   | [git-scm.com](https://git-scm.com) |

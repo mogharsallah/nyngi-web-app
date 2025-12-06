@@ -555,7 +555,7 @@ Any config files to update:
 
 Comprehensive stack with versions:
 
-- Runtime: Node.js 20.x
+- Runtime: Node.js 24.x
 - Framework: Express 4.18.2
 - Language: TypeScript 5.1.6
 - Testing: Jest 29.5.0

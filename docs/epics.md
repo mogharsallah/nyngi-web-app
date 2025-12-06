@@ -272,7 +272,7 @@ type ErrorCode =
 **Then** GitHub Actions workflow `.github/workflows/ci.yml` includes:
 
 - Trigger on push to main and pull requests
-- Node.js 20.x setup with caching
+- Node.js 24.x setup with caching
 - Install dependencies: `npm ci`
 - Type check: `npm run type-check`
 - Lint: `npm run lint`

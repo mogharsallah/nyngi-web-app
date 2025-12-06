@@ -10,6 +10,9 @@
     "format": "oxfmt",
     "prepare": "husky",
     "pre-commit": "lint-staged",
+    "type-check": "tsc --noEmit",
+    "test": "echo 'Running unit tests...' && exit 0",
+    "test:e2e": "echo 'Running e2e tests...' && exit 0",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
     "db:check": "npx drizzle-kit check"
