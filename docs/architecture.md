@@ -1318,7 +1318,7 @@ export async function updateSession(request: NextRequest) {
 
 | Layer               | Tool        | TTL    | Use Case                       |
 | ------------------- | ----------- | ------ | ------------------------------ |
-| **CDN**             | Vercel Edge | 1 hour | Static assets, marketing pages |
+| **CDN**             | Coolify/Nginx | 1 hour | Static assets, marketing pages |
 | **ISR**             | Next.js     | 60s    | Landing page, pricing page     |
 | **API Response**    | None        | -      | All data is fresh per-request  |
 | **Trademark Cache** | In-memory   | 5 min  | Cache Signa.so results by name |
@@ -1506,7 +1506,7 @@ SELECT cron.unschedule('job-name');
 
 | Service            | Provider     | Purpose                                   |
 | ------------------ | ------------ | ----------------------------------------- |
-| **Hosting**        | Vercel       | Next.js deployment, Edge Functions        |
+| **Hosting**        | Hetzner (via Coolify) | Next.js deployment (Dockerized)           |
 | **Database**       | Supabase     | PostgreSQL, Auth, Storage, Realtime, Cron |
 | **Payments**       | Polar.sh     | Merchant of Record, subscriptions         |
 | **Error Tracking** | Sentry       | APM, error monitoring, session replay     |
@@ -1594,17 +1594,13 @@ jobs:
 | **Preview**     | PRs    | `*.vercel.app`   | PR review  |
 | **Development** | local  | `localhost:3000` | Local dev  |
 
-### Vercel Configuration
+### Deployment Configuration
 
-```json
-// vercel.json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "regions": ["iad1"]
-}
-```
+Deployment is managed via **Coolify** running on a **Hetzner VPS**.
+- **Source:** GitHub Repository (via Coolify GitHub App)
+- **Build Method:** Dockerfile (Multi-stage build)
+- **Port:** 3000
+- **Database Connection:** Via `DATABASE_URL` env var
 
 ## Development Environment
 

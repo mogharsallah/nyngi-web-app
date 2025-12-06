@@ -259,23 +259,17 @@ type ErrorCode =
 
 ---
 
-### Story 1.8: Deployment Pipeline & Vercel Configuration
+### Story 1.8: CI Pipeline & Quality Checks
 
 **As a** developer,
-**I want** the project configured for Vercel deployment with proper CI/CD,
-**So that** code changes are automatically tested and deployed.
+**I want** a robust CI pipeline that verifies code quality and build integrity,
+**So that** broken code is never merged to main, ensuring stable deployments via Coolify.
 
 **Acceptance Criteria:**
 
 **Given** the project is in a Git repository
-**When** deployment is configured
-**Then** `vercel.json` exists with:
-
-- Build command: `npm run build`
-- Output directory: `.next`
-- Node.js version: 20.x
-
-**And** GitHub Actions workflow `.github/workflows/ci.yml` includes:
+**When** the CI pipeline is configured
+**Then** GitHub Actions workflow `.github/workflows/ci.yml` includes:
 
 - Trigger on push to main and pull requests
 - Node.js 20.x setup with caching
@@ -285,6 +279,9 @@ type ErrorCode =
 - Unit tests: `npm run test`
 - Build verification: `npm run build`
 - E2E tests job (after unit tests pass): `npm run test:e2e`
+
+**And** Docker build verification:
+- CI job to verify `docker build .` succeeds (ensures Coolify deployment will succeed)
 
 **And** environment variables are documented in `README.md`:
 
@@ -302,9 +299,6 @@ type ErrorCode =
 | `POLAR_WEBHOOK_SECRET`          | Yes      | Polar webhook signature secret     |
 | `POLAR_ORGANIZATION_ID`         | Yes      | Polar organization ID              |
 
-**And** Vercel project is linked with environment variables configured
-**And** Preview deployments work for pull requests
-
 **Prerequisites:** None (scaffold complete)
 
 **Technical Notes:**
@@ -312,8 +306,7 @@ type ErrorCode =
 - Use `actions/setup-node@v4` with cache enabled
 - Add `type-check` script: `tsc --noEmit`
 - Configure branch protection requiring CI pass
-- Set up Vercel environment variable groups (Production, Preview, Development)
-- Vercel region: `iad1` (US East) per Architecture deployment config
+- Deployment is handled separately by Coolify (listening to GitHub webhooks)
 - Background jobs handled by Supabase Cron (see Story 1.10)
 
 ---
