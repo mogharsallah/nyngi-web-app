@@ -1,3 +1,9 @@
+{
+	log {
+		format console
+	}
+}
+
 https://{$HOST} {
 	# Forwards all traffic to your backend app
 

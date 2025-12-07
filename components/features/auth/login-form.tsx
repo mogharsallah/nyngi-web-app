@@ -35,6 +35,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       // Update this route to redirect to an authenticated route. The user already has an active session.
       router.push('/studio')
     } catch (error: unknown) {
+      // When requiring email confirmation, make sure to send the user to /auth/sign-up-success
       setError(error instanceof Error ? error.message : t('genericError'))
     } finally {
       setIsLoading(false)

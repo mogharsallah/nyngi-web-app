@@ -62,22 +62,34 @@ The following decisions are **PROVIDED BY STARTER** and should not be overridden
 /
 ├── app/
 │   ├── auth/                 # Auth routes group (unauthenticated)
+│   │   ├── confirm/
+│   │   │   └── route.ts
+│   │   ├── error/
+│   │   │   └── page.tsx
+│   │   ├── forgot-password/
+│   │   │   └── page.tsx
 │   │   ├── login/
 │   │   │   └── page.tsx
-│   │   ├── register/
+│   │   ├── logout/
 │   │   │   └── page.tsx
-│   │   └── verify-email/
-│   │   ├── └── page.tsx
-│   │   ├── dashboard/
+│   │   ├── sign-up/
 │   │   │   └── page.tsx
-│   │   ├── studio/             # Main naming experience
+│   │   ├── sign-up-success/
 │   │   │   └── page.tsx
-│   │   ├── reports/
-│   │   │   ├── page.tsx
-│   │   │   └── [id]/
-│   │   │       └── page.tsx
-│   │   └── orders/
+│   │   ├── update-password/
+│   │   │   └── page.tsx
+│   │   └── confirm-email/
 │   │       └── page.tsx
+│   ├── dashboard/
+│   │   └── page.tsx
+│   ├── studio/             # Main naming experience
+│   │   └── page.tsx
+│   ├── reports/
+│   │   ├── page.tsx
+│   │   └── [id]/
+│   │       └── page.tsx
+│   └── orders/
+│       └── page.tsx
 │   ├── api/
 │   │   ├── health/
 │   │   │   └── ready/

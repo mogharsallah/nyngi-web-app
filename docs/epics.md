@@ -427,18 +427,14 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 **Acceptance Criteria:**
 
-**Given** I am on the registration page (`/register`)
+**Given** I am on the registration page (`/auth/sign-up`)
 **When** I enter my details
 **Then** the form includes:
 
-- **Progress indicator**: "Step 1 of 3: Create Account" (builds trust, reduces abandonment)
 - Email field with RFC 5322 validation
-- Password field with visibility toggle (eye icon)
+- Password field
 - Password requirements displayed: 8+ chars, 1 uppercase, 1 number, 1 special
-- **Security context tooltip** (ℹ️): "Strong passwords protect your valuable brand ideas from unauthorized access"
-- Password strength meter (weak/medium/strong) with visual bar
 - "Create Account" primary button
-- **OR divider** with "Continue with Magic Link" option (passwordless - sends login link to email)
 
 **And** when I submit valid credentials:
 
@@ -449,8 +445,6 @@ This epic establishes all foundational infrastructure. Upon completion:
 - I am redirected to `/verify-email` holding page
 
 **And** validation errors appear inline below fields (red text)
-**And** the form is accessible: proper labels, ARIA attributes, keyboard navigation
-**And** mobile: form is full-width with 44x44px touch targets
 
 **Prerequisites:** Story 1.2
 
@@ -461,89 +455,11 @@ This epic establishes all foundational infrastructure. Upon completion:
 - Store initial `user_profiles` row with `segment: null`
 - Use Supabase email templates for verification
 - Form built with shadcn/ui Form + react-hook-form
-- **Magic link uses `supabase.auth.signInWithOtp({ email })`** - passwordless flow ideal for "Lean Entrepreneur" users who prioritize speed
 - Supabase Auth via `@supabase/ssr` (v0.7.0) for SSR cookie handling
 
 ---
 
-### Story 2.2: Email Verification Handling
-
-**As a** user who just registered,
-**I want** to verify my email by clicking a link,
-**So that** my account is activated and I can start using the app.
-
-**Acceptance Criteria:**
-
-**Given** I received a verification email
-**When** I click the verification link
-**Then** Supabase processes the token automatically
-**And** I am redirected to `/onboarding` (segmentation flow)
-**And** my `email_confirmed_at` is set in Supabase Auth
-
-**Given** the verification link has expired (>24 hours)
-**When** I click it
-**Then** I see an error message: "Link expired. Request a new one."
-**And** a "Resend verification" button is visible
-**And** clicking it sends a new email and shows confirmation toast
-
-**And** the `/verify-email` page shows:
-
-- Animated email icon (subtle pulse)
-- Clear instructions to check inbox/spam
-- "Resend email" link (rate limited to 1 per 60 seconds)
-- "Use different email" link returning to `/register`
-
-**Prerequisites:** Story 2.1
-
-**Technical Notes:**
-
-- Verification handled by Supabase redirect flow
-- Configure `NEXT_PUBLIC_SITE_URL` for correct redirect
-- Use `supabase.auth.onAuthStateChange()` to detect verification
-- Add `email_verified` check before allowing dashboard access
-
----
-
-### Story 2.3: Social Authentication (Google & GitHub)
-
-**As a** user,
-**I want** to sign in with my Google or GitHub account,
-**So that** I can access the app without creating a new password.
-
-**Acceptance Criteria:**
-
-**Given** I am on the login or register page
-**When** I click "Continue with Google"
-**Then** I am redirected to Google OAuth consent screen
-**And** after approval, I return to the app authenticated
-**And** if this is my first login, a `user_profiles` row is created
-**And** I am redirected to `/onboarding` (if new) or `/app` (if returning)
-
-**And** the same flow works for "Continue with GitHub"
-
-**And** social buttons are styled consistently:
-
-- Full width on mobile, side-by-side on desktop
-- Provider logos (Google 'G', GitHub octocat) at 20x20px
-
-**And** if OAuth fails (user cancels or error):
-
-- I see inline error: "Authentication cancelled" or "Something went wrong"
-- I can retry immediately
-
-**Prerequisites:** Story 2.1
-
-**Technical Notes:**
-
-- Configure OAuth providers in Supabase Dashboard
-- Use `supabase.auth.signInWithOAuth({ provider: 'google' })`
-- Set redirect URL to `/auth/callback` route handler
-- Create `/app/auth/callback/route.ts` to exchange code for session
-- Check `user_profiles` exists on callback, create if missing
-
----
-
-### Story 2.4: Login Flow with Session Management
+### Story 2.4: Login Flow with Session Management (Done)
 
 **As a** returning user,
 **I want** to log in to my account,
@@ -565,7 +481,7 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 - Loading state shows on button
 - Session is established (JWT + refresh token)
-- I am redirected to `/app`
+- I am redirected to `/studio`
 - Toast appears: "Welcome back, [name]!"
 
 **And** on failed login:
@@ -574,22 +490,20 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 **And** the page includes:
 
-- Link to `/register` for new users
-- Social login buttons (Google, GitHub)
+- Link to registration page for new users
 - Divider: "or continue with email"
 
-**Prerequisites:** Story 2.1, Story 2.3
+**Prerequisites:** Story 2.1
 
 **Technical Notes:**
 
-- Use `server/actions/auth.ts` → `signIn()` action
 - "Remember me" sets `persistSession: true` in Supabase options
 - Log failed attempts to `security_events` or rate limit via middleware
 - Session refresh handled by middleware on each request
 
 ---
 
-### Story 2.5: Password Reset Flow
+### Story 2.5: Password Reset Flow (Done)
 
 **As a** user who forgot my password,
 **I want** to reset it via email,
@@ -706,7 +620,7 @@ This epic establishes all foundational infrastructure. Upon completion:
 | Route Pattern         | Auth Required | Segment Required | Behavior                                                      |
 | --------------------- | ------------- | ---------------- | ------------------------------------------------------------- |
 | `/`                   | No            | No               | Public landing page                                           |
-| `/login`, `/register` | No            | No               | Redirect to `/app` if authenticated                           |
+| `/login`, `/auth/sign-up` | No            | No               | Redirect to `/app` if authenticated                           |
 | `/onboarding`         | Yes           | No               | Redirect to `/app` if segment set                             |
 | `/app/**`             | Yes           | Yes              | Redirect to `/login` if not auth, `/onboarding` if no segment |
 | `/api/webhooks/**`    | No            | No               | Public (webhook endpoints)                                    |
@@ -1612,6 +1526,11 @@ This epic delivers the complete core naming experience. Upon completion:
   - What's included: "Detailed trademark analysis", "Risk assessment", "Recommendations"
 - "Purchase Report" primary CTA button
 
+**And** if my email is not verified:
+- I am prompted to verify my email before proceeding
+- "Verify Email" modal appears with "Resend Link" option
+- Once verified, I can continue to purchase
+
 **And** clicking "Purchase Report":
 
 - Creates Polar.sh checkout session
@@ -1642,6 +1561,7 @@ This epic delivers the complete core naming experience. Upon completion:
 - Store `name_id` in checkout metadata for report generation
 - Consider discount codes support (Polar feature)
 - Track checkout abandonment for analytics
+- **Check `email_confirmed_at` in `auth.users` before allowing checkout**
 
 ---
 
@@ -1973,6 +1893,76 @@ This epic delivers the complete core naming experience. Upon completion:
 - React Email for template components
 - Track email opens/clicks for analytics
 - Respect user email preferences (future: notification settings)
+
+---
+
+### Story 4.9: Social Authentication (Google & GitHub)
+
+**As a** user,
+**I want** to sign in with my Google or GitHub account,
+**So that** I can access the app without creating a new password.
+
+**Acceptance Criteria:**
+
+**Given** I am on the login or register page
+**When** I click "Continue with Google"
+**Then** I am redirected to Google OAuth consent screen
+**And** after approval, I return to the app authenticated
+**And** if this is my first login, a `user_profiles` row is created
+**And** I am redirected to `/onboarding` (if new) or `/app` (if returning)
+
+**And** the same flow works for "Continue with GitHub"
+
+**And** social buttons are styled consistently:
+
+- Full width on mobile, side-by-side on desktop
+- Provider logos (Google 'G', GitHub octocat) at 20x20px
+
+**And** if OAuth fails (user cancels or error):
+
+- I see inline error: "Authentication cancelled" or "Something went wrong"
+- I can retry immediately
+
+**Prerequisites:** Story 2.1
+
+**Technical Notes:**
+
+- Configure OAuth providers in Supabase Dashboard
+- Use `supabase.auth.signInWithOAuth({ provider: 'google' })`
+- Set redirect URL to `/auth/callback` route handler
+- Create `/app/auth/callback/route.ts` to exchange code for session
+- Check `user_profiles` exists on callback, create if missing
+
+---
+
+### Story 4.10: Authentication Refinement
+
+**As a** user,
+**I want** a polished and secure authentication experience,
+**So that** I feel confident trusting the platform with my data.
+
+**Acceptance Criteria:**
+
+**Given** I am on the registration page
+**When** I interact with the form
+**Then** I see:
+
+- **Progress indicator**: "Step 1 of 3: Create Account"
+- Password visibility toggle (eye icon)
+- **Security context tooltip** (ℹ️): "Strong passwords protect your valuable brand ideas from unauthorized access"
+- Password strength meter (weak/medium/strong) with visual bar
+- **OR divider** with "Continue with Magic Link" option
+
+**And** the form is accessible: proper labels, ARIA attributes, keyboard navigation
+**And** mobile: form is full-width with 44x44px touch targets
+
+**Prerequisites:** Story 2.1
+
+**Technical Notes:**
+
+- Implement password strength library (zxcvbn or similar)
+- Add Magic Link flow using `supabase.auth.signInWithOtp({ email })`
+- Enhance accessibility with `aria-live` regions for errors
 
 ---
 

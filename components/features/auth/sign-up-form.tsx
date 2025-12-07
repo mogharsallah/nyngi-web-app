@@ -42,7 +42,9 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         },
       })
       if (error) throw error
-      router.push('/auth/sign-up-success')
+      // If email confirmation is required, make sure to send the user to /auth/sign-up-success
+      // router.push('/auth/sign-up-success')
+      router.push('/studio')
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : t('genericError'))
     } finally {
