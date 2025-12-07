@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation'
 
-export default async function OrdersPage() {
-  
+export default async function AuthPage() {
   return redirect('/auth/login')
 }
