@@ -59,6 +59,10 @@ export async function updateSession(request: NextRequest) {
   const isPublicRoute = matchesRoute(pathname, PUBLIC_ROUTES)
 
   if (isAuthenticated) {
+    if (matchesRoute(pathname, ['/auth/logout'])) {
+      supabase.auth.signOut()
+      return redirectTo(request, '/')
+    }
     // Redirect logged-in users away from auth pages (except allowed ones)
     const canAccessAuthRoute = matchesRoute(pathname, AUTH_ROUTES_ALLOWED_WHEN_LOGGED_IN)
     if (isAuthRoute && !canAccessAuthRoute) {
