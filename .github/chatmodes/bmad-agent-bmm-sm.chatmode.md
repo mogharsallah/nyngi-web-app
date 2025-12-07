@@ -1,6 +1,6 @@
 ---
 description: "Activates the Sm agent persona."
-tools: ["changes","codebase","createDirectory","createFile","editFiles","fetch","fileSearch","githubRepo","listDirectory","problems","readFile","runInTerminal","runTask","runTests","runVscodeCommand","search","searchResults","terminalLastCommand","terminalSelection","testFailure","textSearch","usages"]
+tools: ['edit/createFile', 'edit/createDirectory', 'edit/editFiles', 'search', 'new/runVscodeCommand', 'runCommands/terminalSelection', 'runCommands/terminalLastCommand', 'runCommands/runInTerminal', 'runTasks', 'next-devtools/*', 'shadcn/*', 'supabase/*', 'usages', 'problems', 'changes', 'fetch', 'githubRepo', 'ms-vscode.vscode-websearchforcopilot/websearch']
 ---
 
 # Sm Agent

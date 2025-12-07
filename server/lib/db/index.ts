@@ -45,9 +45,14 @@ export function getDb(): PostgresJsDatabase<DbSchema> {
 }
 
 // For backwards compatibility - lazily evaluated getters
-export const client = new Proxy({} as Sql, {
+// Use a function proxy to support tagged template literal usage (client`select 1`)
+export const client = new Proxy((() => {}) as unknown as Sql, {
   get(_, prop) {
     return Reflect.get(getClient(), prop)
+  },
+  apply(_, __, args) {
+    // Support tagged template literal: client`select 1`
+    return Reflect.apply(getClient() as unknown as CallableFunction, getClient(), args)
   },
 })
 

@@ -45,7 +45,7 @@ development_status:
   1-6-zustand-state-management-setup: done
   1-7-api-structure-server-actions-foundation: done
   1-8-ci-pipeline-quality-checks: done
-  1-9-testing-infrastructure-setup: backlog
+  1-9-testing-infrastructure-setup: review
   1-10-background-job-infrastructure-supabase-cron: backlog
   epic-1-retrospective: optional
 

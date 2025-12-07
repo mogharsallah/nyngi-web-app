@@ -1,0 +1,19 @@
+# Integration Tests
+
+This directory contains integration tests that test the interaction between multiple components, services, or server actions.
+
+## Structure
+
+```
+tests/integration/
+├── actions/     # Server action integration tests
+└── ...
+```
+
+## Running Integration Tests
+
+```bash
+npm run test
+```
+
+Integration tests run alongside unit tests using Vitest.

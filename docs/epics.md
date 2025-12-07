@@ -362,12 +362,31 @@ type ErrorCode =
 
 **Technical Notes:**
 
+- Check https://nextjs.org/docs/app/guides/testing/playwright
+- Check https://nextjs.org/docs/app/guides/testing/vitest
 - Use `@vitejs/plugin-react` for React component testing
 - Configure `webServer` in Playwright to auto-start dev server
 - Add `tests/` to `.gitignore` for coverage output
 - Create `tests/setup.ts` for global test configuration
-- Vitest v3.2.x with jsdom environment
-- Playwright v1.52.x with Chromium, Firefox, WebKit
+- Vitest v4.0.x with jsdom environment
+- Playwright v1.57.x with Chromium, Firefox, WebKit
+- Create an "authenticate" test setup and use the adminClient from `server/lib/supabase/admin` to generate the magic link
+```ts
+
+async function getAuthedPage(page) {
+  // 1. Generate a magic link for your test user
+  const { data, error } = await adminClient.auth.admin.generateLink({
+    type: 'magiclink',
+    email: process.env.E2E_TEST_USER_1_EMAIL,
+  });
+
+  // 2. Visit the magic link directly
+  // This sets the cookies immediately without filling a form
+  await page.goto(data.properties.action_link);
+  
+  return page;
+}
+```
 
 ---
 

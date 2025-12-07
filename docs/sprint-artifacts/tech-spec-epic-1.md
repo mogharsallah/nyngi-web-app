@@ -46,7 +46,7 @@ This epic implements the foundational layer of the architecture defined in `docs
 | **API Pattern**        | Server Actions with ActionResponse envelope      |
 | **Observability**      | Pino v10.1.0 + Sentry v10.28.0                   |
 | **Background Jobs**    | Supabase Cron (pg_cron + pg_net)                 |
-| **Testing**            | Vitest v3.2.x + Playwright v1.52.x               |
+| **Testing**            | Vitest v4.0.x + Playwright v1.57.x               |
 
 **ADRs Implemented:**
 
