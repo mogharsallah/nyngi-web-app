@@ -1,7 +1,15 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/server/lib/supabase/middleware'
+import { apiAuthMiddleware } from '@/server/lib/api/middleware'
 
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api/health') || request.nextUrl.pathname.startsWith('/api/webhooks')) {
+    const apiAuthResponse = await apiAuthMiddleware(request)
+    if (apiAuthResponse) {
+      return apiAuthResponse
+    } else return NextResponse.next({ request })
+  }
+
   return await updateSession(request)
 }
 

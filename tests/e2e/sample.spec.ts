@@ -15,7 +15,11 @@ test.describe('Sample E2E Tests', () => {
 
 test.describe('Health Check', () => {
   test('should return healthy status from API', async ({ request }) => {
-    const response = await request.get('/api/health/ready')
+    const response = await request.get('/api/health/ready', {
+      headers: {
+        'x-api-key': process.env.API_KEY!,
+      },
+    })
 
     expect(response.ok()).toBeTruthy()
     const body = await response.json()
