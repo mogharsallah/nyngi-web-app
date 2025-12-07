@@ -390,92 +390,6 @@ async function getAuthedPage(page) {
 
 ---
 
-### Story 1.10: Background Job Infrastructure (Supabase Cron)
-
-**As a** developer,
-**I want** scheduled background jobs using Supabase pg_cron,
-**So that** long-running tasks like PDF generation and session cleanup run reliably.
-
-**Acceptance Criteria:**
-
-**Given** the database is configured
-**When** background job infrastructure is set up
-**Then** the following extensions are enabled:
-
-- `pg_cron` - PostgreSQL job scheduler
-- `pg_net` - Asynchronous HTTP requests from Postgres
-
-**And** Vault secrets are configured for secure API calls:
-
-```sql
--- Store project URL and service role key in Vault
-SELECT vault.create_secret(
-  'https://[project-ref].supabase.co',
-  'project_url'
-);
-SELECT vault.create_secret(
-  '[service-role-key]',
-  'service_role_key'
-);
-```
-
-**And** the following cron jobs are scheduled:
-
-| Job Name              | Schedule      | Description                              |
-| --------------------- | ------------- | ---------------------------------------- |
-| `session-cleanup`     | `0 0 * * *`   | Daily cleanup of expired naming sessions |
-| `pdf-queue-processor` | `*/5 * * * *` | Every 5 min: process pending PDF reports |
-
-**And** cron jobs invoke Edge Functions via `pg_net`:
-
-```sql
--- Example: Session cleanup job
-SELECT cron.schedule(
-  'session-cleanup',
-  '0 0 * * *',
-  $$
-  SELECT net.http_post(
-    url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'project_url') || '/functions/v1/cleanup-sessions',
-    headers := jsonb_build_object(
-      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key'),
-      'Content-Type', 'application/json'
-    ),
-    body := '{}'::jsonb
-  );
-  $$
-);
-```
-
-**And** Edge Functions exist for background processing:
-
-- `supabase/functions/cleanup-sessions/index.ts` - Delete sessions older than 30 days
-- `supabase/functions/process-pdf-queue/index.ts` - Generate pending PDF reports
-
-**And** job monitoring is available:
-
-- Jobs visible in `cron.job` table
-- Run history in `cron.job_run_details`
-- Failed jobs logged to Sentry via Edge Function error handling
-
-**And** documentation includes:
-
-- How to add/modify cron jobs via migrations
-- How to test Edge Functions locally
-- Monitoring and debugging job failures
-
-**Prerequisites:** Story 1.2, Story 1.3
-
-**Technical Notes:**
-
-- Enable extensions via Supabase Dashboard or migration
-- Use `cron.unschedule('job-name')` to remove jobs
-- Edge Functions deployed via `supabase functions deploy`
-- Max 8 concurrent cron jobs recommended
-- Jobs timeout after 10 minutes (Supabase limit)
-- Per ADR: Supabase Cron (pg_cron + pg_net) chosen over Vercel Cron for tighter integration
-
----
-
 **Epic 1 Complete!**
 
 This epic establishes all foundational infrastructure. Upon completion:
@@ -490,7 +404,6 @@ This epic establishes all foundational infrastructure. Upon completion:
 - ✅ CI/CD pipeline active with E2E tests
 - ✅ Testing infrastructure (Vitest + Playwright) ready
 - ✅ Pino (v10.1.0) + Sentry (v10.28.0) observability configured
-- ✅ Supabase Cron (pg_cron + pg_net) background job infrastructure
 
 **Ready for:** Epic 2 - User Authentication & Onboarding
 
@@ -1515,6 +1428,92 @@ const cache = new LRUCache<string, RiskResult>({
 
 ---
 
+### Story 3.11: Background Job Infrastructure (Supabase Cron)
+
+**As a** developer,
+**I want** scheduled background jobs using Supabase pg_cron,
+**So that** long-running tasks like PDF generation and session cleanup run reliably.
+
+**Acceptance Criteria:**
+
+**Given** the database is configured
+**When** background job infrastructure is set up
+**Then** the following extensions are enabled:
+
+- `pg_cron` - PostgreSQL job scheduler
+- `pg_net` - Asynchronous HTTP requests from Postgres
+
+**And** Vault secrets are configured for secure API calls:
+
+```sql
+-- Store project URL and service role key in Vault
+SELECT vault.create_secret(
+  'https://[project-ref].supabase.co',
+  'project_url'
+);
+SELECT vault.create_secret(
+  '[service-role-key]',
+  'service_role_key'
+);
+```
+
+**And** the following cron jobs are scheduled:
+
+| Job Name              | Schedule      | Description                              |
+| --------------------- | ------------- | ---------------------------------------- |
+| `session-cleanup`     | `0 0 * * *`   | Daily cleanup of expired naming sessions |
+| `pdf-queue-processor` | `*/5 * * * *` | Every 5 min: process pending PDF reports |
+
+**And** cron jobs invoke Edge Functions via `pg_net`:
+
+```sql
+-- Example: Session cleanup job
+SELECT cron.schedule(
+  'session-cleanup',
+  '0 0 * * *',
+  $$
+  SELECT net.http_post(
+    url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'project_url') || '/functions/v1/cleanup-sessions',
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key'),
+      'Content-Type', 'application/json'
+    ),
+    body := '{}'::jsonb
+  );
+  $$
+);
+```
+
+**And** Edge Functions exist for background processing:
+
+- `supabase/functions/cleanup-sessions/index.ts` - Delete sessions older than 30 days
+- `supabase/functions/process-pdf-queue/index.ts` - Generate pending PDF reports
+
+**And** job monitoring is available:
+
+- Jobs visible in `cron.job` table
+- Run history in `cron.job_run_details`
+- Failed jobs logged to Sentry via Edge Function error handling
+
+**And** documentation includes:
+
+- How to add/modify cron jobs via migrations
+- How to test Edge Functions locally
+- Monitoring and debugging job failures
+
+**Prerequisites:** Story 1.2, Story 1.3
+
+**Technical Notes:**
+
+- Enable extensions via Supabase Dashboard or migration
+- Use `cron.unschedule('job-name')` to remove jobs
+- Edge Functions deployed via `supabase functions deploy`
+- Max 8 concurrent cron jobs recommended
+- Jobs timeout after 10 minutes (Supabase limit)
+- Per ADR: Supabase Cron (pg_cron + pg_net) chosen over Vercel Cron for tighter integration
+
+---
+
 **Epic 3 Complete!**
 
 This epic delivers the complete core naming experience. Upon completion:
@@ -1529,6 +1528,7 @@ This epic delivers the complete core naming experience. Upon completion:
 - ✅ Favorites system for saving/comparing names
 - ✅ Domain availability quick checks with affiliate links
 - ✅ Session persistence across browser closures
+- ✅ Supabase Cron (pg_cron + pg_net) background job infrastructure
 
 **FRs Delivered:** FR4 ✅, FR5 ✅, FR6 ✅, FR7 ✅, FR8 ✅, FR9 ✅, FR14 ✅, FR15 ✅
 
@@ -2021,9 +2021,9 @@ This epic delivers the complete monetization engine. Upon completion:
 
 | Epic                                     | Stories        | FRs Covered            | Status       |
 | ---------------------------------------- | -------------- | ---------------------- | ------------ |
-| Epic 1: Foundation & Infrastructure      | 7              | Infrastructure for all | ✅           |
+| Epic 1: Foundation & Infrastructure      | 6              | Infrastructure for all | ✅           |
 | Epic 2: User Authentication & Onboarding | 9              | FR1, FR2               | ✅           |
-| Epic 3: Core Naming Experience           | 10             | FR4-FR9, FR14, FR15    | ✅           |
+| Epic 3: Core Naming Experience           | 11             | FR4-FR9, FR14, FR15    | ✅           |
 | Epic 4: Monetization & Conversion        | 8              | FR3, FR10-FR13         | ✅           |
 | **TOTAL**                                | **34 stories** | **15 FRs**             | **Complete** |
 

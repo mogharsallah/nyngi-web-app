@@ -1,4 +1,4 @@
-# generated: 2025-12-04
+# generated: 2025-12-07
 # project: Name Your Next Great Idea
 # tracking_system: file-system
 # story_location: docs/sprint-artifacts
@@ -28,7 +28,7 @@
 # - SM typically drafts next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
 
-generated: 2025-12-04
+generated: 2025-12-07
 project: Name Your Next Great Idea
 tracking_system: file-system
 story_location: docs/sprint-artifacts
@@ -38,6 +38,7 @@ development_status:
   # EPIC 1: Foundation & Infrastructure
   # Goal: Project setup, DB schema, auth config, deployment pipeline
   # FRs Enabled: Infrastructure for ALL FRs (FR1-FR15)
+  # Stories: 6 (Story 1.10 moved to Epic 3 as Story 3.11)
   # ═══════════════════════════════════════════════════════════════════════════
   epic-1: contexted
   1-3-database-schema-design-migration-setup: done
@@ -45,14 +46,14 @@ development_status:
   1-6-zustand-state-management-setup: done
   1-7-api-structure-server-actions-foundation: done
   1-8-ci-pipeline-quality-checks: done
-  1-9-testing-infrastructure-setup: review
-  1-10-background-job-infrastructure-supabase-cron: backlog
+  1-9-testing-infrastructure-setup: done
   epic-1-retrospective: optional
 
   # ═══════════════════════════════════════════════════════════════════════════
   # EPIC 2: User Authentication & Onboarding
   # Goal: Users can register, log in, and complete segmentation
   # FRs Covered: FR1, FR2
+  # Stories: 9
   # ═══════════════════════════════════════════════════════════════════════════
   epic-2: backlog
   2-1-email-password-registration-flow: backlog
@@ -70,6 +71,7 @@ development_status:
   # EPIC 3: Core Naming Experience
   # Goal: Users generate names and see real-time Traffic Light risk
   # FRs Covered: FR4, FR5, FR6, FR7, FR8, FR9, FR14, FR15
+  # Stories: 11 (includes Story 3.11 moved from Epic 1)
   # ═══════════════════════════════════════════════════════════════════════════
   epic-3: backlog
   3-1-narrative-architect-chat-interface: backlog
@@ -82,12 +84,14 @@ development_status:
   3-8-save-to-favorites: backlog
   3-9-domain-availability-quick-check: backlog
   3-10-naming-session-persistence: backlog
+  3-11-background-job-infrastructure-supabase-cron: backlog
   epic-3-retrospective: optional
 
   # ═══════════════════════════════════════════════════════════════════════════
   # EPIC 4: Monetization & Conversion
   # Goal: Purchase reports, affiliates, legal referrals, order history
   # FRs Covered: FR3, FR10, FR11, FR12, FR13
+  # Stories: 8
   # ═══════════════════════════════════════════════════════════════════════════
   epic-4: backlog
   4-1-polar-payment-integration-setup: backlog
