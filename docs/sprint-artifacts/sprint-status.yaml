@@ -55,16 +55,10 @@ development_status:
   # FRs Covered: FR1, FR2
   # Stories: 9
   # ═══════════════════════════════════════════════════════════════════════════
-  epic-2: backlog
-  2-1-email-password-registration-flow: backlog
-  2-2-email-verification-handling: backlog
-  2-3-social-authentication-google-github: backlog
-  2-4-login-flow-session-management: backlog
-  2-5-password-reset-flow: backlog
-  2-6-segmentation-prompt-trojan-horse: backlog
-  2-7-protected-route-middleware: backlog
-  2-8-user-profile-display-sign-out: backlog
-  2-9-first-run-experience-segment-aware-welcome: backlog
+  epic-2: contexted
+  2-6-segmentation-prompt-trojan-horse: ready-for-dev
+  2-8-user-profile-display-sign-out: ready-for-dev
+  2-9-first-run-experience-segment-aware-welcome: ready-for-dev
   epic-2-retrospective: optional
 
   # ═══════════════════════════════════════════════════════════════════════════
@@ -102,4 +96,6 @@ development_status:
   4-6-legal-referral-cta-red-names: backlog
   4-7-order-history-page: backlog
   4-8-email-notifications-purchases: backlog
+  4-9-social-authentication-google-github: backlog
+  4-10-authentication-refinement: backlog
   epic-4-retrospective: optional

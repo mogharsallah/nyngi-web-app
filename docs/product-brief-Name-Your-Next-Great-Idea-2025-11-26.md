@@ -54,7 +54,7 @@ A "Launch Certainty Engine" that integrates advanced creative generation with ri
 
 - **Profile:** Small Business Owners (SMBs), Solopreneurs, Dropshippers.
 - **Motivation:** Speed, friction minimization, and immediate execution.
-- **Behavior:** Uses the platform to find a "good enough" name quickly and move to building.
+- **Behavior:** Selects the **"Velocity Plan"** to find a "good enough" name quickly and move to building.
 - **Monetization:** High-volume micro-transactions ($7.99 De-Risking Report) and high-margin affiliate conversions (Hosting/Domains).
 
 ### Secondary Users
@@ -63,18 +63,19 @@ A "Launch Certainty Engine" that integrates advanced creative generation with ri
 
 - **Profile:** VC-backed Startups, Marketing Agencies, Sophisticated Consultants.
 - **Motivation:** Risk aversion, asset defensibility, and ROI.
-- **Behavior:** Uses the platform as a strategic tool to validate IP safety and market resonance.
+- **Behavior:** Selects the **"Legacy Plan"** as a strategic tool to validate IP safety and market resonance.
 - **Monetization:** High-margin Legal Lead Generation ($150-$300 CPL) and Upsell Modules (Audience Validation).
 
 ### User Journey
 
-1.  **Ideation (Hook):** User enters criteria via "Narrative Architect" or "Tone Matrix." AI generates "Elevated Creative" names.
-2.  **Selection (Commitment):** User selects a favorite name.
-3.  **Validation (Friction):** "Traffic Light" system indicates risk.
+1.  **Plan Selection:** User starts a new session and chooses between **Velocity Plan** (Speed) or **Legacy Plan** (Safety).
+2.  **Ideation (Hook):** User enters criteria via "Narrative Architect." AI generates "Elevated Creative" names tailored to the selected plan.
+3.  **Selection (Commitment):** User selects a favorite name.
+4.  **Validation (Friction):** "Traffic Light" system indicates risk.
     - _Green:_ "Safe" -> Prompts "Launch Readiness Checklist" (Hosting Affiliate).
     - _Amber:_ "Caution" -> Prompts "De-Risking Report" ($7.99).
     - _Red:_ "High Risk" -> Prompts "Legal Consultation" (Lead Gen).
-4.  **Execution (Conversion):** User purchases report/hosting or contacts attorney.
+5.  **Execution (Conversion):** User purchases report/hosting or contacts attorney.
 
 ---
 

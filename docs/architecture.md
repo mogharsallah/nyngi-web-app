@@ -224,8 +224,8 @@ The following decisions are **PROVIDED BY STARTER** and should not be overridden
 | Epic                             | Primary Components                                    | Data Models                          | Key Services                     | API Pattern               |
 | -------------------------------- | ----------------------------------------------------- | ------------------------------------ | -------------------------------- | ------------------------- |
 | **Foundation (Epic 1)**          | `StudioLayout`, `Providers`                           | `user_profiles`                      | Logger, Sentry                   | Server Actions            |
-| **Authentication (Epic 2)**      | `LoginForm`, `RegisterForm`, `SegmentationPrompt`     | `user_profiles`                      | Supabase Auth                    | Server Actions            |
-| **Narrative Architect (Epic 3)** | `ChatInterface`, `NameCard`, `NameGrid`               | `naming_sessions`, `generated_names` | `NamingService`, `NameGenerator` | Server Actions            |
+| **Authentication (Epic 2)**      | `LoginForm`, `RegisterForm`, `NewUserWelcome`         | `user_profiles`                      | Supabase Auth                    | Server Actions            |
+| **Narrative Architect (Epic 3)** | `ChatInterface`, `NameCard`, `PlanSelection`          | `naming_sessions`, `generated_names` | `NamingService`, `NameGenerator` | Server Actions            |
 | **Risk Assessment (Epic 3)**     | `TrafficLightBadge`, `RiskRevealModal`, `RiskSummary` | `risk_checks`                        | `RiskEngine`, `TrademarkService` | Server Actions            |
 | **Monetization (Epic 4)**        | `CheckoutButton`, `ReportPreview`, `LaunchChecklist`  | `orders`, `reports`                  | `PolarService`, `OrderService`   | Server Actions + Webhooks |
 | **De-Risking Reports (Epic 4)**  | `ReportViewer`, `DownloadButton`                      | `reports`                            | `ReportGenerator` (React-PDF)    | Server Actions            |
@@ -516,27 +516,27 @@ export async function checkTrademarkRisk(name: string): Promise<RiskResult> {
 
 ## Novel Pattern Designs
 
-### Pattern 1: The "Trojan Horse" Segmentation
+### Pattern 1: The "Trojan Horse" Session Plan
 
-- **Purpose:** Bifurcate users into "Lean Entrepreneur" (Speed) vs "High-Stakes Founder" (Safety) paths immediately upon first interaction.
-- **Components:** `SegmentationPrompt` (Client), `session-store.ts` (Zustand).
+- **Purpose:** Bifurcate users into "Velocity" (Speed) vs "Legacy" (Safety) paths for *each* naming session.
+- **Components:** `PlanSelection` (Client), `session-store.ts` (Zustand).
 - **Data Flow:**
-  1. User lands on `/studio` for the first time
-  2. Check `session-store.userType` → if null, render `SegmentationPrompt` overlay
-  3. User selects path → Update `userType` in store + persist to `user_profiles.segment`
-  4. `NarrativeArchitect` reads `userType` and adjusts system prompt:
-     - **Lean:** Short form, "vibe" focused, speed-optimized prompts
-     - **High-Stakes:** Deep dive, "meaning spectrum" focused, safety-optimized prompts
+  1. User starts new session (or first run)
+  2. Check `session-store.currentSessionPlan` → if null, render `PlanSelection` overlay
+  3. User selects plan → Update `currentSessionPlan` in store + persist to `naming_sessions.plan`
+  4. `NarrativeArchitect` reads `currentSessionPlan` and adjusts system prompt:
+     - **Velocity:** Short form, "vibe" focused, speed-optimized prompts
+     - **Legacy:** Deep dive, "meaning spectrum" focused, safety-optimized prompts
   5. Route to appropriate Chat Flow with tailored UI
 
 **State Machine:**
 
 ```
-[Landing] → [SegmentationPrompt] → [UserType Selected]
+[New Session] → [PlanSelection] → [Plan Selected]
                                          ↓
                     ┌─────────────────────┴─────────────────────┐
                     ↓                                           ↓
-           [Lean Entrepreneur]                        [High-Stakes Founder]
+             [Velocity Plan]                             [Legacy Plan]
            - Quick chat flow                          - Deep dive flow
            - Prioritize domain availability           - Prioritize trademark safety
            - Conversion: Volume reports               - Conversion: Premium reports
@@ -551,15 +551,15 @@ import { useSessionStore } from "@/components/providers";
 export function ChatInterface() {
   // Note: useSessionStore is provided by SessionStoreProvider in root layout
   // Stores use factory pattern for SSR safety (see Story 1.6)
-  const userType = useSessionStore((s) => s.userType);
+  const currentSessionPlan = useSessionStore((s) => s.currentSessionPlan);
 
-  // CRITICAL: Block chat until segmentation complete
-  if (!userType) {
-    return <SegmentationPrompt />;
+  // CRITICAL: Block chat until plan selection complete
+  if (!currentSessionPlan) {
+    return <PlanSelection />;
   }
 
   const systemPrompt =
-    userType === "lean" ? LEAN_ENTREPRENEUR_PROMPT : HIGH_STAKES_FOUNDER_PROMPT;
+    currentSessionPlan === "velocity" ? VELOCITY_PLAN_PROMPT : LEGACY_PLAN_PROMPT;
 
   return <NarrativeArchitectChat systemPrompt={systemPrompt} />;
 }
@@ -567,9 +567,9 @@ export function ChatInterface() {
 
 **Edge Cases:**
 
-- **Missing session data:** Re-show `SegmentationPrompt`
-- **User wants to switch paths:** Provide "Change Mode" option in settings
-- **Session expires:** Restore from `user_profiles.segment` on re-auth
+- **Missing session data:** Re-show `PlanSelection`
+- **User wants to switch plans:** Must start new session
+- **Session expires:** Restore from `naming_sessions.plan` on re-load
 
 ### Pattern 2: The "Friction as a Feature" Traffic Light
 

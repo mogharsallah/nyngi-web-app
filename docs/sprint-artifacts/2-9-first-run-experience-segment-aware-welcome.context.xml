@@ -1,0 +1,137 @@
+<story-context id="2-9-first-run-experience-segment-aware-welcome" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>9</storyId>
+    <title>First Run Experience &amp; Segment-Aware Welcome</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-9-first-run-experience-segment-aware-welcome.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>newly registered user</asA>
+    <iWant>a guided welcome that helps me start my first project</iWant>
+    <soThat>I immediately understand how to use the app</soThat>
+    <tasks>
+      - [ ] Database Schema Update
+      - [ ] Add `first_run_completed` boolean column to `user_profiles` table (default: false).
+      - [ ] Generate and push migration.
+      - [ ] Server Action Updates
+      - [ ] Update `server/actions/auth.ts` (or create `user.ts`) to include `completeFirstRun`
+      action.
+      - [ ] Ensure `getUserProfile` returns `first_run_completed` status.
+      - [ ] Component Implementation: `FirstRunModal`
+      - [ ] Create `components/features/onboarding/first-run-modal.tsx`.
+      - [ ] Implement UI with Headline, Subtext, CTA, and Skip link.
+      - [ ] Add Aceternity UI spotlight effect (optional/if available) or smooth CSS animations.
+      - [ ] Implement responsive design (Modal on desktop, Full-screen on mobile).
+      - [ ] Integration
+      - [ ] Integrate `FirstRunModal` into `app/studio/page.tsx` (or `app/studio/layout.tsx`).
+      - [ ] Connect "Start New Project" to Plan Selection flow (Story 2.6).
+      - [ ] Connect "Explore Dashboard" to simple dismissal.
+      - [ ] Testing
+      - [ ] Unit test `FirstRunModal` rendering.
+      - [ ] E2E test: Register new user -> Verify Modal appears -> Interact -> Verify DB update ->
+      Refresh -> Verify Modal does not reappear.
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. **Welcome Overlay:**
+    - Appears ONLY on the first visit to the dashboard/studio (checked via
+    `user_profiles.first_run_completed`).
+    - Displays Headline: "Welcome to Name Your Next Great Idea! 🚀".
+    - Displays Subtext: "Let's find the perfect name for your venture.".
+    - Primary CTA: "Start New Project" -> Triggers Plan Selection (Story 2.6).
+    - Secondary Action: "Explore Dashboard" -> Dismisses overlay.
+    2. **Behavior &amp; Animation:**
+    - Animates in smoothly (fade + slide up).
+    - On Mobile: Full-screen takeover with clear touch targets.
+    - Can be dismissed and is never shown again (persisted in DB).
+    3. **Post-Dismissal State:**
+    - User lands on the dashboard (empty state).
+    - "Start New Project" button is prominent in the UI to allow restarting the flow.
+    4. **Data Persistence:**
+    - `first_run_completed` flag in `user_profiles` is updated to `true` upon interaction (Start or
+    Skip).
+</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Functional Requirements</section>
+        <snippet>FR1: Users can create accounts to save their progress and generated names. FR2:
+          Users can log in via email or social providers.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Journey 1: The Lean Entrepreneur</section>
+        <snippet>Entry (Segmentation): User lands on Home. Clicks "I need a name fast" (Path A).
+          Instant transition to "Narrative Architect" (Lite Mode).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic 2: User Authentication &amp; Onboarding</section>
+        <snippet>Goal: Users can register, log in, and complete segmentation. FRs Covered: FR1, FR2.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <item>
+        <path>server/lib/db/schema/public.ts</path>
+        <kind>schema</kind>
+        <symbol>userProfiles</symbol>
+        <lines>29-45</lines>
+        <reason>Defines the user_profiles table where first_run_completed flag is stored.</reason>
+      </item>
+      <item>
+        <path>app/studio/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>StudioRouteLayout</symbol>
+        <lines>24-36</lines>
+        <reason>Likely location to integrate the FirstRunModal to ensure it overlays the studio
+          experience.</reason>
+      </item>
+    </code>
+    <dependencies>
+      <dep>motion</dep>
+      <dep>zustand</dep>
+      <dep>lucide-react</dep>
+      <dep>drizzle-orm</dep>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Use `components/features/onboarding/` for the component.</constraint>
+    <constraint>Use Server Actions for updating the user profile.</constraint>
+    <constraint>Use `Zustand` if complex state is needed, but local state + Server Action might
+      suffice for this modal.</constraint>
+    <constraint>Ensure the "Trojan Horse" segmentation (Plan Selection) is the immediate next step
+      after clicking "Start New Project".</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>completeFirstRun</name>
+      <kind>Server Action</kind>
+      <signature>async function completeFirstRun(): Promise&lt;ActionResponse&lt;void&gt;&gt;</signature>
+      <path>server/actions/user.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Use Vitest for unit testing the modal rendering and interaction. Use Playwright for
+      E2E testing the full flow from registration to modal dismissal.</standards>
+    <locations>tests/unit/components/features/onboarding/, tests/e2e/</locations>
+    <ideas>
+      <idea>Verify modal appears for new user (first_run_completed=false)</idea>
+      <idea>Verify modal does NOT appear for existing user (first_run_completed=true)</idea>
+      <idea>Verify "Start New Project" updates DB and redirects</idea>
+      <idea>Verify "Explore Dashboard" updates DB and closes modal</idea>
+    </ideas>
+  </tests>
+</story-context>

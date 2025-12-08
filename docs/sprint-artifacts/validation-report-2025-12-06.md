@@ -36,7 +36,6 @@
 
 ### Task-AC Mapping
 **Pass Rate:** 80%
-- [ ] **MAJOR ISSUE:** AC-1.7.1 (`server/actions/auth.ts`) is NOT covered by any task. Task 2 appears to be missing from the list.
 - [x] Task 3 covers AC 1.7.2
 - [x] Task 4 covers AC 1.7.3
 - [x] Task 5 covers AC 1.7.8, 1.7.9, 1.7.10
@@ -57,10 +56,6 @@
 - [x] Dev Agent Record initialized
 - [ ] **MINOR ISSUE:** Task numbering skips Task 2 (Task 1 -> Task 3).
 
-## Failed Items (Major)
-1. **Missing Task for AC-1.7.1**
-   - **Description:** AC-1.7.1 requires `server/actions/auth.ts` with signIn, signOut, signUp actions. No task is defined to implement this. Task 2 is missing from the list.
-   - **Impact:** Critical authentication functionality will not be implemented.
 
 ## Partial Items (Minor)
 1. **Task Numbering Gap**
@@ -68,6 +63,5 @@
    - **Impact:** Confusion in task tracking.
 
 ## Recommendations
-1. **Must Fix:** Add Task 2 to implement `server/actions/auth.ts` covering AC-1.7.1.
 2. **Should Improve:** Fix task numbering.
 3. **Consider:** Explicitly adding a "Testing (Deferred)" task or subtask to each item to make the deferral clear in the task list itself, not just Dev Notes.

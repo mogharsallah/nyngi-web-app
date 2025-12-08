@@ -76,7 +76,6 @@ This epic implements the foundational layer of the architecture defined in `docs
 | **Session Provider**    | `components/providers/session-store-provider.tsx` | Context provider, `useSessionStore` hook      | `zustand`, React Context  |
 | **Naming Provider**     | `components/providers/naming-store-provider.tsx`  | Context provider, `useNamingStore` hook       | `zustand`, React Context  |
 | **Store Provider**      | `components/providers/store-provider.tsx`         | Combined provider for root layout             | React Context             |
-| **Auth Actions**        | `server/actions/auth.ts`                 | signIn, signOut, signUp, setUserSegment                | Server Actions            |
 | **Naming Actions**      | `server/actions/naming.ts`               | generateNames, refineNames (placeholder)               | Server Actions            |
 | **Orders Actions**      | `server/actions/orders.ts`               | createOrder, getOrders (placeholder)                   | Server Actions            |
 
@@ -354,42 +353,6 @@ type ErrorCode =
   | "INTERNAL_ERROR"; // Unexpected server error
 ````
 
-**Server Actions Signatures:**
-
-```typescript
-// server/actions/auth.ts
-"use server";
-export async function signUp(
-  input: SignUpInput
-): Promise<ActionResponse<{ userId: string }>>;
-export async function signIn(
-  input: SignInInput
-): Promise<ActionResponse<{ userId: string }>>;
-export async function signOut(): Promise<ActionResponse<void>>;
-export async function setUserSegment(
-  segment: "lean" | "high-stakes"
-): Promise<ActionResponse<void>>;
-
-// server/actions/naming.ts (placeholder implementations)
-("use server");
-export async function createSession(
-  criteria: NamingCriteria
-): Promise<ActionResponse<{ sessionId: string }>>;
-export async function generateNames(
-  sessionId: string
-): Promise<ActionResponse<GeneratedName[]>>;
-export async function toggleFavorite(
-  nameId: string
-): Promise<ActionResponse<{ isFavorite: boolean }>>;
-
-// server/actions/orders.ts (placeholder implementations)
-("use server");
-export async function createOrder(
-  input: CreateOrderInput
-): Promise<ActionResponse<{ orderId: string }>>;
-export async function getOrderHistory(): Promise<ActionResponse<Order[]>>;
-```
-
 **REST Endpoints (Limited):**
 
 | Endpoint              | Method | Purpose                        | Auth      |
@@ -649,7 +612,6 @@ Sentry.init({
 
 ### Story 1.7: Server Actions Foundation
 
-1. **AC-1.7.1:** `server/actions/auth.ts` contains signIn, signOut, signUp actions
 2. **AC-1.7.2:** `server/actions/naming.ts` exists with placeholder implementations
 3. **AC-1.7.3:** `server/actions/orders.ts` exists with placeholder implementations
 4. **AC-1.7.4:** All actions return `ActionResponse<T>` type
@@ -709,7 +671,6 @@ Sentry.init({
 | AC-1.6.6  | Services/Modules | Both stores                           | Unit: persist config includes `version` field         |
 | AC-1.6.7  | Services/Modules | Both stores                           | Unit: devtools middleware in store factory            |
 | AC-1.6.8  | Services/Modules | `app/layout.tsx`                      | Unit: StoreProvider wraps children                    |
-| AC-1.7.1  | APIs/Interfaces  | `server/actions/auth.ts`              | Integration: actions callable and return correct type |
 | AC-1.7.4  | APIs/Interfaces  | All action files                      | Unit: return type matches ActionResponse              |
 | AC-1.7.5  | APIs/Interfaces  | All action files                      | Unit: Zod validation applied                          |
 | AC-1.7.6  | APIs/Interfaces  | All action files                      | Integration: unauthenticated returns AUTH_REQUIRED    |

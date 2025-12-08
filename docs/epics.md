@@ -82,8 +82,8 @@ This document provides the complete epic and story breakdown for "Name Your Next
 
 - `auth.ts` - User profiles extension (linked to `auth.users`) (Already done)
 - `public.ts` - All application tables:
-  - `user_profiles` (id, user_id FK, segment: 'lean'|'high-stakes', created_at, updated_at)
-  - `naming_sessions` (id, user_id FK, criteria JSONB, created_at)
+  - `user_profiles` (id, user_id FK, created_at, updated_at)
+  - `naming_sessions` (id, user_id FK, plan: 'velocity'|'legacy', criteria JSONB, created_at)
   - `generated_names` (id, session_id FK, name, rationale, domain_status JSONB, created_at)
   - `risk_checks` (id, name_id FK, status: 'green'|'amber'|'red', factors JSONB, checked_at)
   - `favorites` (id, user_id FK, name_id FK, created_at)
@@ -419,228 +419,55 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 ---
 
-### Story 2.1: Email/Password Registration Flow
 
-**As a** new user,
-**I want** to create an account using my email and password,
-**So that** I can save my generated names and purchase reports.
+### Story 2.6: Session Plan Selection
 
-**Acceptance Criteria:**
-
-**Given** I am on the registration page (`/auth/sign-up`)
-**When** I enter my details
-**Then** the form includes:
-
-- Email field with RFC 5322 validation
-- Password field
-- Password requirements displayed: 8+ chars, 1 uppercase, 1 number, 1 special
-- "Create Account" primary button
-
-**And** when I submit valid credentials:
-
-- Loading spinner overlay appears on button
-- Account is created in Supabase Auth
-- Verification email is sent within 15 seconds
-- I see success message: "Check your email to verify your account"
-- I am redirected to `/verify-email` holding page
-
-**And** validation errors appear inline below fields (red text)
-
-**Prerequisites:** Story 1.2
-
-**Technical Notes:**
-
-- Use `server/actions/auth.ts` → `signUp()` action
-- Validate with Zod schema (v4.1.13) before Supabase call
-- Store initial `user_profiles` row with `segment: null`
-- Use Supabase email templates for verification
-- Form built with shadcn/ui Form + react-hook-form
-- Supabase Auth via `@supabase/ssr` (v0.7.0) for SSR cookie handling
-
----
-
-### Story 2.4: Login Flow with Session Management (Done)
-
-**As a** returning user,
-**I want** to log in to my account,
-**So that** I can access my saved names and order history.
+**As a** user,
+**I want** to choose the right plan for my current project,
+**So that** I get the appropriate level of depth and safety for my specific needs.
 
 **Acceptance Criteria:**
 
-**Given** I am on the login page (`/login`)
-**When** I enter valid credentials
-**Then** the form includes:
+**Given** I have started a new naming session
+**When** I have provided initial business details (Industry, Description)
+**Then** I am presented with the Plan Selection screen:
 
-- Email field
-- Password field with visibility toggle
-- "Remember me" checkbox (extends session to 30 days)
-- "Forgot password?" link
-- "Log in" primary button
+**Plan A - "Velocity Plan" (Free)**
+- Tagline: "Name it. Claim it. Launch it."
+- Best for: Speed, Availability, Low Cost
+- Features:
+    - Surface-level associations (Rhyme, Alliteration)
+    - "Launch Readiness" checklist
+    - Hosting & Domain focus
+- Visual: Electric Teal, Speed imagery
 
-**And** on successful login:
+**Plan B - "Legacy Plan" (Premium)**
+- Tagline: "Build a Brand That Lasts."
+- Best for: Defensibility, Depth, Safety
+- Features:
+    - Deep-web associations (Mythology, Literature)
+    - "IP Safety Score" (Traffic Light)
+    - Legal & Trademark focus
+- Visual: Indigo/Gold, Shield/Fortress imagery
 
-- Loading state shows on button
-- Session is established (JWT + refresh token)
-- I am redirected to `/studio`
-- Toast appears: "Welcome back, [name]!"
+**And** when I select a plan:
+- The session is created with `plan: 'velocity' | 'legacy'`
+- I am taken to the Narrative Architect chat interface
+- The AI system prompt is initialized with the selected plan's persona
 
-**And** on failed login:
-
-- Inline error: "Invalid email or password"
-
-**And** the page includes:
-
-- Link to registration page for new users
-- Divider: "or continue with email"
-
-**Prerequisites:** Story 2.1
-
-**Technical Notes:**
-
-- "Remember me" sets `persistSession: true` in Supabase options
-- Log failed attempts to `security_events` or rate limit via middleware
-- Session refresh handled by middleware on each request
-
----
-
-### Story 2.5: Password Reset Flow (Done)
-
-**As a** user who forgot my password,
-**I want** to reset it via email,
-**So that** I can regain access to my account.
-
-**Acceptance Criteria:**
-
-**Given** I click "Forgot password?" on the login page
-**When** I am on `/forgot-password`
-**Then** the form asks for my email only
-**And** on submit:
-
-- If email exists: "Password reset link sent!"
-- If email doesn't exist: Same message (security - no enumeration)
-- Email arrives within 30 seconds
-
-**Given** I click the reset link in my email
-**When** I am on `/reset-password`
-**Then** the form shows:
-
-- New password field with strength meter
-- Confirm password field
-- "Reset Password" button
-
-**And** on successful reset:
-
-- Password is updated
-- All other sessions are invalidated
-- I am redirected to `/login` with success toast
-- I can log in with new password
-
-**And** if reset link expired (>1 hour):
-
-- Error message with "Request new link" button
-
-**Prerequisites:** Story 2.4
-
-**Technical Notes:**
-
-- Use `supabase.auth.resetPasswordForEmail()`
-- Reset page uses `supabase.auth.updateUser({ password })`
-- Validate password matches requirements before submit
-- Token validated by Supabase automatically
-
----
-
-### Story 2.6: Segmentation Prompt (The "Trojan Horse")
-
-**As a** new user,
-**I want** to indicate my primary goal (speed vs. safety),
-**So that** the app tailors its experience to my needs.
-
-**Acceptance Criteria:**
-
-**Given** I am a new user who just verified my email or signed up via social
-**When** I land on `/onboarding`
-**Then** I see the Segmentation Prompt:
-
-- **Progress indicator**: "Step 3 of 3: Personalize Your Experience"
-- Headline: "How can we help you today?"
-- **Reassurance text**: "You can change this anytime in Settings"
-- Two large, visually distinct cards:
-
-**Card A - "I need a name fast"**
-
-- Icon: Lightning bolt (⚡)
-- Subtext: "Get creative names quickly and check availability"
-- Border: Electric Teal accent on hover
-- Visual: Speed-focused imagery
-
-**Card B - "I need a defensible brand"**
-
-- Icon: Shield (🛡️)
-- Subtext: "Deep analysis for trademark safety and legal clarity"
-- Border: Indigo accent on hover
-- Visual: Security-focused imagery
-
-**And** when I click a card:
-
-- Card shows selected state (border highlight + checkmark)
-- "Continue" button enables
-- My choice is stored: `user_profiles.segment = 'lean' | 'high-stakes'`
-- Zustand `sessionStore.userType` is updated
-- I am redirected to first-run experience (Story 2.9)
-
-**And** the page cannot be skipped - segment is required (but reassurance reduces hesitation)
-**And** layout is centered, single-column, no distractions
-**And** mobile: cards stack vertically with full width
+**And** this selection applies **only to the current session**
+**And** I can start a new session later with a different plan
 
 **Prerequisites:** Story 2.1, Story 1.6
 
 **Technical Notes:**
-
-- Create `server/actions/auth.ts` → `setUserSegment()` action
-- Update `user_profiles` table with segment choice
-- Use Zustand persist to remember across sessions
-- This choice affects Narrative Architect system prompt in Epic 3
-- Consider animated transitions (Aceternity spotlight effect on cards)
+- Update `naming_sessions` table: add `plan` enum column
+- Remove `segment` from `user_profiles` table
+- Update `sessionStore` to track `currentSessionPlan` instead of `userType`
+- Plan selection happens *before* the main chat loop begins
 
 ---
 
-### Story 2.7: Protected Route Middleware
-
-**As a** developer,
-**I want** routes properly protected based on auth state,
-**So that** unauthenticated users cannot access protected features.
-
-**Acceptance Criteria:**
-
-**Given** the middleware is configured
-**When** a user accesses different routes
-**Then** the following rules apply:
-
-| Route Pattern         | Auth Required | Segment Required | Behavior                                                      |
-| --------------------- | ------------- | ---------------- | ------------------------------------------------------------- |
-| `/`                   | No            | No               | Public landing page                                           |
-| `/login`, `/auth/sign-up` | No            | No               | Redirect to `/app` if authenticated                           |
-| `/onboarding`         | Yes           | No               | Redirect to `/app` if segment set                             |
-| `/app/**`             | Yes           | Yes              | Redirect to `/login` if not auth, `/onboarding` if no segment |
-| `/api/webhooks/**`    | No            | No               | Public (webhook endpoints)                                    |
-
-**And** unauthorized access shows appropriate message/redirect
-**And** redirect preserves original destination (`?redirect=/intended-page`)
-**And** middleware runs on edge for fast response
-
-**Prerequisites:** Story 2.6, Story 1.2
-
-**Technical Notes:**
-
-- Implement in `middleware.ts` at project root
-- Use `@supabase/ssr` (v0.7.0) to read session from cookies
-- Check `user_profiles.segment` via server action or cached in JWT claims
-- Consider adding segment to JWT custom claims for faster middleware checks
-- Matcher config: exclude static files, images, favicon
-- Middleware uses `createServerClient` pattern from Architecture Security section
-
----
 
 ### Story 2.8: User Profile Display & Sign Out
 
@@ -655,7 +482,6 @@ This epic establishes all foundational infrastructure. Upon completion:
 **Then** a dropdown menu appears with:
 
 - My email address (truncated if long)
-- My segment badge ("Speed" or "Certainty")
 - "Order History" link (→ `/app/orders`)
 - "Settings" link (→ `/app/settings`) [placeholder]
 - Divider
@@ -671,57 +497,45 @@ This epic establishes all foundational infrastructure. Upon completion:
 **And** on mobile: profile is in header menu, opens full-screen menu
 **And** avatar shows user initial if no profile picture
 
-**Prerequisites:** Story 2.4, Story 2.6
+**Prerequisites:** Story 2.4
 
 **Technical Notes:**
 
 - Use shadcn/ui `DropdownMenu` component
-- Sign out via `server/actions/auth.ts` → `signOut()`
+- Sign out via supabase
 - Clear all Zustand stores on sign out: `sessionStore.reset()`, `namingStore.reset()`
 - Avatar uses `@supabase/auth-helpers` to get user metadata
 
 ---
 
-### Story 2.9: First-Run Experience (Segment-Aware Welcome)
+### Story 2.9: New User Welcome
 
 **As a** newly registered user,
-**I want** a guided welcome that matches my selected path,
-**So that** I immediately understand how to use the app and feel confident starting.
+**I want** a guided welcome that helps me start my first project,
+**So that** I immediately understand how to use the app.
 
 **Acceptance Criteria:**
 
-**Given** I just completed segmentation (Story 2.6)
+**Given** I just registered and logged in
 **When** I land on the dashboard for the first time
-**Then** I see a segment-specific welcome overlay:
+**Then** I see a welcome overlay:
 
-**Lean Entrepreneur Path:**
-
-- Headline: "Let's find your name in 60 seconds! ⚡"
-- Single prominent CTA: "Start Naming" → opens Narrative Architect chat
-- Skip link: "Explore on my own" → dismisses overlay
-- Visual: Minimal, action-focused
-
-**High-Stakes Founder Path:**
-
-- Headline: "Let's build your brand foundation 🛡️"
-- Guided prompt: "Start with your vision" → opens structured questionnaire
-- Secondary option: "Jump to naming" → opens chat with safety-first system prompt
-- Visual: More structured, emphasizes thoroughness
+- Headline: "Welcome to Name Your Next Great Idea! 🚀"
+- Subtext: "Let's find the perfect name for your venture."
+- Single prominent CTA: "Start New Project" → triggers Plan Selection (Story 2.6)
+- Skip link: "Explore Dashboard" → dismisses overlay
 
 **And** the welcome overlay:
-
 - Appears only on first dashboard visit (tracked in `user_profiles.first_run_completed`)
 - Can be dismissed and never shown again
 - Animates in smoothly (fade + slide up)
 - Mobile: Full-screen takeover with clear touch targets
 
 **And** after dismissal:
+- User lands on dashboard with empty state
+- "Start New Project" button is prominent in the UI
 
-- User lands on dashboard with segment-appropriate default view
-- Lean: Chat panel open, ready to type
-- High-Stakes: Overview panel with "Start Your Brand Journey" card
-
-**Prerequisites:** Story 2.6, Story 1.5
+**Prerequisites:** Story 2.1, Story 1.5
 
 **Technical Notes:**
 
@@ -735,16 +549,11 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 **Epic 2 Complete!**
 
-This epic delivers complete authentication and user segmentation. Upon completion:
+This epic delivers complete authentication and user onboarding. Upon completion:
 
-- ✅ Users can register via email, magic link, or social (Google/GitHub)
-- ✅ Email verification flow works
-- ✅ Login with "Remember me" and session management
-- ✅ Password reset flow complete
-- ✅ "Trojan Horse" segmentation captures user type with reassurance
-- ✅ Routes properly protected by middleware
+- ✅ Session-based plan selection implemented
 - ✅ Profile menu with sign out
-- ✅ Segment-aware first-run experience bridges to Epic 3
+- ✅ First-run experience bridges to Epic 3
 
 **FRs Delivered:** FR1 ✅, FR2 ✅
 
