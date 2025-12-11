@@ -1,5 +1,4 @@
-import { convertToModelMessages, streamText, UIMessage } from 'ai'
-import { google } from '@ai-sdk/google'
+import { convertToModelMessages, UIMessage } from 'ai'
 import { and, eq } from 'drizzle-orm'
 import { establishingCriteriaAgent } from '@/server/agents/establishing-criteria'
 import { db } from '@/server/lib/db'
