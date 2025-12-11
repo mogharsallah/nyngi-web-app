@@ -1,9 +1,8 @@
 import { defineConfig } from 'drizzle-kit'
 
 if (process.env.NODE_ENV === 'development') {
-  const dotenv = await import('dotenv')
-
-  dotenv.config({
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('dotenv').config({
     path: '.env.local',
   })
 }
