@@ -1,10 +1,6 @@
 import { Header } from '@/components/shared'
 
-export default function ReportsLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function ReportsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

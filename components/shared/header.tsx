@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
@@ -17,22 +17,13 @@ export function Header() {
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link
-            href="/studio"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href="/studio" className="text-muted-foreground hover:text-foreground transition-colors">
             {t('studio')}
           </Link>
-          <Link
-            href="/reports"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href="/reports" className="text-muted-foreground hover:text-foreground transition-colors">
             {t('reports')}
           </Link>
-          <Link
-            href="/orders"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href="/orders" className="text-muted-foreground hover:text-foreground transition-colors">
             {t('orders')}
           </Link>
         </nav>

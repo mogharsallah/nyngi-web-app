@@ -22,10 +22,7 @@ export default function OrdersLoading() {
 
         {/* Table Rows */}
         {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="grid grid-cols-5 gap-4 p-4 border-b last:border-0"
-          >
+          <div key={i} className="grid grid-cols-5 gap-4 p-4 border-b last:border-0">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-4 w-16" />

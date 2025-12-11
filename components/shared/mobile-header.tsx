@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useTranslations } from 'next-intl'
 import { cn } from '@/components/lib/utils'
@@ -25,10 +25,7 @@ export function MobileHeader({ activeView, onViewChange }: MobileHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={() => onViewChange('chat')}
-            className={cn(
-              'min-h-11 min-w-11 px-3 py-1.5 rounded-md text-sm font-medium',
-              activeView === 'chat' && 'bg-background shadow-sm'
-            )}
+            className={cn('min-h-11 min-w-11 px-3 py-1.5 rounded-md text-sm font-medium', activeView === 'chat' && 'bg-background shadow-sm')}
           >
             {t('chatPanel')}
           </Button>
@@ -36,10 +33,7 @@ export function MobileHeader({ activeView, onViewChange }: MobileHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={() => onViewChange('canvas')}
-            className={cn(
-              'min-h-11 min-w-11 px-3 py-1.5 rounded-md text-sm font-medium',
-              activeView === 'canvas' && 'bg-background shadow-sm'
-            )}
+            className={cn('min-h-11 min-w-11 px-3 py-1.5 rounded-md text-sm font-medium', activeView === 'canvas' && 'bg-background shadow-sm')}
           >
             {t('canvasPanel')}
           </Button>

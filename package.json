@@ -80,6 +80,6 @@
     "vitest": "^4.0.15"
   },
   "lint-staged": {
-    "**/*.{js,mjs,cjs,jsx,ts}": "eslint"
+    "**/*.{js,mjs,cjs,jsx,ts}": ["oxfmt --check", "eslint"]
   }
 }
