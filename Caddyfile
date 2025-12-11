@@ -4,6 +4,10 @@
 	}
 }
 
+http://{$HOST} {
+	redir https://{host}{uri}
+}
+
 https://{$HOST} {
 	# Forwards all traffic to your backend app
 
