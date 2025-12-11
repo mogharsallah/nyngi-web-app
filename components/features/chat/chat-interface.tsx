@@ -1,15 +1,11 @@
 'use client'
 
 import { useStudioStore } from '@/components/providers/studio-store-provider'
-import { Button } from '@/components/ui/button'
-import { establishCriteria } from '@/server/actions/studio'
-import { act, useState } from 'react'
+import { useState } from 'react'
 import { useChat } from '@ai-sdk/react'
-import type { establishingCriteriaAgent } from '@/server/agents/establishing-criteria'
-import { DefaultChatTransport, InferAgentUIMessage, TextStreamChatTransport } from 'ai'
+import { DefaultChatTransport } from 'ai'
 
 export function ChatInterface() {
-  const currentSessionPlan = useStudioStore((state) => state.currentSessionPlan)
   const currentSessionId = useStudioStore((state) => state.currentSessionId)
 
   const { messages, sendMessage, status } = useChat({
