@@ -56,7 +56,7 @@ development_status:
   # Stories: 9
   # ═══════════════════════════════════════════════════════════════════════════
   epic-2: contexted
-  2-6-segmentation-prompt-trojan-horse: ready-for-dev
+  2-6-segmentation-prompt-trojan-horse: review
   2-8-user-profile-display-sign-out: ready-for-dev
   2-9-first-run-experience-segment-aware-welcome: ready-for-dev
   epic-2-retrospective: optional

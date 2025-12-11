@@ -1732,7 +1732,7 @@ test.describe("Checkout Flow", () => {
     await page.click('button[type="submit"]');
 
     // Navigate to studio
-    await page.goto("/studio");
+    await page.goto("/");
 
     // Generate names
     await page.fill('[data-testid="chat-input"]', "Tech startup for AI tools");

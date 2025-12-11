@@ -34,7 +34,6 @@ export const userProfiles = pgTable(
       .notNull()
       .unique()
       .references(() => authUsers.id, { onDelete: 'cascade' }),
-    segment: text('segment', { enum: ['lean', 'high-stakes'] }),
     firstRunCompleted: boolean('first_run_completed').default(false),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -71,6 +70,7 @@ export const namingSessions = pgTable(
     userId: uuid('user_id')
       .notNull()
       .references(() => authUsers.id, { onDelete: 'cascade' }),
+    plan: text('plan', { enum: ['velocity', 'legacy'] }).notNull(),
     criteria: jsonb('criteria').notNull(), // { industry, description, tone, audience, constraints }
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),

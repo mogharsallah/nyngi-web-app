@@ -70,6 +70,7 @@
 - PRD: {prd_content} (loaded if available)
 - Architecture: {architecture_content} (loaded if available)
 - Epics: {epics_content} (loaded if available)
+- Epics: {llms_content} (loaded if available)
 - UX Design: {ux_design_content} (loaded if available)
 - Tech Spec: {tech_spec_content} (loaded if available, Quick Flow track)
 - Brownfield docs: {document_project_content} (loaded via INDEX_GUIDED if available)

@@ -17,6 +17,14 @@
     "Sentry": {
       "url": "https://mcp.sentry.dev/mcp/nyngi/javascript-nextjs",
       "type": "http"
+    },
+    "ai-elements": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://registry.ai-sdk.dev/api/mcp"
+      ]
     }
     // "polar-sandbox": {
 

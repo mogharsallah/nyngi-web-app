@@ -1,3 +1,9 @@
+import { PlanSelection } from '@/components/features/onboarding/plan-selection'
+
 export default function StudioPage() {
-  return null
+  return (
+    <div>
+      <PlanSelection />
+    </div>
+  )
 }

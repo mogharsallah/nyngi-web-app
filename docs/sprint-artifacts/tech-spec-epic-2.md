@@ -162,3 +162,10 @@ function createSession(plan: 'velocity' | 'legacy'): Promise<ActionResponse<{ se
 *   **E2E Tests (Playwright):**
     *   Plan Selection Flow (Verify session created).
     *   First Run Experience (Welcome Overlay).
+
+## Post-Review Follow-ups
+
+*   **Story 2.6 (Plan Selection):**
+    *   [ ] [High] Implement "Input Details" form or integration in `ChatInterface` to replace hardcoded data (AC-2.6.1)
+    *   [ ] [High] Update E2E test to cover the full flow including Input Details (Task 6.2)
+

@@ -53,6 +53,10 @@ input_file_patterns:
     whole: "{output_folder}/*architecture*.md"
     sharded: "{output_folder}/*architecture*/*.md"
     load_strategy: "FULL_LOAD"
+  llms_content:
+    description: "External documentation references (LLMS) (llms.txt) for project technologies"
+    whole: "{output_folder}:llms.md"
+    load_strategy: "FULL_LOAD"
   ux_design:
     description: "UX design specification (if UI)"
     whole: "{output_folder}/*ux*.md"

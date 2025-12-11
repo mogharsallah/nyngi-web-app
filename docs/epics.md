@@ -547,6 +547,28 @@ This epic establishes all foundational infrastructure. Upon completion:
 
 ---
 
+### Story 2.10: User Dashboard
+
+**As a** user,
+**I want** a central dashboard to view my naming sessions,
+**So that** I can resume previous work or start new projects.
+
+**Acceptance Criteria:**
+
+**Given** I am logged in
+**When** I visit `/dashboard` (or the root app route)
+**Then** I see a list of my naming sessions:
+- **Session Card:** Shows creation date, Plan type (Velocity/Legacy), and number of generated names.
+- **Resume Action:** Clicking a card navigates to `/studio/[session_id]`.
+- **New Project Action:** Prominent "Start New Session" button triggers the Plan Selection flow (Story 2.6).
+
+**And** if I have no sessions (Empty State):
+- I see the "New User Welcome" (Story 2.9) or a clear "Create your first project" prompt.
+
+**Prerequisites:** Story 2.1, Story 1.3
+
+---
+
 **Epic 2 Complete!**
 
 This epic delivers complete authentication and user onboarding. Upon completion:
@@ -581,7 +603,7 @@ This epic delivers complete authentication and user onboarding. Upon completion:
 
 **Given** I am on the dashboard with the "Studio" layout
 **When** I view the chat panel (left side on desktop, Chat tab on mobile)
-**Then** I see the Narrative Architect interface:
+**Then** I see the Narrative Architect interface **located in the Chat Panel (Left Side)**:
 
 - Chat header: "Narrative Architect" with AI avatar icon
 - Message history area (scrollable, auto-scroll to bottom on new messages)
@@ -715,7 +737,7 @@ This epic delivers complete authentication and user onboarding. Upon completion:
 - Names must feel ownable, memorable, and distinct
 - System prompt includes 5 examples of "great names" and 5 "terrible names" to guide AI
 
-**And** names appear in the Canvas (right panel):
+**And** names appear in the **Canvas Panel (Right Side)**:
 
 - Displayed as Name Cards in a responsive grid (3-4 columns desktop, 2 mobile)
 - Each card shows: Name (large), Rationale (smaller), Traffic Light badge (corner)
