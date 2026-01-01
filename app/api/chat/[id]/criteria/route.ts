@@ -1,4 +1,4 @@
-import { convertToModelMessages, UIMessage } from 'ai'
+import { convertToModelMessages } from 'ai'
 import { and, eq } from 'drizzle-orm'
 import { establishingCriteriaAgent } from '@/server/agents/establishing-criteria'
 import { db } from '@/server/lib/db'
@@ -12,7 +12,7 @@ export async function POST(request: Request, ctx: RouteContext<'/api/chat/[id]/c
   const sessionId = (await ctx.params).id
   const user = await (await createClient()).auth.getUser()
 
-  const { messages }: { messages: UIMessage[]; sessionId: string } = await request.json()
+  const { messages } = await request.json()
 
   const session = await db
     .select()
@@ -26,10 +26,9 @@ export async function POST(request: Request, ctx: RouteContext<'/api/chat/[id]/c
   }
 
   const result = await establishingCriteriaAgent.stream({
-    messages: convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages),
     options: {
       userId: user.data.user!.id,
-      plan: session.plan,
       user_language: 'en', // Default to English; in real use, get from user settings
     },
   })

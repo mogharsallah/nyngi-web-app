@@ -1,8 +1,8 @@
 'use client'
 
-import { MessageAction, MessageActions } from '@/components/ai-elements/message'
-import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation'
-import { Message, MessageContent } from '@/components/ai-elements/message'
+import { MessageAction, MessageActions } from '@/components/features/ai/message'
+import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/features/ai/conversation'
+import { Message, MessageContent } from '@/components/features/ai/message'
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -12,18 +12,17 @@ import {
   PromptInputAttachment,
   PromptInputAttachments,
   PromptInputBody,
-  PromptInputButton,
   PromptInputFooter,
   PromptInputHeader,
   type PromptInputMessage,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
-} from '@/components/ai-elements/prompt-input'
+} from '@/components/features/ai/prompt-input'
 
-import { MessageResponse } from '@/components/ai-elements/message'
+import { MessageResponse } from '@/components/features/ai/message'
 
-import { CopyIcon, GlobeIcon, MicIcon, RefreshCcwIcon } from 'lucide-react'
+import { CopyIcon, RefreshCcwIcon } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { toast } from 'sonner'
 import { useStudioStore } from '@/components/providers'
