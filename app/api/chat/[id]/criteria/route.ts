@@ -22,7 +22,10 @@ export async function POST(request: Request, ctx: RouteContext<'/api/chat/[id]/c
     .then((rows) => rows[0])
 
   if (!session) {
-    return { success: false, error: 'Session not found', code: 'NOT_FOUND' }
+    return new Response(JSON.stringify({ success: false, error: 'Session not found', code: 'NOT_FOUND' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const result = await establishingCriteriaAgent.stream({

@@ -3,6 +3,7 @@ import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres, { Sql } from 'postgres'
 
 import * as schema from '@/server/lib/db/schema/public'
+import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
 
 type DbSchema = typeof schema
 
@@ -61,3 +62,20 @@ export const db = new Proxy({} as PostgresJsDatabase<DbSchema>, {
     return Reflect.get(getDb(), prop)
   },
 })
+
+export type SelectColumns<T extends keyof DbSchema> = Partial<Record<keyof InferSelectModel<DbSchema[T]>, boolean>>
+export type UpdateColumns<T extends keyof DbSchema> = Partial<InferInsertModel<DbSchema[T]>>
+export type InsertColumns<T extends keyof DbSchema> = InferInsertModel<DbSchema[T]>
+
+type Success<T> = { data: T; error: null }
+type Failure = { data: null; error: Error }
+type Result<T> = Success<T> | Failure
+
+export async function safeDb<T>(promise: Promise<T>): Promise<Result<T>> {
+  try {
+    const data = await promise
+    return { data, error: null }
+  } catch (e) {
+    return { data: null, error: e instanceof Error ? e : new Error(String(e)) }
+  }
+}

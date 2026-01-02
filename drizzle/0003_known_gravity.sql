@@ -1,0 +1,1 @@
+ALTER TABLE "naming_sessions" ADD COLUMN "messages" jsonb DEFAULT '[]'::jsonb NOT NULL;

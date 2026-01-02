@@ -1,3 +1,6 @@
+import type { UIMessage } from 'ai'
+import { Criteria } from '@/common/types/session'
+import { customJsonb } from '@/server/lib/db/schema/custom-types/jsonb'
 import { sql } from 'drizzle-orm'
 import { pgTable, pgPolicy, uuid, text, boolean, timestamp, jsonb, integer, index } from 'drizzle-orm/pg-core'
 import { authenticatedRole, authUid, authUsers } from 'drizzle-orm/supabase'
@@ -71,7 +74,8 @@ export const namingSessions = pgTable(
       .notNull()
       .references(() => authUsers.id, { onDelete: 'cascade' }),
     plan: text('plan', { enum: ['velocity', 'legacy'] }).notNull(),
-    criteria: jsonb('criteria').notNull(), // { industry, description, tone, audience, constraints }
+    criteria: customJsonb<Partial<Criteria>>('criteria').notNull(),
+    messages: customJsonb<UIMessage[]>('messages').notNull().default([]),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },

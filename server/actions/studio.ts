@@ -2,27 +2,20 @@
 
 import { z } from 'zod'
 import { authenticatedAction } from '@/server/lib/actions/safe-action'
-import { db } from '@/server/lib/db'
-import { namingSessions } from '@/server/lib/db/schema/public'
 import { redirect } from 'next/navigation'
+import NamingSessionService from '@/server/services/naming-session'
 
 const CreateSessionSchema = z.object({
   plan: z.enum(['velocity', 'legacy']),
 })
 
 export const createNamingSession = authenticatedAction(CreateSessionSchema, async function createNamingSession(input, userId) {
-  const { plan } = input
+  const { data, error } = await NamingSessionService.createSession(userId)
+  if (error) {
+    return { success: false, error: 'Failed to create naming session', code: 'INTERNAL_ERROR' }
+  }
 
-  const [session] = await db
-    .insert(namingSessions)
-    .values({
-      userId,
-      plan,
-      criteria: {}, // Initial empty criteria
-    })
-    .returning({ id: namingSessions.id })
-
-  redirect('/studio/' + session.id)
+  redirect('/studio/' + data[0])
 })
 
 const GenerateNamesSchema = z.object({

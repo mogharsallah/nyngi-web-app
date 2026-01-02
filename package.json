@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-      "node": "^24.12.0",
-      "pnpm": "^10.0.0"
+    "bun": ">=1.2.0"
   },
   "scripts": {
     "dev:host": "env-cmd -f .env.local caddy run",
     "dev:server": "FORCE_COLOR=1 env-cmd -f .env.local next dev",
-    "dev": "concurrently --kill-others --names \"host,server\" -c \"yellow,cyan\" \"npm run dev:host\" \"npm run dev:server\"",
+    "dev": "concurrently --kill-others --names \"host,server\" -c \"yellow,cyan\" \"bun run dev:host\" \"bun run dev:server\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -22,9 +21,9 @@
     "test:e2e": "PLAYWRIGHT_HTML_OPEN='never' playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:coverage": "vitest run --coverage",
-    "db:generate": "npx drizzle-kit generate",
-    "db:migrate": "npx drizzle-kit migrate",
-    "db:check": "npx drizzle-kit check"
+    "db:generate": "bun --env-file=.env.local run drizzle-kit generate",
+    "db:migrate": "bun --env-file=.env.local run drizzle-kit migrate",
+    "db:check": "bun --env-file=.env.local run drizzle-kit check"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.2",
@@ -79,7 +78,6 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.1",
