@@ -1,0 +1,222 @@
+## Transcription Models
+
+You can create models that call the [AssemblyAI transcription API](https://www.assemblyai.com/docs/getting-started/transcribe-an-audio-file/typescript)
+using the `.transcription()` factory method.
+
+The first argument is the model id e.g. `best`.
+
+```ts
+const model = assemblyai.transcription('best');
+```
+
+You can also pass additional provider-specific options using the `providerOptions` argument. For example, supplying the `contentSafety` option will enable content safety filtering.
+
+```ts highlight="6"
+import { experimental_transcribe as transcribe } from 'ai';
+import { assemblyai } from '@ai-sdk/assemblyai';
+import { readFile } from 'fs/promises';
+
+const result = await transcribe({
+  model: assemblyai.transcription('best'),
+  audio: await readFile('audio.mp3'),
+  providerOptions: { assemblyai: { contentSafety: true } },
+});
+```
+
+The following provider options are available:
+
+- **audioEndAt** _number_
+
+  End time of the audio in milliseconds.
+  Optional.
+
+- **audioStartFrom** _number_
+
+  Start time of the audio in milliseconds.
+  Optional.
+
+- **autoChapters** _boolean_
+
+  Whether to automatically generate chapters for the transcription.
+  Optional.
+
+- **autoHighlights** _boolean_
+
+  Whether to automatically generate highlights for the transcription.
+  Optional.
+
+- **boostParam** _enum_
+
+  Boost parameter for the transcription.
+  Allowed values: `'low'`, `'default'`, `'high'`.
+  Optional.
+
+- **contentSafety** _boolean_
+
+  Whether to enable content safety filtering.
+  Optional.
+
+- **contentSafetyConfidence** _number_
+
+  Confidence threshold for content safety filtering (25-100).
+  Optional.
+
+- **customSpelling** _array of objects_
+
+  Custom spelling rules for the transcription.
+  Each object has `from` (array of strings) and `to` (string) properties.
+  Optional.
+
+- **disfluencies** _boolean_
+
+  Whether to include disfluencies (um, uh, etc.) in the transcription.
+  Optional.
+
+- **entityDetection** _boolean_
+
+  Whether to detect entities in the transcription.
+  Optional.
+
+- **filterProfanity** _boolean_
+
+  Whether to filter profanity in the transcription.
+  Optional.
+
+- **formatText** _boolean_
+
+  Whether to format the text in the transcription.
+  Optional.
+
+- **iabCategories** _boolean_
+
+  Whether to include IAB categories in the transcription.
+  Optional.
+
+- **languageCode** _string_
+
+  Language code for the audio.
+  Supports numerous ISO-639-1 and ISO-639-3 language codes.
+  Optional.
+
+- **languageConfidenceThreshold** _number_
+
+  Confidence threshold for language detection.
+  Optional.
+
+- **languageDetection** _boolean_
+
+  Whether to enable language detection.
+  Optional.
+
+- **multichannel** _boolean_
+
+  Whether to process multiple audio channels separately.
+  Optional.
+
+- **punctuate** _boolean_
+
+  Whether to add punctuation to the transcription.
+  Optional.
+
+- **redactPii** _boolean_
+
+  Whether to redact personally identifiable information.
+  Optional.
+
+- **redactPiiAudio** _boolean_
+
+  Whether to redact PII in the audio file.
+  Optional.
+
+- **redactPiiAudioQuality** _enum_
+
+  Quality of the redacted audio file.
+  Allowed values: `'mp3'`, `'wav'`.
+  Optional.
+
+- **redactPiiPolicies** _array of enums_
+
+  Policies for PII redaction, specifying which types of information to redact.
+  Supports numerous types like `'person_name'`, `'phone_number'`, etc.
+  Optional.
+
+- **redactPiiSub** _enum_
+
+  Substitution method for redacted PII.
+  Allowed values: `'entity_name'`, `'hash'`.
+  Optional.
+
+- **sentimentAnalysis** _boolean_
+
+  Whether to perform sentiment analysis on the transcription.
+  Optional.
+
+- **speakerLabels** _boolean_
+
+  Whether to label different speakers in the transcription.
+  Optional.
+
+- **speakersExpected** _number_
+
+  Expected number of speakers in the audio.
+  Optional.
+
+- **speechThreshold** _number_
+
+  Threshold for speech detection (0-1).
+  Optional.
+
+- **summarization** _boolean_
+
+  Whether to generate a summary of the transcription.
+  Optional.
+
+- **summaryModel** _enum_
+
+  Model to use for summarization.
+  Allowed values: `'informative'`, `'conversational'`, `'catchy'`.
+  Optional.
+
+- **summaryType** _enum_
+
+  Type of summary to generate.
+  Allowed values: `'bullets'`, `'bullets_verbose'`, `'gist'`, `'headline'`, `'paragraph'`.
+  Optional.
+
+- **topics** _array of strings_
+
+  List of topics to detect in the transcription.
+  Optional.
+
+- **webhookAuthHeaderName** _string_
+
+  Name of the authentication header for webhook requests.
+  Optional.
+
+- **webhookAuthHeaderValue** _string_
+
+  Value of the authentication header for webhook requests.
+  Optional.
+
+- **webhookUrl** _string_
+
+  URL to send webhook notifications to.
+  Optional.
+
+- **wordBoost** _array of strings_
+
+  List of words to boost in the transcription.
+  Optional.
+
+### Model Capabilities
+
+| Model  | Transcription       | Duration            | Segments            | Language            |
+| ------ | ------------------- | ------------------- | ------------------- | ------------------- |
+| `best` | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> |
+| `nano` | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> |
+
+---
+title: DeepInfra
+description: Learn how to use DeepInfra's models with the AI SDK.
+---
+

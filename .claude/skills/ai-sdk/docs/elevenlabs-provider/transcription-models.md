@@ -1,0 +1,75 @@
+## Transcription Models
+
+You can create models that call the [ElevenLabs transcription API](https://elevenlabs.io/speech-to-text)
+using the `.transcription()` factory method.
+
+The first argument is the model id e.g. `scribe_v1`.
+
+```ts
+const model = elevenlabs.transcription('scribe_v1');
+```
+
+You can also pass additional provider-specific options using the `providerOptions` argument. For example, supplying the input language in ISO-639-1 (e.g. `en`) format can sometimes improve transcription performance if known beforehand.
+
+```ts highlight="6"
+import { experimental_transcribe as transcribe } from 'ai';
+import { elevenlabs } from '@ai-sdk/elevenlabs';
+
+const result = await transcribe({
+  model: elevenlabs.transcription('scribe_v1'),
+  audio: new Uint8Array([1, 2, 3, 4]),
+  providerOptions: { elevenlabs: { languageCode: 'en' } },
+});
+```
+
+The following provider options are available:
+
+- **languageCode** _string_
+
+  An ISO-639-1 or ISO-639-3 language code corresponding to the language of the audio file.
+  Can sometimes improve transcription performance if known beforehand.
+  Defaults to `null`, in which case the language is predicted automatically.
+
+- **tagAudioEvents** _boolean_
+
+  Whether to tag audio events like (laughter), (footsteps), etc. in the transcription.
+  Defaults to `true`.
+
+- **numSpeakers** _integer_
+
+  The maximum amount of speakers talking in the uploaded file.
+  Can help with predicting who speaks when.
+  The maximum amount of speakers that can be predicted is 32.
+  Defaults to `null`, in which case the amount of speakers is set to the maximum value the model supports.
+
+- **timestampsGranularity** _enum_
+
+  The granularity of the timestamps in the transcription.
+  Defaults to `'word'`.
+  Allowed values: `'none'`, `'word'`, `'character'`.
+
+- **diarize** _boolean_
+
+  Whether to annotate which speaker is currently talking in the uploaded file.
+  Defaults to `true`.
+
+- **fileFormat** _enum_
+
+  The format of input audio.
+  Defaults to `'other'`.
+  Allowed values: `'pcm_s16le_16'`, `'other'`.
+  For `'pcm_s16le_16'`, the input audio must be 16-bit PCM at a 16kHz sample rate, single channel (mono), and little-endian byte order.
+  Latency will be lower than with passing an encoded waveform.
+
+### Model Capabilities
+
+| Model                    | Transcription       | Duration            | Segments            | Language            |
+| ------------------------ | ------------------- | ------------------- | ------------------- | ------------------- |
+| `scribe_v1`              | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> |
+| `scribe_v1_experimental` | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> | <Check size={18} /> |
+
+---
+title: LM Studio
+description: Use the LM Studio OpenAI compatible API with the AI SDK.
+---
+

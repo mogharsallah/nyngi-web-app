@@ -1,0 +1,17 @@
+## Checking for this Error
+
+You can check if an error is an instance of `AI_JSONParseError` using:
+
+```typescript
+import { JSONParseError } from 'ai';
+
+if (JSONParseError.isInstance(error)) {
+  // Handle the error
+}
+```
+
+---
+title: AI_LoadAPIKeyError
+description: Learn how to fix AI_LoadAPIKeyError
+---
+

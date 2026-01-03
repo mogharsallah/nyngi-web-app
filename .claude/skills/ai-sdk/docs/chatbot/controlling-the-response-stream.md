@@ -1,0 +1,180 @@
+## Controlling the response stream
+
+With `streamText`, you can control how error messages and usage information are sent back to the client.
+
+### Error Messages
+
+By default, the error message is masked for security reasons.
+The default error message is "An error occurred."
+You can forward error messages or send your own error message by providing a `getErrorMessage` function:
+
+```ts filename="app/api/chat/route.ts" highlight="13-27"
+import { convertToModelMessages, streamText, UIMessage } from 'ai';
+__PROVIDER_IMPORT__;
+
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
+
+  const result = streamText({
+    model: __MODEL__,
+    messages: await convertToModelMessages(messages),
+  });
+
+  return result.toUIMessageStreamResponse({
+    onError: error => {
+      if (error == null) {
+        return 'unknown error';
+      }
+
+      if (typeof error === 'string') {
+        return error;
+      }
+
+      if (error instanceof Error) {
+        return error.message;
+      }
+
+      return JSON.stringify(error);
+    },
+  });
+}
+```
+
+### Usage Information
+
+Track token consumption and resource usage with [message metadata](/docs/ai-sdk-ui/message-metadata):
+
+1. Define a custom metadata type with usage fields (optional, for type safety)
+2. Attach usage data using `messageMetadata` in your response
+3. Display usage metrics in your UI components
+
+Usage data is attached as metadata to messages and becomes available once the model completes its response generation.
+
+```ts
+import { openai } from '@ai-sdk/openai';
+import {
+  convertToModelMessages,
+  streamText,
+  UIMessage,
+  type LanguageModelUsage,
+} from 'ai';
+__PROVIDER_IMPORT__;
+
+// Create a new metadata type (optional for type-safety)
+type MyMetadata = {
+  totalUsage: LanguageModelUsage;
+};
+
+// Create a new custom message type with your own metadata
+export type MyUIMessage = UIMessage<MyMetadata>;
+
+export async function POST(req: Request) {
+  const { messages }: { messages: MyUIMessage[] } = await req.json();
+
+  const result = streamText({
+    model: __MODEL__,
+    messages: await convertToModelMessages(messages),
+  });
+
+  return result.toUIMessageStreamResponse({
+    originalMessages: messages,
+    messageMetadata: ({ part }) => {
+      // Send total usage when generation is finished
+      if (part.type === 'finish') {
+        return { totalUsage: part.totalUsage };
+      }
+    },
+  });
+}
+```
+
+Then, on the client, you can access the message-level metadata.
+
+```tsx
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+import type { MyUIMessage } from './api/chat/route';
+import { DefaultChatTransport } from 'ai';
+
+export default function Chat() {
+  // Use custom message type defined on the server (optional for type-safety)
+  const { messages } = useChat<MyUIMessage>({
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+    }),
+  });
+
+  return (
+    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+      {messages.map(m => (
+        <div key={m.id} className="whitespace-pre-wrap">
+          {m.role === 'user' ? 'User: ' : 'AI: '}
+          {m.parts.map(part => {
+            if (part.type === 'text') {
+              return part.text;
+            }
+          })}
+          {/* Render usage via metadata */}
+          {m.metadata?.totalUsage && (
+            <div>Total usage: {m.metadata?.totalUsage.totalTokens} tokens</div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+You can also access your metadata from the `onFinish` callback of `useChat`:
+
+```tsx
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+import type { MyUIMessage } from './api/chat/route';
+import { DefaultChatTransport } from 'ai';
+
+export default function Chat() {
+  // Use custom message type defined on the server (optional for type-safety)
+  const { messages } = useChat<MyUIMessage>({
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+    }),
+    onFinish: ({ message }) => {
+      // Access message metadata via onFinish callback
+      console.log(message.metadata?.totalUsage);
+    },
+  });
+}
+```
+
+### Text Streams
+
+`useChat` can handle plain text streams by setting the `streamProtocol` option to `text`:
+
+```tsx filename="app/page.tsx" highlight="7"
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+import { TextStreamChatTransport } from 'ai';
+
+export default function Chat() {
+  const { messages } = useChat({
+    transport: new TextStreamChatTransport({
+      api: '/api/chat',
+    }),
+  });
+
+  return <>...</>;
+}
+```
+
+This configuration also works with other backend servers that stream plain text.
+Check out the [stream protocol guide](/docs/ai-sdk-ui/stream-protocol) for more information.
+
+<Note>
+  When using `TextStreamChatTransport`, tool calls, usage information and finish
+  reasons are not available.
+</Note>
+

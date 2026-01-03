@@ -1,0 +1,15 @@
+# Chapter Index: Chatbot
+
+- [Overview](overview.md)
+- [Example](example.md)
+- [Customized UI](customized-ui.md)
+- [Event Callbacks](event-callbacks.md)
+- [Request Configuration](request-configuration.md)
+- [Message Metadata](message-metadata.md)
+- [Transport Configuration](transport-configuration.md)
+- [Controlling the response stream](controlling-the-response-stream.md)
+- [Reasoning](reasoning.md)
+- [Sources](sources.md)
+- [Image Generation](image-generation.md)
+- [Attachments](attachments.md)
+- [Type Inference for Tools](type-inference-for-tools.md)

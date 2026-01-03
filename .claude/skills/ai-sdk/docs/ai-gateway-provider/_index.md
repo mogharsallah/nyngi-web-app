@@ -1,0 +1,16 @@
+# Chapter Index: AI Gateway Provider
+
+- [Overview](overview.md)
+- [Features](features.md)
+- [Setup](setup.md)
+- [Basic Usage](basic-usage.md)
+- [Provider Instance](provider-instance.md)
+- [Authentication](authentication.md)
+- [Bring Your Own Key (BYOK)](bring-your-own-key-byok.md)
+- [Language Models](language-models.md)
+- [Available Models](available-models.md)
+- [Dynamic Model Discovery](dynamic-model-discovery.md)
+- [Credit Usage](credit-usage.md)
+- [Examples](examples.md)
+- [Provider Options](provider-options.md)
+- [Model Capabilities](model-capabilities.md)
