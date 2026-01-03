@@ -15,7 +15,7 @@ export const createNamingSession = authenticatedAction(CreateSessionSchema, asyn
     return { success: false, error: 'Failed to create naming session', code: 'INTERNAL_ERROR' }
   }
 
-  redirect('/studio/' + data[0])
+  redirect('/studio/' + data[0].id)
 })
 
 const GenerateNamesSchema = z.object({

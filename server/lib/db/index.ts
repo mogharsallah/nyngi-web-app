@@ -67,15 +67,15 @@ export type SelectColumns<T extends keyof DbSchema> = Partial<Record<keyof Infer
 export type UpdateColumns<T extends keyof DbSchema> = Partial<InferInsertModel<DbSchema[T]>>
 export type InsertColumns<T extends keyof DbSchema> = InferInsertModel<DbSchema[T]>
 
-type Success<T> = { data: T; error: null }
-type Failure = { data: null; error: Error }
+type Success<T> = { success: true; data: T; error: null }
+type Failure = { success: false; data: null; error: Error }
 type Result<T> = Success<T> | Failure
 
 export async function safeDb<T>(promise: Promise<T>): Promise<Result<T>> {
   try {
     const data = await promise
-    return { data, error: null }
+    return { success: true, data, error: null }
   } catch (e) {
-    return { data: null, error: e instanceof Error ? e : new Error(String(e)) }
+    return { success: false, data: null, error: e instanceof Error ? e : new Error(String(e)) }
   }
 }
