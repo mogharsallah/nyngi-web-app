@@ -1,0 +1,17 @@
+# Chapter Index: Magical `sql` operator 🪄
+
+- [Overview](overview.md)
+- [sql`` template](sql-template.md)
+- [`sql<T>`](sqlt.md)
+- [`sql``.mapWith()`](sqlmapwith.md)
+- [`sql``.as<T>()`](sqlast.md)
+- [`sql.raw()`](sqlraw.md)
+- [sql.fromList()](sqlfromlist.md)
+- [sql.join()](sqljoin.md)
+- [sql.append()](sqlappend.md)
+- [sql.empty()](sqlempty.md)
+- [Convert `sql` to string and params](convert-sql-to-string-and-params.md)
+- [`sql` select](sql-select.md)
+- [`sql` in where](sql-in-where.md)
+- [`sql` in orderBy](sql-in-orderby.md)
+- [`sql` in having and groupBy](sql-in-having-and-groupby.md)

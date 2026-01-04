@@ -1,0 +1,60 @@
+# SQL Delete
+You can delete all rows in the table:
+```typescript copy
+await db.delete(users);
+```
+And you can delete with filters and conditions:
+```typescript copy
+await db.delete(users).where(eq(users.name, 'Dan'));
+```
+
+### Limit
+
+<IsSupportedChipGroup chips={{ 'PostgreSQL': false, 'MySQL': true, 'SQLite': true, 'SingleStore': true, 'MSSQL': false, 'CockroachDB': false }} />
+
+Use `.limit()` to add `limit` clause to the query - for example:
+<Section>
+```typescript
+await db.delete(users).where(eq(users.name, 'Dan')).limit(2);
+```
+```sql
+delete from "users" where "users"."name" = $1 limit $2;
+```
+</Section>
+
+### Order By
+Use `.orderBy()` to add `order by` clause to the query, sorting the results by the specified fields:
+<Section>
+```typescript
+import { asc, desc } from 'drizzle-orm';
+
+await db.delete(users).where(eq(users.name, 'Dan')).orderBy(users.name);
+await db.delete(users).where(eq(users.name, 'Dan')).orderBy(desc(users.name));
+
+// order by multiple fields
+await db.delete(users).where(eq(users.name, 'Dan')).orderBy(users.name, users.name2);
+await db.delete(users).where(eq(users.name, 'Dan')).orderBy(asc(users.name), desc(users.name2));
+```
+```sql
+delete from "users" where "users"."name" = $1 order by "name";
+delete from "users" where "users"."name" = $1 order by "name" desc;
+
+delete from "users" where "users"."name" = $1 order by "name", "name2";
+delete from "users" where "users"."name" = $1 order by "name" asc, "name2" desc;
+```
+</Section>
+
+### Returning
+<IsSupportedChipGroup chips={{ 'PostgreSQL': true, 'SQLite': true, 'MySQL': false, 'SingleStore': false, 'MSSQL': false, 'CockroachDB': true }} />
+You can delete a row and get it back in PostgreSQL and SQLite:
+```typescript copy
+const deletedUser = await db.delete(users)
+  .where(eq(users.name, 'Dan'))
+  .returning();
+
+// partial return
+const deletedUserIds: { deletedId: number }[] = await db.delete(users)
+  .where(eq(users.name, 'Dan'))
+  .returning({ deletedId: users.id });
+```
+

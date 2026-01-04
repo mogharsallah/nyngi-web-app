@@ -1,0 +1,6 @@
+# list todos for tenant (don't forget to use a real tenant-id in the URL)
+curl  -X GET \
+  'http://localhost:3001/api/tenants/108124a5-2e34-418a-9735-b93082e9fbf2/todos'
+```
+</Steps>
+

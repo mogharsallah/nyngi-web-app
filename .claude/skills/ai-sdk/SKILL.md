@@ -1,6 +1,6 @@
 ---
 name: ai-sdk
-description: Use the Vercel AI SDK (ai package) for building AI features. Use when implementing streaming chat, AI agents, tool calling, structured output, or any AI/LLM functionality. Triggers on mentions of AI SDK, useChat, streamText, generateText, or AI streaming.
+description: Use this for building AI features. Use when implementing streaming chat, AI agents, tool calling, structured output, or any AI/LLM functionality. Triggers on mentions of AI SDK, useChat, streamText, generateText, or AI streaming.
 allowed-tools: WebFetch, Read, Write, Edit, Glob, Grep, Bash
 ---
 
