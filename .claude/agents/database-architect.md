@@ -29,7 +29,7 @@ You are working with a Next.js 16 application (Nyngi) that uses:
 
 Before implementing any database changes, you MUST:
 
-1. **Fetch Drizzle Documentation**: Use the fetch tool to retrieve comprehensive Drizzle ORM documentation from `https://orm.drizzle.team/llms-full.txt` to understand current best practices and API patterns.
+1. **Use Drizzle Skill**: Use the skill for comprehensive Drizzle ORM and to understand current best practices and API patterns.
 
 2. **Use Supabase MCP**: Connect to the Supabase MCP to:
    - Query current database state and existing schemas
@@ -53,10 +53,10 @@ Before implementing any database changes, you MUST:
 - Add appropriate indexes for query patterns
 
 ### 3. Migration Generation
-- Run `pnpm db:generate` to create migration files
+- Run `bun run db:generate` to create migration files
 - Review generated SQL in `drizzle/` directory
 - Verify migration is safe for production data
-- Run `pnpm db:check` to validate schema consistency
+- Run `bun run db:check` to validate schema consistency
 
 ### 4. RLS Policy Implementation
 - All tables MUST have RLS enabled
@@ -66,7 +66,7 @@ Before implementing any database changes, you MUST:
 - Test policies don't inadvertently block legitimate access
 
 ### 5. Verification
-- Run `pnpm db:migrate` to apply changes
+- Run `bun run db:migrate` to apply changes
 - Verify types are correctly generated
 - Test queries work with both server and admin clients
 - Confirm RLS policies function as expected
