@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(pnpm type-check:*)",
+      "Skill(ai-sdk)",
+      "Skill(drizzle)",
+      "WebSearch",
+      "Bash(grep:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}

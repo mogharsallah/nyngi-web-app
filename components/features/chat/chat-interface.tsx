@@ -1,6 +1,5 @@
 'use client'
 
-import { MessageAction, MessageActions } from '@/components/features/ai/message'
 import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/features/ai/conversation'
 import { Message, MessageContent } from '@/components/features/ai/message'
 import {
@@ -22,23 +21,26 @@ import {
 
 import { MessageResponse } from '@/components/features/ai/message'
 
-import { CopyIcon, RefreshCcwIcon } from 'lucide-react'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useStudioStore } from '@/components/providers'
 import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport, UIMessage } from 'ai'
+import { DefaultChatTransport, UIMessage, lastAssistantMessageIsCompleteWithApprovalResponses } from 'ai'
+import { Button } from '@/components/ui/button'
+import { CheckCircle, XCircle, ArrowRight } from 'lucide-react'
 
-export const ChatInterface = () => {
+interface ChatInterfaceProps {
+  sessionId: string
+  initialMessages: UIMessage[]
+}
+
+export const ChatInterface = ({ sessionId, initialMessages }: ChatInterfaceProps) => {
   const [text, setText] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(true)
-  const currentSessionId = useStudioStore((state) => state.currentSessionId)
 
   // Custom transport that only sends the last message (server has history in DB)
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
-        api: `/api/chat/${currentSessionId}/criteria`,
+        api: `/api/chat/${sessionId}/criteria`,
         prepareSendMessagesRequest: ({ messages }) => {
           // Only send the last user message - server fetches history from DB
           const lastMessage = messages[messages.length - 1]
@@ -47,30 +49,16 @@ export const ChatInterface = () => {
           }
         },
       }),
-    [currentSessionId]
+    [sessionId]
   )
 
-  const { messages, setMessages, sendMessage, status, regenerate } = useChat({
+  const { messages, sendMessage, status, addToolApprovalResponse } = useChat({
+    id: sessionId,
+    messages: initialMessages, // Server-loaded messages passed as props
     transport,
+    // Auto-submit after tool approval responses are added
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
   })
-
-  // Load initial messages from DB on mount
-  useEffect(() => {
-    const loadMessages = async () => {
-      try {
-        const response = await fetch(`/api/chat/${currentSessionId}/criteria`)
-        if (response.ok) {
-          const data = await response.json()
-          if (data.messages?.length > 0) {
-            setMessages(data.messages as UIMessage[])
-          }
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadMessages()
-  }, [currentSessionId, setMessages])
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text.trim())
@@ -93,14 +81,6 @@ export const ChatInterface = () => {
     setText('')
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex size-full items-center justify-center">
-        <div className="text-muted-foreground text-sm">Loading conversation...</div>
-      </div>
-    )
-  }
-
   return (
     <div className="relative flex size-full flex-col divide-y overflow-hidden">
       <Conversation>
@@ -110,31 +90,77 @@ export const ChatInterface = () => {
             return (
               <Fragment key={messageKey}>
                 {message.parts.map((part, i) => {
-                  switch (part.type) {
-                    case 'text':
-                      const isLastMessage = messageIndex === messages.length - 1
-                      return (
-                        <Fragment key={`${messageKey}-${i}`}>
-                          <Message from={message.role}>
-                            <MessageContent>
-                              <MessageResponse>{part.text}</MessageResponse>
-                            </MessageContent>
-                          </Message>
-                          {message.role === 'assistant' && isLastMessage && (
-                            <MessageActions>
-                              <MessageAction onClick={() => regenerate()} label="Retry">
-                                <RefreshCcwIcon className="size-3" />
-                              </MessageAction>
-                              <MessageAction onClick={() => navigator.clipboard.writeText(part.text)} label="Copy">
-                                <CopyIcon className="size-3" />
-                              </MessageAction>
-                            </MessageActions>
-                          )}
-                        </Fragment>
-                      )
-                    default:
-                      return null
+                  const partKey = `${messageKey}-${i}`
+
+                  // Handle text parts
+                  if (part.type === 'text') {
+                    return (
+                      <Fragment key={partKey}>
+                        <Message from={message.role}>
+                          <MessageContent>
+                            <MessageResponse>{part.text}</MessageResponse>
+                          </MessageContent>
+                        </Message>
+                      </Fragment>
+                    )
                   }
+
+                  // Handle handover tool approval
+                  if (part.type === 'tool-handover') {
+                    if (part.state === 'approval-requested') {
+                      return (
+                        <div key={partKey} className="my-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                          <div className="mb-3 flex items-center gap-2">
+                            <ArrowRight className="size-5 text-primary" />
+                            <h4 className="font-medium">Ready for Brainstorming</h4>
+                          </div>
+                          <p className="mb-4 text-sm text-muted-foreground">
+                            The criteria brief is complete. Would you like to proceed to the brainstorming phase?
+                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                addToolApprovalResponse({
+                                  id: part.approval.id,
+                                  approved: true,
+                                })
+                              }
+                            >
+                              <CheckCircle className="mr-2 size-4" />
+                              Proceed to Brainstorming
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() =>
+                                addToolApprovalResponse({
+                                  id: part.approval.id,
+                                  approved: false,
+                                })
+                              }
+                            >
+                              <XCircle className="mr-2 size-4" />
+                              Continue Refining
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    if (part.state === 'output-available') {
+                      return (
+                        <div key={partKey} className="my-4 rounded-lg border border-green-500/20 bg-green-500/5 p-4">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="size-5 text-green-600" />
+                            <span className="font-medium text-green-700">Transitioned to Brainstorming Phase</span>
+                          </div>
+                        </div>
+                      )
+                    }
+                  }
+
+                  return null
                 })}
               </Fragment>
             )

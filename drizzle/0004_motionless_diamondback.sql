@@ -1,0 +1,2 @@
+ALTER TABLE "naming_sessions" ADD COLUMN "status" text DEFAULT 'criteria' NOT NULL;--> statement-breakpoint
+ALTER TABLE "naming_sessions" ADD CONSTRAINT "naming_sessions_status_check" CHECK ("status" IN ('criteria', 'brainstorming', 'completed'));

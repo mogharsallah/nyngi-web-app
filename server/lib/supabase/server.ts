@@ -21,3 +21,15 @@ export async function createClient() {
     },
   })
 }
+
+export async function getUserId() {
+  const supabase = await createClient()
+  const { data: user, error } = await supabase.auth.getUser()
+  if (error) {
+    return { data: null, error }
+  }
+  if (!user.user) {
+    return { data: null, error: null }
+  }
+  return { data: user.user.id || null, error: null }
+}

@@ -12,6 +12,7 @@ const CreateSessionSchema = z.object({
 export const createNamingSession = authenticatedAction(CreateSessionSchema, async function createNamingSession(input, userId) {
   const { data, error } = await NamingSessionService.createSession(userId)
   if (error) {
+    console.log(error)
     return { success: false, error: 'Failed to create naming session', code: 'INTERNAL_ERROR' }
   }
 

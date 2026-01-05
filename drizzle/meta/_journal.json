@@ -29,6 +29,13 @@
       "when": 1767375518383,
       "tag": "0003_known_gravity",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1767488404694,
+      "tag": "0004_motionless_diamondback",
+      "breakpoints": true
     }
   ]
 }

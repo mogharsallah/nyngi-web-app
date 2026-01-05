@@ -74,6 +74,11 @@ export const namingSessions = pgTable(
       .notNull()
       .references(() => authUsers.id, { onDelete: 'cascade' }),
     plan: text('plan', { enum: ['velocity', 'legacy'] }).notNull(),
+    status: text('status', {
+      enum: ['criteria', 'brainstorming', 'completed'],
+    })
+      .notNull()
+      .default('criteria'),
     criteria: customJsonb<Partial<Criteria>>('criteria').notNull(),
     messages: customJsonb<UIMessage[]>('messages').notNull().default([]),
     createdAt: timestamp('created_at').defaultNow().notNull(),

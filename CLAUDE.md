@@ -10,29 +10,29 @@ Nyngi is an AI-powered business naming platform with real-time IP/trademark risk
 
 ```bash
 # Development (runs Caddy reverse proxy + Next.js concurrently)
-pnpm dev
+bun dev
 
 # Build
-pnpm build
+bun build
 
 # Type checking
-pnpm type-check
+bun type-check
 
 # Testing
-pnpm test                 # Unit tests (Vitest)
-pnpm test:watch           # Watch mode
-pnpm test:e2e             # E2E tests (Playwright)
-pnpm test:e2e:ui          # Playwright UI mode
-pnpm test:coverage        # Coverage report
+bun test                 # Unit tests (Vitest)
+bun test:watch           # Watch mode
+bun test:e2e             # E2E tests (Playwright)
+bun test:e2e:ui          # Playwright UI mode
+bun test:coverage        # Coverage report
 
 # Database (Drizzle ORM)
-pnpm db:generate          # Generate migrations
-pnpm db:migrate           # Run migrations
-pnpm db:check             # Check schema
+bun db:generate          # Generate migrations
+bun db:migrate           # Run migrations
+bun db:check             # Check schema
 
 # Linting & Formatting
-pnpm lint                 # ESLint
-pnpm format               # oxfmt
+bun lint                 # ESLint
+bun format               # oxfmt
 ```
 
 ## Architecture

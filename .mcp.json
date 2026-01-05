@@ -1,8 +1,37 @@
 {
-  "mcpServers": {
-    "supabase": {
-      "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=bewadmxqpgewphunaylf"
-    }
+  "ai-sdk-elements": {
+    "command": "bunx",
+    "args": [
+      "-y",
+      "mcp-remote",
+      "https://registry.ai-sdk.dev/api/mcp"
+    ]
+  },
+  "shadcn": {
+    "command": "bunx",
+    "args": [
+      "shadcn@latest",
+      "mcp"
+    ],
+    "type": "stdio"
+  },
+  "supabase": {
+    "type": "http",
+    "url": "https://mcp.supabase.com/mcp?project_ref=bewadmxqpgewphunaylf"
+  },
+  "next-devtools": {
+    "command": "bunx",
+    "args": [
+      "-y",
+      "next-devtools-mcp@latest"
+    ],
+    "type": "stdio"
+  },
+  "chrome-devtools": {
+    "command": "bunx",
+    "args": [
+      "-y",
+      "chrome-devtools-mcp@latest"
+    ]
   }
 }

@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev:host": "env-cmd -f .env.local caddy run",
+    "dev:ai-tools": "bunx @ai-sdk/devtools",
     "dev:server": "FORCE_COLOR=1 env-cmd -f .env.local next dev",
-    "dev": "concurrently --kill-others --names \"host,server\" -c \"yellow,cyan\" \"bun run dev:host\" \"bun run dev:server\"",
+    "dev": "concurrently --kill-others --names \"host,server,ai-dev-tool\" -c \"yellow,cyan,orange\" \"bun run dev:host\" \"bun run dev:server\" \"bun run dev:ai-tools\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -26,6 +27,7 @@
     "db:check": "bun --env-file=.env.local run drizzle-kit check"
   },
   "dependencies": {
+    "@ai-sdk/devtools": "^0.0.3",
     "@ai-sdk/google": "^3.0.2",
     "@ai-sdk/react": "^3.0.5",
     "@radix-ui/react-collapsible": "^1.1.12",
