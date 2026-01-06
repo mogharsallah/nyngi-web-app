@@ -86,7 +86,7 @@ export const ChatInterface = ({ sessionId, initialMessages }: ChatInterfaceProps
       <Conversation>
         <ConversationContent>
           {messages.map((message, messageIndex) => {
-            const messageKey = message.id || `msg-${messageIndex}`
+            const messageKey = `${message.id || 'msg'}-${messageIndex}`
             return (
               <Fragment key={messageKey}>
                 {message.parts.map((part, i) => {
