@@ -44,7 +44,6 @@ app/                      # Next.js App Router routes
   api/                    # API routes (chat streaming, health checks)
   auth/                   # Authentication pages
   studio/[id]/            # Main workspace with parallel routes (@chat, @canvas)
-  orders/, reports/       # Order and report pages
 
 components/
   ui/                     # Shadcn/ui components
@@ -55,13 +54,13 @@ components/
 server/
   agents/                 # AI agents with tool definitions
   agents/instructions/    # Markdown files with agent prompts
-  actions/                # Server actions (studio.ts, orders.ts)
-  services/               # Business logic (report-generator, risk-engine)
+  actions/                # Server actions (studio.ts)
+  services/               # Business logic (naming-session.ts)
   lib/
     db/                   # Drizzle ORM setup and schema
     supabase/             # Server/admin/middleware Supabase clients
     logger/               # Pino logging with Sentry integration
-    actions/              # authenticatedAction wrapper
+    actions/              # secureAction and secureFormAction wrappers
 
 common/types/             # Shared TypeScript types
 drizzle/                  # SQL migration files
@@ -69,12 +68,13 @@ drizzle/                  # SQL migration files
 
 ### Key Patterns
 
-**Server Actions**: Use `authenticatedAction` wrapper from `server/lib/actions/safe-action.ts` for all mutations. It handles Zod validation, auth checks, and typed responses.
+**Server Actions**: Use `secureAction` and `secureFormAction` wrapper from `server/lib/actions/secure-action.ts` for all mutations. It handles Zod validation, auth checks, and typed responses.
 
-**AI Agents**: Located in `server/agents/`. Each agent has:
-- A TypeScript file with tool definitions using Zod schemas
+**AI Agents**: Located in `server/agents/`. Built with AI SDK's `ToolLoopAgent`:
+- `discovery.ts` - Main discovery agent with Zod-validated tools
 - Markdown instructions in `server/agents/instructions/`
-- Streaming responses via `toUIMessageStreamResponse()`
+- Uses `experimental_context` for session/user data injection
+- Streaming via `createAgentUIStreamResponse()`
 
 **State Management**: Zustand store in `components/lib/stores/studio-store.ts` for client state. Access via `useStudioStore` hook.
 
@@ -85,6 +85,8 @@ drizzle/                  # SQL migration files
 - `server/lib/supabase/admin.ts` - Service role operations
 - `components/lib/supabase/client.ts` - Browser client
 
+**Services**: Business logic in `server/services/`. Example: `NamingSessionService` provides static methods for session CRUD operations with type-safe column selection.
+
 ### Data Flow
 
 1. User authenticates via Supabase Auth
@@ -92,6 +94,13 @@ drizzle/                  # SQL migration files
 3. Database operations use Drizzle with RLS enforcement
 4. AI chat streams through `/api/chat/[id]/criteria` route
 5. Agents use tools to update session criteria in real-time
+
+### Session Structure
+
+The `Criteria` type in `common/types/session.ts` defines 6 phases:
+- Identity, Market, Audience, Tonality, Logistics, Misc
+
+Session status: `'criteria'` | `'brainstorming'` | `'completed'`
 
 ### Testing Structure
 
@@ -107,3 +116,4 @@ Coverage thresholds: Services 80%, Actions 70%, Components 50%
 - `drizzle.config.ts` - Database configuration (snake_case convention)
 - `components.json` - Shadcn UI configuration
 - `server/lib/db/schema/public.ts` - Complete database schema
+- `common/types/session.ts` - Session and Criteria type definitions

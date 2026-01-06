@@ -1,43 +1,16 @@
 'use server'
 
-import { z } from 'zod'
-import { authenticatedAction } from '@/server/lib/actions/safe-action'
+import { createSecureFormAction } from '@/server/lib/actions/secure-action'
 import { redirect } from 'next/navigation'
 import NamingSessionService from '@/server/services/naming-session'
+import { logger } from '@/server/lib/logger'
 
-const CreateSessionSchema = z.object({
-  plan: z.enum(['velocity', 'legacy']),
-})
-
-export const createNamingSession = authenticatedAction(CreateSessionSchema, async function createNamingSession(input, userId) {
+export const createNamingSession = createSecureFormAction(async function createNamingSession({ userId }) {
   const { data, error } = await NamingSessionService.createSession(userId)
   if (error) {
-    console.log(error)
-    return { success: false, error: 'Failed to create naming session', code: 'INTERNAL_ERROR' }
+    logger.error({ userId, error }, 'Failed to create naming session')
+    throw new Error('Failed to create naming session')
   }
 
   redirect('/studio/' + data[0].id)
-})
-
-const GenerateNamesSchema = z.object({
-  sessionId: z.string(),
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const generateNames = authenticatedAction(GenerateNamesSchema, async function generateNames(input, userId) {
-  // Placeholder logic
-  return [
-    { name: 'NovusArc', rationale: 'Latin for New Arch' },
-    { name: 'Vividly', rationale: 'Evokes brightness' },
-  ]
-})
-
-const ToggleFavoriteSchema = z.object({
-  nameId: z.string(),
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const toggleFavorite = authenticatedAction(ToggleFavoriteSchema, async function authenticatedAction(input, userId) {
-  // Placeholder logic
-  return { isFavorite: true }
 })

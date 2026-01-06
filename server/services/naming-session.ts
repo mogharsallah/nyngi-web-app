@@ -1,12 +1,22 @@
 import type { UIMessage } from 'ai'
 import { db, safeDb, SelectColumns, UpdateColumns } from '@/server/lib/db'
 import { namingSessions } from '@/server/lib/db/schema/public'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, desc, eq, sql } from 'drizzle-orm'
 import { merge } from 'es-toolkit'
 import { Criteria } from '@/common/types/session'
 import { DeepPartial } from '@/common/types/utils'
 
 export default class NamingSessionService {
+  static async getUserSessions(userId: string, columns?: SelectColumns<'namingSessions'>) {
+    return safeDb(
+      db.query.namingSessions.findMany({
+        where: eq(namingSessions.userId, userId),
+        columns,
+        orderBy: [desc(namingSessions.updatedAt)],
+      })
+    )
+  }
+
   static async getSessionById(sessionId: string, userId: string, columns?: SelectColumns<'namingSessions'>) {
     return safeDb(
       db.query.namingSessions.findFirst({
