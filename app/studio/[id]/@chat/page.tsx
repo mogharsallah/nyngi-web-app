@@ -14,8 +14,19 @@ export default async function StudioChatSlot({ params }: { params: Promise<{ id:
 
   // Service only handles data fetching
   const { data } = await NamingSessionService.getSessionById(id, userId, { messages: true })
-  // Filter scratchpad content from stored messages before sending to client
-  const messages = filterScratchpadFromMessages(data?.messages ?? [])
 
-  return <ChatInterface sessionId={id} initialMessages={messages} />
+  // Filter scratchpad content from stored messages before sending to client
+  const filteredMessages = filterScratchpadFromMessages(data?.messages ?? [])
+
+  // Deduplicate messages by ID (keep first occurrence)
+  const seenIds = new Set<string>()
+  const uniqueMessages = filteredMessages.filter((msg) => {
+    if (seenIds.has(msg.id)) {
+      return false
+    }
+    seenIds.add(msg.id)
+    return true
+  })
+
+  return <ChatInterface sessionId={id} initialMessages={uniqueMessages} />
 }

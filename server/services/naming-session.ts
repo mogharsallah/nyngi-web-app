@@ -72,11 +72,28 @@ export default class NamingSessionService {
   }
 
   static async appendMessages(sessionId: string, userId: string, newMessages: UIMessage[]) {
+    // Get existing messages to check for duplicates
+    const existingResult = await this.getSessionById(sessionId, userId, { messages: true })
+    if (!existingResult.success || !existingResult.data) {
+      return { data: null, error: existingResult.error || new Error('Session not found') }
+    }
+
+    const existingMessages = existingResult.data.messages || []
+    const existingIds = new Set(existingMessages.map((msg) => msg.id))
+
+    // Filter out messages that already exist
+    const uniqueNewMessages = newMessages.filter((msg) => !existingIds.has(msg.id))
+
+    // If no new unique messages, skip the update
+    if (uniqueNewMessages.length === 0) {
+      return { data: null, error: null }
+    }
+
     return safeDb(
       db
         .update(namingSessions)
         .set({
-          messages: sql`${namingSessions.messages} || ${JSON.stringify(newMessages)}::jsonb`,
+          messages: sql`${namingSessions.messages} || ${JSON.stringify(uniqueNewMessages)}::jsonb`,
           updatedAt: new Date(),
         })
         .where(and(eq(namingSessions.id, sessionId), eq(namingSessions.userId, userId)))
