@@ -1,5 +1,5 @@
 import { createAgentUIStreamResponse, createIdGenerator, UIMessage, validateUIMessages, TypeValidationError } from 'ai'
-import { DiscoveryAgent, discoveryAgentTools } from '@/server/ai/discovery'
+import { DiscoveryAgent, discoveryAgentTools } from '@/server/ai/agents/discovery'
 import { createClient } from '@/server/lib/supabase/server'
 import NamingSessionService from '@/server/services/naming-session'
 import { NextResponse } from 'next/server'
