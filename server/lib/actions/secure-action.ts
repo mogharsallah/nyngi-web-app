@@ -74,7 +74,7 @@ export function createSecureAction<TInput, TOutput>(handler: (ctx: SecureActionC
         input: validatedInput,
       })
 
-      logger.info({ action: actionName, userId, duration: Date.now() - startTime }, 'Action completed')
+      logger.info({ action: actionName, userId, duration: Date.now() - startTime }, 'Form action completed')
 
       return { success: true, data: result }
     } catch (error) {
@@ -178,7 +178,7 @@ export function createSecureFormAction<TPayload>(handler: (ctx: SecureFormAction
         payload,
       })
 
-      logger.info({ action: actionName, userId, duration: Date.now() - startTime }, 'Simple form action completed')
+      logger.info({ action: actionName, userId, duration: Date.now() - startTime }, 'Form action completed')
     } catch (error) {
       if ((error as Error)?.message === REDIRECT_ERROR_CODE) throw error
 
