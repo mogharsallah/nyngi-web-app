@@ -1,0 +1,13 @@
+{
+  "source": "https://orm.drizzle.team/llms-full.txt",
+  "source_type": "url",
+  "content_hash": "sha256:aabef897638cd7885c973f6aef01558e08e90b4d1c99104ef1136b132cacf25b",
+  "generated_at": "2026-01-11T22:08:38.145422+00:00",
+  "generator_version": "1.0.0",
+  "skill_name": "drizzle",
+  "stats": {
+    "chapters": 46,
+    "topics": 101,
+    "tokens": 338612
+  }
+}

@@ -1,34 +1,25 @@
 ---
 name: drizzle
 description: Drizzle ORM documentation and guides. Use when working with Drizzle queries, schemas, migrations, database operations, or when the user mentions Drizzle, database schemas, SQL with TypeScript, or ORM queries.
+allowed-tools: Read, Glob, Grep
 ---
 
-# Drizzle ORM Skill
+# drizzle Documentation
 
-This Skill provides access to comprehensive Drizzle ORM documentation organized by chapters for token-efficient retrieval.
+Comprehensive drizzle documentation organized for efficient retrieval.
 
 ## Retrieval Workflow
+1. **Find Chapter**: Read `_manifest.md` to locate the relevant category
+2. **Find Topic**: Read `_index.md` inside that chapter's folder
+3. **Read Content**: Read the specific topic file
 
-Follow this structured approach to find information:
-
-1. **Start with the manifest**: Read [_manifest.md](_manifest.md) to find the broad category for your topic
-2. **Find the specific topic**: Read the `_index.md` file inside the identified chapter's folder  
-3. **Read the content**: Open the referenced markdown file for detailed documentation
-
-## When to use search
-
-If you're unsure which chapter contains the information you need:
-
-```bash
-grep -r "search_term" .claude/skills/drizzle/docs/
+## Quick Search
+If unsure which chapter contains your answer, use grep:
+```
+grep -r "keyword" .claude/skills/drizzle/docs/
 ```
 
 ## Rules
-
-- **Always start at** [_manifest.md](_manifest.md)
-- **Do not guess file paths** - follow the manifest → index → content workflow
-- **Load only what you need** - don't read entire chapters unless necessary
-
-## Available Documentation
-
-See [_manifest.md](_manifest.md) for the complete chapter list, descriptions, and organization.
+- Always start at `_manifest.md` - never guess file paths
+- Read only necessary files to minimize token usage
+- Cite specific file paths when referencing documentation

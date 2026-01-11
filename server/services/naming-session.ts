@@ -99,4 +99,13 @@ export default class NamingSessionService {
         .where(and(eq(namingSessions.id, sessionId), eq(namingSessions.userId, userId)))
     )
   }
+
+  static async updateScratchpad(sessionId: string, userId: string, content: string) {
+    return safeDb(
+      db
+        .update(namingSessions)
+        .set({ scratchpad: content, updatedAt: new Date() })
+        .where(and(eq(namingSessions.id, sessionId), eq(namingSessions.userId, userId)))
+    )
+  }
 }

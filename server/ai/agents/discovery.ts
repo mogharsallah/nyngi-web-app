@@ -5,7 +5,7 @@ import { loadMarkdown } from '@/server/lib/fs/file-loader'
 import NamingSessionService from '@/server/services/naming-session'
 import { devToolsMiddleware } from '@ai-sdk/devtools'
 
-const instructions = loadMarkdown('server/agents/instructions/discovery-v0.md')
+const instructions = loadMarkdown('server/ai/instructions/discovery-v1.md')
 interface AgentContext {
   userId: string
   sessionId: string
@@ -41,9 +41,29 @@ const handoverTool = tool({
   },
 })
 
+/**
+ * Scratchpad tool - Records internal thinking and planning
+ * Called at the start of each response to persist progress tracking
+ */
+const scratchpadTool = tool({
+  description:
+    'Use this tool to record your internal thinking, track information gathered, and plan your next moves. Call this at the start of each response before replying to the user.',
+  inputSchema: z.object({
+    content: z.string().describe('The scratchpad content in markdown format'),
+  }),
+  execute: async ({ content }, options) => {
+    const typedContext = options.experimental_context as AgentContext
+
+    await NamingSessionService.updateScratchpad(typedContext.sessionId, typedContext.userId, content)
+
+    return { success: true as const }
+  },
+})
+
 // Export tools for message validation in API routes
 export const discoveryAgentTools = {
   handover: handoverTool,
+  scratchpad: scratchpadTool,
 }
 
 const model = wrapLanguageModel({
@@ -62,6 +82,7 @@ export const DiscoveryAgent = new ToolLoopAgent({
     userId: z.string(),
     sessionId: z.string(),
     user_language: z.string(),
+    scratchpad: z.string().optional(),
   }),
   instructions,
   tools: discoveryAgentTools,
@@ -72,11 +93,9 @@ export const DiscoveryAgent = new ToolLoopAgent({
       userId: options.userId,
       sessionId: options.sessionId,
     },
-    instructions: settings.instructions?.toString().replace(
-      '{{USER_CONTEXT}}',
-      `
-- User Language: ${options.user_language}
-`
-    ),
+    instructions: settings.instructions
+      ?.toString()
+      .replace('{{USER_CONTEXT}}', `- User Language: ${options.user_language}`)
+      .replace('{{PREVIOUS_SCRATCHPAD}}', options.scratchpad || 'No previous scratchpad. This is the first turn.'),
   }),
 })

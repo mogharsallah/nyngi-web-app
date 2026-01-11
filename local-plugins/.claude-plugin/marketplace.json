@@ -1,0 +1,15 @@
+{
+  "name": "local-plugins",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Mohamed"
+  },
+  "plugins": [
+    {
+      "name": "shardskill",
+      "source": "./shardskill",
+      "description": "Generate Claude Code skills from llms.txt documentation files. Supports URL fetching, source tracking, and automatic updates.",
+      "version": "1.0.0"
+    }
+  ]
+}

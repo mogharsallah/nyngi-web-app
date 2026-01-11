@@ -1,7 +1,6 @@
 import { ChatInterface } from '@/components/features/chat/chat-interface'
 import { getUserId } from '@/server/lib/supabase/server'
 import NamingSessionService from '@/server/services/naming-session'
-import { filterScratchpadFromMessages } from '@/server/lib/stream/scratchpad-filter'
 
 export default async function StudioChatSlot({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -15,12 +14,11 @@ export default async function StudioChatSlot({ params }: { params: Promise<{ id:
   // Service only handles data fetching
   const { data } = await NamingSessionService.getSessionById(id, userId, { messages: true })
 
-  // Filter scratchpad content from stored messages before sending to client
-  const filteredMessages = filterScratchpadFromMessages(data?.messages ?? [])
+  const messages = data?.messages ?? []
 
   // Deduplicate messages by ID (keep first occurrence)
   const seenIds = new Set<string>()
-  const uniqueMessages = filteredMessages.filter((msg) => {
+  const uniqueMessages = messages.filter((msg) => {
     if (seenIds.has(msg.id)) {
       return false
     }

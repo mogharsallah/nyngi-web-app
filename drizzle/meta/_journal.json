@@ -36,6 +36,13 @@
       "when": 1767488404694,
       "tag": "0004_motionless_diamondback",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1768151628617,
+      "tag": "0005_smart_speed_demon",
+      "breakpoints": true
     }
   ]
 }

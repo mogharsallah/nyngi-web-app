@@ -1,0 +1,13 @@
+{
+  "source": "https://sdk.vercel.ai/llms.txt",
+  "source_type": "url",
+  "content_hash": "sha256:19844928d00a5c8c5c3600f8c3e20260b69ed45c6fb67c9093e53196de13976a",
+  "generated_at": "2026-01-11T21:38:56.810466+00:00",
+  "generator_version": "1.0.0",
+  "skill_name": "vercel-ai-sdk",
+  "stats": {
+    "chapters": 126,
+    "topics": 637,
+    "tokens": 292702
+  }
+}

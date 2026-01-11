@@ -1,0 +1,1 @@
+ALTER TABLE "naming_sessions" ADD COLUMN "scratchpad" text;

@@ -1,3 +1,5 @@
-# Chapter Index: Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#migrations
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#migrations
 
-- [Overview](overview.md)
+## Topics (1 files, ~38 tokens)
+
+- [Overview](overview.md) - [[migrations]]

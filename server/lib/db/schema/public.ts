@@ -81,6 +81,7 @@ export const namingSessions = pgTable(
       .default('criteria'),
     criteria: customJsonb<Partial<Criteria>>('criteria').notNull(),
     messages: customJsonb<UIMessage[]>('messages').notNull().default([]),
+    scratchpad: text('scratchpad'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },

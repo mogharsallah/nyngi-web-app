@@ -1,3 +1,5 @@
-# Chapter Index: get tenants
+# get tenants
 
-- [Overview](overview.md)
+## Topics (1 files, ~16 tokens)
+
+- [Overview](overview.md) - curl  -X GET 'http://localhost:3001/api/tenants'

@@ -7,6 +7,8 @@ let nextConfig: NextConfig = {
 
   serverExternalPackages: ['thread-stream', 'pino', 'pino-worker', 'pino-file', 'pino-pretty'],
 
+  allowedDevOrigins: process.env.NODE_ENV === 'development' ? ['app.nyngi.local'] : undefined,
+
   output: 'standalone',
 }
 
