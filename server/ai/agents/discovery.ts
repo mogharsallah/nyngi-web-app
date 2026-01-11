@@ -1,5 +1,5 @@
 import { tool, ToolLoopAgent, stepCountIs, wrapLanguageModel } from 'ai'
-import { google } from '@ai-sdk/google'
+import { google, GoogleGenerativeAIProviderOptions } from '@ai-sdk/google'
 import { z } from 'zod'
 import { loadMarkdown } from '@/server/lib/fs/file-loader'
 import NamingSessionService from '@/server/services/naming-session'
@@ -52,6 +52,9 @@ const model = wrapLanguageModel({
 })
 
 export const DiscoveryAgent = new ToolLoopAgent({
+  providerOptions: {
+    google: {} satisfies GoogleGenerativeAIProviderOptions,
+  },
   model,
   stopWhen: stepCountIs(6),
   callOptionsSchema: z.object({
