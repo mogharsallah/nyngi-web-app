@@ -6,7 +6,8 @@
       "Skill(ai-sdk)",
       "Skill(drizzle)",
       "WebSearch",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(python3:*)"
     ]
   },
   "enabledMcpjsonServers": [
@@ -14,5 +15,6 @@
     "supabase",
     "next-devtools",
     "chrome-devtools"
-  ]
+  ],
+  "extraKnownMarketplaces": {}
 }

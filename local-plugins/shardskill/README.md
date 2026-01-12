@@ -9,6 +9,7 @@ A Claude Code plugin to generate skills from [llms.txt](https://llmstxt.org/) do
 - **Source tracking** - Track the original source for easy updates
 - **Smart updates** - Detect changes via content hashing, only regenerate when needed
 - **Config preservation** - User customizations (allowed-tools, description) survive updates
+- **Description generation** - AI-powered skill descriptions optimized for Claude Code discovery
 - **Token estimation** - Approximate token counts for each chapter and topic
 - **Code block safety** - Never split content inside code fences
 - **H3+ chunking** - Only split on H1 (chapters) and H2 (topics), keep sub-headers together
@@ -84,12 +85,30 @@ List all skills with their tracking information.
 /shardskill:list
 ```
 
+### `/shardskill:describe`
+
+Generate an optimized description for a skill using Claude Code.
+
+```bash
+/shardskill:describe ai-sdk
+```
+
+This command analyzes the skill's content and generates a description optimized for Claude Code's skill discovery. The description is the **only** field Claude reads to determine when to use a skill, so this is important for discoverability.
+
+**Arguments:**
+- `<skill-name>` - Name of the skill to describe
+
+**How it works:**
+1. Reads the skill's `SKILL.md` to understand structure and content
+2. Analyzes chapter titles and token distribution
+3. Generates a description (max 1024 chars) following Claude Code best practices
+4. Updates the skill's frontmatter with the new description
+
 ## Generated Skill Structure
 
 ```
 .claude/skills/my-skill/
-├── SKILL.md           # Skill metadata and retrieval instructions
-├── _manifest.md       # Chapter catalog with token counts
+├── SKILL.md           # Skill metadata, chapter catalog, and retrieval instructions
 ├── .shardskill.json   # Source tracking for updates
 └── docs/
     ├── chapter-name/
@@ -132,7 +151,8 @@ This enables:
 2. **Code block safety** - Tracks fence state to never split inside code blocks
 3. **Normalization** - Cleans filenames, normalizes links
 4. **Token estimation** - Approximates ~4 chars per token
-5. **Index generation** - Creates `_manifest.md` and `_index.md` files for navigation
+5. **Index generation** - Creates `_index.md` files for chapter navigation
+6. **Catalog embedding** - Chapter listing is embedded directly in `SKILL.md`
 
 ## Requirements
 

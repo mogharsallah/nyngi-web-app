@@ -149,8 +149,15 @@ def preserve_skill_config(skill_dir: str) -> dict:
         return {}
 
 
-def generate_skill_md(skill_name: str, description: str, preserved_config: dict = None) -> str:
-    """Generate SKILL.md content with retrieval instructions."""
+def generate_skill_md(
+    skill_name: str,
+    description: str,
+    source: str,
+    chapters: list,
+    total_tokens: int,
+    preserved_config: dict = None
+) -> str:
+    """Generate SKILL.md content with chapter catalog and retrieval instructions."""
     config = {
         'name': skill_name,
         'description': description,
@@ -163,53 +170,53 @@ def generate_skill_md(skill_name: str, description: str, preserved_config: dict 
 
     frontmatter = '\n'.join(f"{k}: {v}" for k, v in config.items())
 
+    # Generate metadata
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    total_topics = sum(c['topic_count'] for c in chapters)
+
+    # Build chapter listing
+    chapter_lines = []
+    for chapter in chapters:
+        tokens_str = f"~{chapter['tokens']:,}" if chapter.get('tokens') else ""
+        chapter_lines.append(
+            f"- [{chapter['title']}](docs/{chapter['folder']}/_index.md) - "
+            f"{chapter['topic_count']} topics ({tokens_str} tokens)"
+        )
+    chapter_listing = '\n'.join(chapter_lines)
+
     return f"""---
 {frontmatter}
 ---
 
 # {skill_name} Documentation
 
-Comprehensive {skill_name} documentation organized for efficient retrieval.
+**Source**: `{source}`
+**Generated**: {timestamp}
+**Total**: {total_topics} topics across {len(chapters)} chapters (~{total_tokens:,} tokens)
 
 ## Retrieval Workflow
-1. **Find Chapter**: Read `_manifest.md` to locate the relevant category
-2. **Find Topic**: Read `_index.md` inside that chapter's folder
+
+1. **Find Chapter**: Browse the chapter listing below to locate the relevant category
+2. **Find Topic**: Read `_index.md` inside that chapter's folder for the topic list
 3. **Read Content**: Read the specific topic file
 
 ## Quick Search
-If unsure which chapter contains your answer, use grep:
+
+If unsure which chapter contains your answer:
 ```
 grep -r "keyword" .claude/skills/{skill_name}/docs/
 ```
 
+## Chapters
+
+{chapter_listing}
+
 ## Rules
-- Always start at `_manifest.md` - never guess file paths
+
+- Start at this file to locate content - never guess file paths
 - Read only necessary files to minimize token usage
 - Cite specific file paths when referencing documentation
 """
-
-
-def generate_manifest(skill_name: str, source: str, chapters: list, total_tokens: int) -> str:
-    """Generate _manifest.md with chapter listing and stats."""
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    total_topics = sum(c['topic_count'] for c in chapters)
-
-    lines = [
-        f"# {skill_name} Documentation Catalog",
-        "",
-        f"**Source**: `{source}`",
-        f"**Generated**: {timestamp}",
-        f"**Total**: {total_topics} topics across {len(chapters)} chapters (~{total_tokens:,} tokens)",
-        "",
-        "## Chapters",
-        ""
-    ]
-
-    for chapter in chapters:
-        tokens_str = f"~{chapter['tokens']:,}" if chapter['tokens'] else ""
-        lines.append(f"- [{chapter['title']}](docs/{chapter['folder']}/_index.md) - {chapter['topic_count']} topics ({tokens_str} tokens)")
-
-    return '\n'.join(lines)
 
 
 def generate_chapter_index(chapter_title: str, topics: list, overview_content: str) -> str:
@@ -429,16 +436,16 @@ class SkillGenerator:
         # Remove empty "General" chapter if it has no real content
         self.chapters = [c for c in self.chapters if c['topic_count'] > 0]
 
-        # Write manifest
-        manifest_content = generate_manifest(
-            self.skill_name, source, self.chapters, self.total_tokens
-        )
-        with open(os.path.join(self.base_dir, "_manifest.md"), 'w', encoding='utf-8') as f:
-            f.write(manifest_content)
-
-        # Write SKILL.md
+        # Write SKILL.md with embedded chapter catalog
         description = f"Documentation for {self.skill_name}. Use for questions about {self.skill_name} APIs, patterns, and usage."
-        skill_md_content = generate_skill_md(self.skill_name, description, preserved_config)
+        skill_md_content = generate_skill_md(
+            self.skill_name,
+            description,
+            source,
+            self.chapters,
+            self.total_tokens,
+            preserved_config
+        )
         with open(os.path.join(self.base_dir, "SKILL.md"), 'w', encoding='utf-8') as f:
             f.write(skill_md_content)
 
